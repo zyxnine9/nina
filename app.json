@@ -43,6 +43,11 @@
       "root": "pages/release",
       "name": "release",
       "pages": ["index"]
+    },
+    {
+      "root": "pages/dev",
+      "name": "dev",
+      "pages": ["cloud/index"]
     }
   ],
   "window": {

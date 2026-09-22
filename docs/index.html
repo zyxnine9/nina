@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NINA · UI 风格演示</title>
+<style>
+/* ============ Design Tokens（对应 style.md 第 3-5 节） ============ */
+:root {
+  --radius-card: 16px;
+  --radius-chip: 999px;
+  --radius-input: 12px;
+  --space-unit: 4px;
+}
+body.theme-light {
+  --bg: #FCFCFC;
+  --bg-secondary: #F4F6F8;
+  --bg-card: #FFFFFF;
+  --text-primary: #1A1D24;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --separator: #ECF0F4;
+  --accent: #4890F0;
+  --accent-soft: #A8C0F0;
+  --btn-primary-bg: #17181C;
+  --btn-primary-fg: #FCFCFC;
+  --shadow-card: 0 1px 3px rgba(23,28,38,.04), 0 8px 24px rgba(23,28,38,.06);
+}
+body.theme-dark {
+  --bg: #12181F;
+  --bg-secondary: #1C232C;
+  --bg-card: #1C232C;
+  --text-primary: #F2F4F7;
+  --text-secondary: #8A94A3;
+  --text-tertiary: #5C6675;
+  --separator: #2A3340;
+  --accent: #60A8F0;
+  --accent-soft: #3D5A8C;
+  --btn-primary-bg: #F2F4F7;
+  --btn-primary-fg: #12181F;
+  --shadow-card: 0 1px 3px rgba(0,0,0,.2), 0 8px 24px rgba(0,0,0,.25);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  transition: background .3s, color .3s;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ 演示页布局 ============ */
+.toolbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 20px;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--separator);
+}
+.toolbar .brand {
+  font-size: 15px; font-weight: 300; letter-spacing: .35em;
+}
+.theme-toggle {
+  height: 32px; padding: 0 16px;
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--separator);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 12px; cursor: pointer;
+}
+
+.page-wrap {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 24px 20px 110px;
+}
+.section-label {
+  font-size: 11px; color: var(--text-tertiary);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin: 40px 0 16px;
+}
+.section-label:first-of-type { margin-top: 24px; }
+
+/* ============ 组件（对应 style.md 第 6 节） ============ */
+
+/* 品牌 */
+.brand-hero { text-align: left; margin: 16px 0 8px; }
+.brand-hero .logo { font-size: 34px; font-weight: 300; letter-spacing: .35em; }
+.brand-hero .slogan { margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
+.brand-orb {
+  width: 120px; height: 120px; margin: 28px auto 8px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, var(--accent-soft) 45%, var(--accent) 100%);
+  opacity: .9;
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* 洞察句（发现页第一屏） */
+.headline {
+  font-size: 23px; font-weight: 700;
+  line-height: 1.55; letter-spacing: .01em;
+  margin: 12px 0 20px;
+}
+
+/* 标签胶囊 */
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  display: inline-flex; align-items: center;
+  height: 32px; padding: 0 14px;
+  border-radius: var(--radius-chip);
+  background: var(--bg-secondary);
+  border: 1px solid var(--separator);
+  font-size: 13px; color: var(--text-primary);
+  cursor: pointer;
+}
+.chip.primary {
+  background: var(--bg-card);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--separator));
+  color: var(--accent); font-weight: 600;
+}
+
+/* 今日发现卡 */
+.insight-card {
+  margin-top: 16px;
+  padding: 20px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--separator);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+}
+.insight-card .kicker { font-size: 11px; color: var(--accent); margin-bottom: 8px; }
+.insight-card .title  { font-size: 17px; font-weight: 700; line-height: 1.5; }
+.insight-card .meta   { margin-top: 10px; font-size: 11px; color: var(--text-tertiary); }
+
+/* 阅读瞬间引文卡 */
+.moment-card {
+  padding: 20px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--separator);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 14px;
+}
+.moment-card .book {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;
+}
+.moment-card .book .cover {
+  width: 28px; height: 40px; border-radius: 4px; flex: none;
+  background: linear-gradient(160deg, #3A4A5C, #17181C);
+}
+.moment-card .quote { font-size: 15px; line-height: 1.7; }
+.moment-card .meta  { margin-top: 12px; font-size: 11px; color: var(--text-tertiary); }
+.moment-card .topic-tags { display: flex; gap: 12px; margin-top: 12px; }
+.moment-card .topic-tags span { font-size: 11px; color: var(--accent); }
+
+/* 统计短句 */
+.stats { font-size: 13px; color: var(--text-secondary); }
+.stats b { color: var(--text-primary); font-weight: 600; }
+
+/* 按钮 */
+.btn-primary {
+  display: block; width: 100%;
+  height: 48px; padding: 0 24px;
+  border: none; border-radius: var(--radius-chip);
+  background: var(--btn-primary-bg); color: var(--btn-primary-fg);
+  font-size: 16px; font-weight: 600;
+  cursor: pointer; margin-top: 20px;
+}
+.link-btn {
+  display: block; width: 100%;
+  background: none; border: none;
+  color: var(--text-tertiary); font-size: 13px;
+  padding: 14px 0; cursor: pointer;
+}
+
+/* 环形图 */
+.donut-row { display: flex; align-items: center; gap: 24px; }
+.donut {
+  width: 140px; aspect-ratio: 1; border-radius: 50%; flex: none;
+  background: conic-gradient(
+    #6090F0 0 28%, #4FA8A0 28% 46%, #F0A878 46% 61%,
+    #E8C478 61% 73%, #9088D8 73% 83%, #C8CEDA 83% 100%);
+  -webkit-mask: radial-gradient(circle, transparent 58%, #000 59%);
+          mask: radial-gradient(circle, transparent 58%, #000 59%);
+}
+.donut-center { text-align: center; }
+.legend { display: grid; gap: 8px; font-size: 12px; color: var(--text-secondary); }
+.legend i {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; margin-right: 8px;
+}
+
+/* 进度时间线 */
+.timeline { display: grid; gap: 20px; position: relative; }
+.timeline::before {
+  content: ""; position: absolute; left: 9px; top: 8px; bottom: 8px;
+  width: 2px; background: var(--separator);
+}
+.timeline .node {
+  display: flex; gap: 14px; align-items: flex-start;
+  font-size: 14px; color: var(--text-tertiary);
+}
+.timeline .node .dot {
+  width: 18px; height: 18px; border-radius: 50%; flex: none;
+  background: var(--bg-card); border: 2px solid var(--separator);
+  position: relative; z-index: 1;
+}
+.timeline .node.done { color: var(--text-primary); }
+.timeline .node.done .dot { background: var(--accent); border-color: var(--accent); }
+.timeline .node .sub { display: block; font-size: 11px; margin-top: 2px; }
+
+/* 深色屏示例（分析中） */
+.dark-screen {
+  border-radius: 24px; padding: 28px 24px 32px;
+  background: linear-gradient(175deg, #1C2430 0%, #12181F 70%);
+  color: #F2F4F7;
+}
+.dark-screen .t  { font-size: 20px; font-weight: 700; }
+.dark-screen .st { font-size: 12px; color: #8A94A3; margin: 6px 0 24px; }
+.dark-screen .timeline::before { background: #2A3340; }
+.dark-screen .node .dot { background: #1C2430; border-color: #2A3340; }
+.dark-screen .node { color: #8A94A3; }
+.dark-screen .node.done { color: #F2F4F7; }
+.dark-screen .node.done .dot { background: #60A8F0; border-color: #60A8F0; }
+
+/* TabBar */
+.tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  display: flex; justify-content: space-around;
+  max-width: 420px; margin: 0 auto;
+  padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--separator);
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(16px);
+}
+.tabbar .tab {
+  font-size: 10px; color: var(--text-tertiary);
+  display: grid; justify-items: center; gap: 3px;
+  cursor: pointer;
+}
+.tabbar .tab .ico {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid currentColor; opacity: .75;
+}
+.tabbar .tab.active { color: var(--text-primary); font-weight: 600; }
+.tabbar .tab.active .ico { background: currentColor; opacity: 1; }
+</style>
+</head>
+<body class="theme-light">
+
+<div class="toolbar">
+  <span class="brand">NINA</span>
+  <button class="theme-toggle" onclick="toggleTheme()">切换深色</button>
+</div>
+
+<main class="page-wrap">
+
+  <!-- 品牌 + 洞察句 + 标签（发现页第一屏，设计稿 #7） -->
+  <div class="section-label">发现 · 第一屏 / Headline + Chips</div>
+  <div class="brand-hero">
+    <div class="logo">NINA</div>
+    <div class="slogan">看见自己 · Know yourself, through what you read.</div>
+  </div>
+
+  <p class="headline">你读了很多不同的书，<br>但你似乎一直在寻找同一个答案。</p>
+
+  <div class="chips">
+    <span class="chip primary">温和的怀疑者</span>
+    <span class="chip">给自由留后门的人</span>
+    <span class="chip">浪漫现实主义者</span>
+  </div>
+
+  <div class="insight-card">
+    <div class="kicker">今日发现</div>
+    <div class="title">你最近的三本书，都在讨论「改变」这件事</div>
+    <div class="meta">来自《置身事内》《思考，快与慢》《人类简史》</div>
+  </div>
+
+  <!-- 阅读瞬间（痕迹页，设计稿 #11/#13） -->
+  <div class="section-label">阅读瞬间 / Moment Card</div>
+  <div class="moment-card">
+    <div class="book"><span class="cover"></span>《人类简史》 · 尤瓦尔·赫拉利</div>
+    <p class="quote">"人类最大的优势，不是力量，也不是智力，而是能够合作。正是这种合作，让我们从原始社会走向了现代文明。"</p>
+    <div class="topic-tags"><span>#人性</span><span>#合作</span><span>#社会</span></div>
+    <div class="meta">2019-06-12 · 划线</div>
+  </div>
+  <div class="moment-card">
+    <div class="book"><span class="cover"></span>《小王子》 · 圣埃克苏佩里</div>
+    <p class="quote">"重要的不是你拥有了什么，而是你如何看待它。"</p>
+    <div class="topic-tags"><span>#自我</span><span>#意义</span></div>
+    <div class="meta">2022-07-04 · 评论</div>
+  </div>
+
+  <!-- 知识结构环形图（探索页，设计稿 #10） -->
+  <div class="section-label">知识结构 / Donut</div>
+  <div class="moment-card donut-center">
+    <div class="donut-row">
+      <div class="donut"></div>
+      <div class="legend">
+        <span><i style="background:#6090F0"></i>金融 <b>28%</b></span>
+        <span><i style="background:#4FA8A0"></i>心理学 <b>18%</b></span>
+        <span><i style="background:#F0A878"></i>哲学 <b>15%</b></span>
+        <span><i style="background:#E8C478"></i>历史 <b>12%</b></span>
+        <span><i style="background:#9088D8"></i>商业 <b>10%</b></span>
+        <span><i style="background:#C8CEDA"></i>其他 <b>17%</b></span>
+      </div>
+    </div>
+    <p class="meta" style="margin-top:16px">知识领域 · 主要集中在 6 个领域</p>
+  </div>
+
+  <!-- 渐进式分析时间线（深色屏示例，设计稿 #6） -->
+  <div class="section-label">分析中 · 深色屏 / Dark Stage</div>
+  <div class="dark-screen">
+    <div class="t">NINA 认识你了</div>
+    <div class="st">正在为你生成完整的个人分析</div>
+    <div class="timeline">
+      <div class="node done"><span class="dot"></span><span>数据导入<span class="sub">326 本书 · 1,842 个阅读瞬间</span></span></div>
+      <div class="node done"><span class="dot"></span><span>基础阅读画像</span></div>
+      <div class="node done"><span class="dot"></span><span>第一批阅读特征</span></div>
+      <div class="node done"><span class="dot"></span><span>身份标签</span></div>
+      <div class="node"><span class="dot"></span><span>六大分析维度<span class="sub">这需要一些时间，请稍等…</span></span></div>
+    </div>
+  </div>
+
+  <!-- 统计短句 + 按钮 -->
+  <div class="section-label">统计与按钮 / Stats + Buttons</div>
+  <div class="moment-card" style="text-align:center">
+    <p class="stats"><b>12</b> 本 · <b>31</b> 个瞬间 · <b>8</b> 条评论</p>
+    <button class="btn-primary">查看更多证据</button>
+    <button class="link-btn">暂不导入，先看看</button>
+  </div>
+
+</main>
+
+<!-- 底部 TabBar（设计稿 #7/#9/#11） -->
+<nav class="tabbar">
+  <div class="tab active"><span class="ico"></span>发现</div>
+  <div class="tab"><span class="ico"></span>探索</div>
+  <div class="tab"><span class="ico"></span>痕迹</div>
+</nav>
+
+<script>
+function toggleTheme() {
+  const b = document.body;
+  const dark = b.classList.toggle('theme-dark');
+  b.classList.toggle('theme-light', !dark);
+  document.querySelector('.theme-toggle').textContent = dark ? '切换浅色' : '切换深色';
+}
+</script>
+</body>
+</html>

@@ -10,6 +10,11 @@ if (config.isMock) {
 
 App({
   onLaunch() {
+    // 云开发初始化（mock 模式下不初始化，调试页 api/request.js 内有懒初始化兜底）
+    if (!config.isMock && config.useCallFunction && wx.cloud) {
+      wx.cloud.init({ env: config.envId, traceUser: true });
+    }
+
     const updateManager = wx.getUpdateManager();
 
     updateManager.onCheckForUpdate((res) => {

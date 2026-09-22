@@ -1,0 +1,9 @@
+{
+  "name": "nina-api",
+  "version": "1.0.0",
+  "description": "NINA 云函数网关：全部 action 共享一份 node_modules",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

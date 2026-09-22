@@ -1,0 +1,43 @@
+<view class="dev-cloud">
+  <view class="section">
+    <view class="section-title">KEY / 查询输入</view>
+    <input
+      class="input"
+      placeholder="wrk-xxxxxxxx（微信读书 KEY）"
+      value="{{wrKey}}"
+      bindinput="onKeyInput"
+      password
+    />
+    <input class="input" placeholder="搜索词 q" value="{{query}}" bindinput="onQueryInput" />
+  </view>
+
+  <view class="section">
+    <view class="section-title">单 action 调用</view>
+    <view class="btns">
+      <view
+        wx:for="{{actions}}"
+        wx:key="*this"
+        class="btn {{current === item ? 'btn-active' : ''}}"
+        bindtap="onRunAction"
+        data-action="{{item}}"
+      >{{item}}</view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">长任务（轮询驱动）</view>
+    <view class="btns">
+      <view class="btn" bindtap="onDriveImport">循环 import_step</view>
+      <view class="btn" bindtap="onDriveAnalysis">循环 analysis_step</view>
+      <view class="btn btn-danger" bindtap="onStop">停止轮询</view>
+    </view>
+    <view wx:if="{{progressText}}" class="progress">{{progressText}}</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">输出（最近一次回包）</view>
+    <scroll-view scroll-y class="output-wrap">
+      <text class="output" user-select>{{output}}</text>
+    </scroll-view>
+  </view>
+</view>
