@@ -1,8 +1,8 @@
 .discover-page {
   min-height: 100vh;
   background: var(--bg);
-  padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
   box-sizing: border-box;
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
 
   .loading-wrap {
     display: flex;
@@ -10,77 +10,171 @@
     padding-top: 40vh;
   }
 
-  .headline-section {
-    .generate-at {
-      margin-top: 10px;
-      font-size: 11px;
+  // ---------- Hero ----------
+  .hero {
+    position: relative;
+    padding: 0 20px 24px;
+    background: linear-gradient(180deg, #e3ecf8, #f3f6fb 60%, var(--bg));
+    overflow: hidden;
+
+    .hero-arch {
+      position: absolute;
+      top: 96px;
+      right: 20px;
+      width: 96px;
+      height: 150px;
+      border-radius: 48px 48px 0 0;
+      background: linear-gradient(180deg, #ffffff, #e8f0fa 70%, rgba(255, 255, 255, 0));
+      box-shadow: 0 12px 32px rgba(72, 144, 240, 0.18);
+      opacity: 0.9;
+    }
+
+    .nav-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 44px;
+
+      .brand {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+
+        .brand-name {
+          font-size: 18px;
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          color: var(--text-primary);
+        }
+
+        .brand-sub {
+          font-size: 10px;
+          letter-spacing: 0.3em;
+          color: var(--text-secondary);
+        }
+      }
+
+      .nav-search {
+        position: absolute;
+        top: 0;
+        height: 44px;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .hero-slogan {
+      position: relative;
+      margin-top: 28px;
+
+      .slogan-line {
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.5;
+        color: var(--text-primary);
+      }
+    }
+
+    .hero-desc {
+      position: relative;
+      margin-top: 12px;
+      max-width: 250px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+  }
+
+  // ---------- Body ----------
+  .body {
+    padding: 0 20px;
+  }
+
+  .profile-card,
+  .interest-card {
+    margin-top: 16px;
+    padding: 20px;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .card-link {
+      font-size: 12px;
       color: var(--text-tertiary);
     }
   }
 
-  .new-insight {
-    margin-top: 20px;
+  // ---------- 人格 chips（设计稿专属装饰色） ----------
+  .persona-chips {
     display: flex;
-    align-items: center;
     gap: 10px;
-    padding: 12px 16px;
-    background: var(--bg-secondary);
-    border-radius: var(--radius-input);
-
-    .new-insight-label {
-      flex: none;
-      font-size: 11px;
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .new-insight-title {
-      font-size: 13px;
-      color: var(--text-secondary);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  }
-
-  .primary-tag-section {
-    margin-top: 24px;
-    padding: 20px;
-
-    .reason {
-      margin-top: 14px;
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-  }
-
-  .tags-section {
     margin-top: 16px;
   }
 
-  .moments-section {
-    margin-top: 32px;
-    display: grid;
-    gap: 12px;
-  }
+  .persona-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
 
-  .empty-wrap {
-    padding: 60px 0;
-    text-align: center;
-
-    .empty-text {
+    .persona-icon {
       font-size: 13px;
-      color: var(--text-tertiary);
-      line-height: 1.6;
+    }
+
+    &.persona-blue {
+      background: #e8f0fe;
+      color: #3a6fd8;
+    }
+
+    &.persona-green {
+      background: #e3f5ec;
+      color: #2f9e63;
+    }
+
+    &.persona-pink {
+      background: #fde8ef;
+      color: #d95d8f;
     }
   }
 
-  .footer-text {
-    margin-top: 40px;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-tertiary);
-    letter-spacing: 0.05em;
+  .profile-desc {
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  // ---------- 气泡图 ----------
+  .bubble-wrap {
+    margin-top: 8px;
+  }
+
+  .bubble-canvas {
+    width: 100%;
+    height: 310px;
+  }
+
+  // ---------- 兴趣 chips ----------
+  .interest-card {
+    .interest-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
   }
 }

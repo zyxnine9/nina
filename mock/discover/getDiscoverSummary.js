@@ -8,13 +8,14 @@ export default {
     },
     primaryTag: {
       tagId: 'tag_01',
-      name: '温和的怀疑者',
+      name: '理性思考者',
       reason: '为什么是我？',
       evidenceCount: 37,
     },
     tags: [
-      { tagId: 'tag_02', name: '方法论收藏家' },
-      { tagId: 'tag_03', name: '浪漫现实主义者' },
+      { tagId: 'tag_01', name: '理性思考者' },
+      { tagId: 'tag_02', name: '探索者' },
+      { tagId: 'tag_03', name: '浪漫主义者' },
     ],
     newInsight: {
       id: 'ins_09',
