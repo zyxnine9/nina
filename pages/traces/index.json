@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "痕迹",
+  "navigationBarBackgroundColor": "#FCFCFC",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "moment-card": "/components/moment-card/index",
+    "book-card": "/components/book-card/index",
+    "t-loading": "tdesign-miniprogram/loading/loading"
+  }
+}

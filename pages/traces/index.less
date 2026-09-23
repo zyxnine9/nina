@@ -1,0 +1,98 @@
+.traces-page {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+
+  .loading-wrap {
+    display: flex;
+    justify-content: center;
+    padding-top: 40vh;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .search-entry {
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--separator);
+    }
+  }
+
+  .segment {
+    margin-top: 18px;
+    display: inline-flex;
+    padding: 3px;
+    background: var(--bg-secondary);
+    border-radius: 999px;
+
+    .segment-item {
+      padding: 7px 20px;
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--text-secondary);
+
+      &.active {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        font-weight: 600;
+        box-shadow: var(--shadow-card);
+      }
+    }
+  }
+
+  .category-chips {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .cat-chip {
+      height: 32px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--separator);
+      font-size: 13px;
+      color: var(--text-primary);
+
+      &.active {
+        background: var(--text-primary);
+        border-color: var(--text-primary);
+        color: var(--bg);
+        font-weight: 600;
+      }
+    }
+  }
+
+  .moment-list {
+    margin-top: 20px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .book-list {
+    margin-top: 20px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .empty-wrap {
+    padding: 60px 0;
+    text-align: center;
+
+    .empty-text {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+  }
+}

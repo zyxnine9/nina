@@ -1,0 +1,44 @@
+<view class="discover-page">
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <t-loading theme="dots" size="40rpx" text="NINA 正在努力认识你" />
+  </view>
+
+  <block wx:else>
+    <!-- 1. 洞察句 -->
+    <view class="headline-section">
+      <view class="headline">{{headline.text}}</view>
+      <view wx:if="{{generateAtText}}" class="generate-at">生成于 {{generateAtText}}</view>
+    </view>
+
+    <!-- 2. newInsight 条 -->
+    <view wx:if="{{newInsight}}" class="new-insight" bindtap="onNewInsightTap">
+      <text class="new-insight-label">新洞察</text>
+      <text class="new-insight-title">{{newInsight.title}}</text>
+    </view>
+
+    <!-- 3. primaryTag 卡 -->
+    <view wx:if="{{primaryTag}}" class="primary-tag-section nina-card" data-tag-id="{{primaryTag.tagId}}" bindtap="onTagTap">
+      <tag-chips tags="{{[primaryTag]}}" primaryId="{{primaryTag.tagId}}" bind:tagtap="onTagTap" />
+      <view class="reason">{{primaryTag.reason}}</view>
+      <stat-line stats="{{primaryTagStats}}" />
+    </view>
+
+    <!-- 4. 其余身份标签胶囊流 -->
+    <view wx:if="{{tags.length}}" class="tags-section">
+      <tag-chips tags="{{tags}}" bind:tagtap="onTagTap" />
+    </view>
+
+    <!-- 5. 瞬间流 -->
+    <view wx:if="{{moments.length}}" class="moments-section">
+      <moment-card wx:for="{{moments}}" wx:key="momentId" moment="{{item}}" />
+    </view>
+    <view wx:else class="empty-wrap">
+      <view class="empty-text">你的阅读痕迹还在路上，稍后再来看看。</view>
+    </view>
+
+    <!-- 6. 人格化收尾 -->
+    <view class="footer-text">你的下一次发现，或许就在不远处</view>
+  </block>
+
+  <t-toast id="t-toast" />
+</view>

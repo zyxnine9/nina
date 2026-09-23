@@ -1,0 +1,73 @@
+// style.md 6.3 阅读瞬间引文卡
+.moment-card {
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+
+  // review 型：左侧 2px accent 竖线区分
+  &.is-review {
+    border-left: 2px solid var(--accent);
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 14px;
+
+    .category {
+      font-size: 11px;
+      color: var(--accent);
+      line-height: 1.3;
+    }
+  }
+
+  .quote {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin-top: 4px;
+  }
+
+  .comment {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-input);
+
+    .comment-mark {
+      flex: none;
+      font-size: 10px;
+      color: var(--text-secondary);
+      border: 1px solid var(--separator);
+      border-radius: 4px;
+      padding: 1px 4px;
+      line-height: 1.4;
+    }
+
+    .comment-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+  }
+
+  .meta {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .meta-item:not(:first-child)::before {
+      content: '·';
+      margin: 0 6px;
+    }
+  }
+}

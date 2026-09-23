@@ -1,0 +1,6 @@
+<view class="stat-line">
+  <block wx:for="{{stats}}" wx:key="label">
+    <text class="item">{{item.value}} {{item.label}}</text>
+    <text wx:if="{{index < stats.length - 1}}" class="sep">·</text>
+  </block>
+</view>

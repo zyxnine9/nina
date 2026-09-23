@@ -1,0 +1,67 @@
+<view class="traces-page">
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <t-loading theme="dots" size="40rpx" text="正在整理你的痕迹" />
+  </view>
+
+  <block wx:else>
+    <view class="page-header">
+      <view class="page-title">痕迹</view>
+      <view class="search-entry" bindtap="goSearch">搜索</view>
+    </view>
+
+    <!-- 瞬间 / 书单 分段 -->
+    <view class="segment">
+      <view
+        wx:for="{{segments}}"
+        wx:key="key"
+        class="segment-item {{segment === item.key ? 'active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onSegmentChange"
+      >
+        {{item.label}}
+      </view>
+    </view>
+
+    <!-- 分类胶囊过滤（仅瞬间段） -->
+    <view wx:if="{{segment === 'moments' && categories.length}}" class="category-chips">
+      <view
+        class="cat-chip {{activeCategoryId === '' ? 'active' : ''}}"
+        data-category-id=""
+        bindtap="onCategoryTap"
+      >
+        全部
+      </view>
+      <view
+        wx:for="{{categories}}"
+        wx:key="categoryId"
+        class="cat-chip {{activeCategoryId === item.categoryId ? 'active' : ''}}"
+        data-category-id="{{item.categoryId}}"
+        bindtap="onCategoryTap"
+      >
+        {{item.name}}
+      </view>
+    </view>
+
+    <!-- 瞬间列表 -->
+    <block wx:if="{{segment === 'moments'}}">
+      <view wx:if="{{moments.length}}" class="moment-list">
+        <moment-card wx:for="{{moments}}" wx:key="momentId" moment="{{item}}" />
+      </view>
+      <view wx:else class="empty-wrap">
+        <view class="empty-text">这个分类下还没有痕迹，去读点什么吧。</view>
+      </view>
+    </block>
+
+    <!-- 书单列表 -->
+    <block wx:else>
+      <view wx:if="{{books.length}}" class="book-list">
+        <book-card wx:for="{{books}}" wx:key="bookId" book="{{item}}" />
+      </view>
+      <view wx:else class="empty-wrap">
+        <view class="empty-text">书单还是空的，第一本书往往最难开始。</view>
+      </view>
+    </block>
+  </block>
+
+  <t-toast id="t-toast" />
+</view>

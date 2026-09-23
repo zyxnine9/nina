@@ -1,5 +1,12 @@
 {
-  "pages": ["pages/home/index", "pages/message/index", "pages/my/index"],
+  "pages": [
+    "pages/discover/index",
+    "pages/explore/index",
+    "pages/traces/index",
+    "pages/home/index",
+    "pages/message/index",
+    "pages/my/index"
+  ],
   "usingComponents": {
     "t-toast": "tdesign-miniprogram/toast/toast"
   },
@@ -60,16 +67,16 @@
     "custom": true,
     "list": [
       {
-        "pagePath": "pages/home/index",
-        "text": "首页"
+        "pagePath": "pages/discover/index",
+        "text": "发现"
       },
       {
-        "pagePath": "pages/message/index",
-        "text": "消息"
+        "pagePath": "pages/explore/index",
+        "text": "探索"
       },
       {
-        "pagePath": "pages/my/index",
-        "text": "我的"
+        "pagePath": "pages/traces/index",
+        "text": "痕迹"
       }
     ]
   },

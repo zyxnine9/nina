@@ -19,6 +19,8 @@ export default {
     insight: 'nina-insight',
     search: 'nina-search',
   },
+  /** HTTP 云函数（常驻 Web 服务，wx.cloud.callHTTPFunction，支持 SSE） */
+  cloudHttpFunctionName: 'nina-http',
   /** REST 后端地址（仅 isMock=false 且 useCallFunction=false 时使用） */
   baseUrl: '',
 };

@@ -1,0 +1,63 @@
+.explore-page {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+
+  .loading-wrap {
+    display: flex;
+    justify-content: center;
+    padding-top: 40vh;
+  }
+
+  .page-header {
+    .page-subtitle {
+      margin-top: 6px;
+    }
+  }
+
+  .dim-list {
+    margin-top: 24px;
+    display: grid;
+    gap: 12px;
+
+    .dim-item {
+      padding: 18px 20px;
+
+      .dim-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+
+        .dim-title {
+          font-size: 15px;
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+
+        .dim-count {
+          font-size: 11px;
+          color: var(--text-tertiary);
+        }
+      }
+
+      .dim-oneline {
+        margin-top: 8px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+    }
+  }
+
+  .empty-wrap {
+    padding: 60px 0;
+    text-align: center;
+
+    .empty-text {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+  }
+}

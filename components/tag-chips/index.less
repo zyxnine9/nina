@@ -1,0 +1,26 @@
+// style.md 6.2 身份标签胶囊流
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  .chip {
+    height: 32px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--separator);
+    font-size: 13px;
+    color: var(--text-primary);
+
+    // 主标签强调态：深色底反白（呼应黑色胶囊主按钮）
+    &.primary {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: var(--bg);
+      font-weight: 600;
+    }
+  }
+}

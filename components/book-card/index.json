@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "stat-line": "/components/stat-line/index"
+  }
+}

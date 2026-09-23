@@ -1,0 +1,86 @@
+.discover-page {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+
+  .loading-wrap {
+    display: flex;
+    justify-content: center;
+    padding-top: 40vh;
+  }
+
+  .headline-section {
+    .generate-at {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+  }
+
+  .new-insight {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-input);
+
+    .new-insight-label {
+      flex: none;
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .new-insight-title {
+      font-size: 13px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .primary-tag-section {
+    margin-top: 24px;
+    padding: 20px;
+
+    .reason {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+  }
+
+  .tags-section {
+    margin-top: 16px;
+  }
+
+  .moments-section {
+    margin-top: 32px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .empty-wrap {
+    padding: 60px 0;
+    text-align: center;
+
+    .empty-text {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+  }
+
+  .footer-text {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+  }
+}

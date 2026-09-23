@@ -1,0 +1,15 @@
+<view class="moment-card {{moment.type === 'review' ? 'is-review' : ''}}">
+  <view class="card-head">
+    <text wx:if="{{moment.categoryName}}" class="category">{{moment.categoryName}}</text>
+  </view>
+  <view class="quote">{{moment.text}}</view>
+  <view wx:if="{{moment.comment}}" class="comment">
+    <text class="comment-mark">评</text>
+    <text class="comment-text">{{moment.comment}}</text>
+  </view>
+  <view class="meta">
+    <text class="meta-item book-title">《{{moment.book.title}}》</text>
+    <text wx:if="{{moment.chapterTitle}}" class="meta-item">{{moment.chapterTitle}}</text>
+    <text wx:if="{{dateText}}" class="meta-item">{{dateText}}</text>
+  </view>
+</view>

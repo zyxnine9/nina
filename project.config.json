@@ -54,7 +54,7 @@
   },
   "compileType": "miniprogram",
   "cloudfunctionRoot": "cloudfunctions/",
-  "libVersion": "3.7.8",
+  "libVersion": "3.15.1",
   "appid": "wx5064e8ba87f8d90c",
   "projectname": "miniprogram-starter",
   "condition": {
@@ -100,6 +100,13 @@
         {
           "name": "setting",
           "pathName": "pages/setting/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "discover",
+          "pathName": "pages/discover/index",
           "query": "",
           "launchMode": "default",
           "scene": null

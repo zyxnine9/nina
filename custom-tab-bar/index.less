@@ -1,10 +1,48 @@
-@import '/variable.less';
+// style.md 6.7 底部 TabBar：圆点图标 + 10px 文字，选中实心点 + 加粗
+// custom-tab-bar 渲染层拿不到 page 上的 CSS 变量，全部带浅色主题 fallback
+@tb-bg: var(--bg, #fcfcfc);
+@tb-separator: var(--separator, #ecf0f4);
+@tb-text-primary: var(--text-primary, #1a1d24);
+@tb-text-tertiary: var(--text-tertiary, #9ca3af);
 
-.custom-tab-bar {
-  --td-tab-bar-height: @tab-bar-height;
+.tabbar {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  border-top: 1px solid @tb-separator;
+  background: @tb-bg;
 
-  &-item {
-    margin: 0;
-    padding: 16rpx 24rpx;
+  .tab {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    padding: 2px 16px;
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid @tb-text-tertiary;
+      box-sizing: border-box;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .label {
+      font-size: 10px;
+      color: @tb-text-tertiary;
+      line-height: 1;
+    }
+
+    &.active {
+      .dot {
+        background: @tb-text-primary;
+        border-color: @tb-text-primary;
+      }
+      .label {
+        color: @tb-text-primary;
+        font-weight: 600;
+      }
+    }
   }
 }

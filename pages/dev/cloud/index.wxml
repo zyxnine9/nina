@@ -35,6 +35,25 @@
   </view>
 
   <view class="section">
+    <view class="section-title">SSE 测试（HTTP 云函数 nina-http）</view>
+    <input
+      class="input"
+      placeholder="LLM prompt"
+      value="{{ssePrompt}}"
+      bindinput="onSsePromptInput"
+    />
+    <view class="btns">
+      <view class="btn" bindtap="onHealthz">/healthz</view>
+      <view class="btn" bindtap="onSseDemo">Demo 流</view>
+      <view class="btn" bindtap="onSseLlm">LLM 流式</view>
+      <view class="btn btn-danger" wx:if="{{sseRunning}}" bindtap="onStopSse">停止</view>
+    </view>
+    <scroll-view scroll-y class="sse-output-wrap">
+      <text class="sse-output" user-select>{{sseOutput}}</text>
+    </scroll-view>
+  </view>
+
+  <view class="section">
     <view class="section-title">输出（最近一次回包）</view>
     <scroll-view scroll-y class="output-wrap">
       <text class="output" user-select>{{output}}</text>

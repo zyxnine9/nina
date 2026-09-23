@@ -1,0 +1,75 @@
+// 书单卡（style.md 6.3 容器 + 5 几何）
+.book-card {
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+
+  .cover {
+    flex: none;
+    width: 72px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+
+    &.cover-placeholder {
+      background: var(--bg-secondary);
+    }
+  }
+
+  .info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .author {
+      font-size: 12px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+
+    .progress-track {
+      flex: 1;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--bg-secondary);
+      overflow: hidden;
+
+      .progress-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: var(--accent-soft);
+      }
+    }
+
+    .progress-text {
+      flex: none;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+  }
+}

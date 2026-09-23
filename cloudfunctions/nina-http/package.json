@@ -1,0 +1,7 @@
+{
+  "name": "nina-http",
+  "version": "1.0.0",
+  "description": "NINA HTTP 云函数（常驻 Web 服务）：SSE demo + ARK LLM 流式透传",
+  "main": "index.js",
+  "dependencies": {}
+}

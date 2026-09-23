@@ -1,0 +1,21 @@
+<view class="book-card">
+  <image
+    wx:if="{{book.cover}}"
+    class="cover"
+    src="{{book.cover}}"
+    mode="aspectFill"
+    lazy-load
+  />
+  <view wx:else class="cover cover-placeholder"></view>
+  <view class="info">
+    <view class="title">{{book.title}}</view>
+    <view class="author">{{book.author}}</view>
+    <stat-line stats="{{stats}}" />
+    <view wx:if="{{book.progress}}" class="progress-row">
+      <view class="progress-track">
+        <view class="progress-fill" style="width: {{book.progress}}%;"></view>
+      </view>
+      <text class="progress-text">{{book.finished ? '读完' : book.progress + '%'}}</text>
+    </view>
+  </view>
+</view>

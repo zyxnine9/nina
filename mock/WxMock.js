@@ -8,7 +8,9 @@ wx.request = function (config) {
     return;
   }
   var resTemplate = Mock._mocked[config.url].template;
-  var response = Mock.mock(resTemplate);
+  // 顶层函数模板：直接调用并传入本次请求 config（含 data 入参），不走 mockjs 生成
+  var response =
+    typeof resTemplate == 'function' ? resTemplate(config) : Mock.mock(resTemplate);
   if (typeof config.success == 'function') {
     config.success(response);
   }

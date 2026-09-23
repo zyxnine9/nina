@@ -1,0 +1,11 @@
+<view class="chips">
+  <view
+    wx:for="{{tags}}"
+    wx:key="tagId"
+    class="chip {{item.tagId === primaryId ? 'primary' : ''}}"
+    data-tag-id="{{item.tagId}}"
+    bindtap="onTagTap"
+  >
+    {{item.name}}
+  </view>
+</view>
