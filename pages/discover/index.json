@@ -1,11 +1,6 @@
 {
-  "navigationBarTitleText": "发现",
-  "navigationBarBackgroundColor": "#FCFCFC",
-  "navigationBarTextStyle": "black",
+  "navigationStyle": "custom",
   "usingComponents": {
-    "tag-chips": "/components/tag-chips/index",
-    "moment-card": "/components/moment-card/index",
-    "stat-line": "/components/stat-line/index",
     "t-loading": "tdesign-miniprogram/loading/loading"
   }
 }

@@ -1,59 +1,120 @@
 import request from '~/api/request';
 import useToastBehavior from '~/behaviors/useToast';
 
-/** 秒级时间戳 → 「2026-09-22」 */
-function formatDate(ts) {
-  if (!ts) return '';
-  const d = new Date(ts * 1000);
-  const p = (n) => (n < 10 ? `0${n}` : `${n}`);
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
-}
+// 人格装饰（icon 用参考实现的线形符号；tone 对应三色样式）
+const PERSONA_STYLES = [
+  { icon: '↗', tone: 'blue' },
+  { icon: '♡', tone: 'green' },
+  { icon: '♧', tone: 'pink' },
+];
+
+// 气泡变体：与 mock items 数据顺序（人文社科/科技/心理学/经济管理/历史/文学艺术/其他）一一对应
+const BUBBLE_VARIANTS = ['humanities', 'tech', 'psych', 'economy', 'history', 'arts', 'other'];
 
 Page({
   behaviors: [useToastBehavior],
   data: {
     loading: true,
-    headline: null,
-    generateAtText: '',
-    newInsight: null,
-    primaryTag: null,
-    primaryTagStats: [],
-    tags: [],
-    moments: [],
+    statusBarHeight: 20,
+    brandPadRight: 24,
+    searchOpen: false,
+    keyword: '',
+    paused: false,
+    activePersona: '',
+    selectedTags: {},
+    personas: [],
+    bubbles: [],
+    interests: [],
   },
   onLoad() {
+    this.computeNavMetrics();
     this.fetchData();
+  },
+  computeNavMetrics() {
+    try {
+      const win = wx.getWindowInfo();
+      const menu = wx.getMenuButtonBoundingClientRect();
+      const statusBarHeight = (win && win.statusBarHeight) || 20;
+      // 右侧避让胶囊：按钮右缘对齐胶囊左缘 + 8px
+      const brandPadRight = menu && menu.left ? (win.windowWidth - menu.left) + 8 : 24;
+      this.setData({ statusBarHeight, brandPadRight });
+    } catch (err) {
+      this.setData({ statusBarHeight: 20, brandPadRight: 24 });
+    }
   },
   async fetchData() {
     try {
-      const [summaryRes, momentsRes] = await Promise.all([
+      const [summaryRes, knowledgeRes, interestRes] = await Promise.all([
         request('/discover/summary'),
-        request('/moments', 'GET', { limit: 10 }),
+        request('/explore/knowledge'),
+        request('/explore/interest'),
       ]);
       const summary = summaryRes.data;
-      const { items } = momentsRes.data;
-      this.setData({
-        loading: false,
-        headline: summary.headline,
-        generateAtText: formatDate(summary.headline && summary.headline.generateAt),
-        newInsight: summary.newInsight || null,
-        primaryTag: summary.primaryTag || null,
-        primaryTagStats: summary.primaryTag
-          ? [{ label: '条阅读证据', value: summary.primaryTag.evidenceCount }]
-          : [],
-        tags: summary.tags || [],
-        moments: items || [],
-      });
+      const knowledge = knowledgeRes.data;
+      const interest = interestRes.data;
+
+      const personas = (summary.tags || []).slice(0, 3).map((tag, i) => ({
+        ...tag,
+        icon: PERSONA_STYLES[i].icon,
+        tone: PERSONA_STYLES[i].tone,
+      }));
+      if (personas.length) this.setData({ activePersona: personas[0].tagId });
+
+      const items = knowledge.items || [];
+      const total = items.reduce((sum, it) => sum + (it.readingTime || 0), 0) || 1;
+      const bubbles = items.map((it, i) => ({
+        id: it.id,
+        name: it.name,
+        percent: Math.round(((it.readingTime || 0) / total) * 100),
+        variant: BUBBLE_VARIANTS[i % BUBBLE_VARIANTS.length],
+      }));
+
+      const interests = (interest.items || []).map((it) => ({ id: it.id, name: it.name }));
+
+      this.setData({ loading: false, personas, bubbles, interests });
     } catch (err) {
       this.setData({ loading: false });
       this.onShowToast('#t-toast', 'NINA 走神了，稍后再试试');
     }
   },
-  onTagTap(e) {
-    // 标签详情子页后续迭代，先 toast 预留
-    this.onShowToast('#t-toast', '标签详情即将上线');
+  // ---------- Hero ----------
+  onSearchToggle() {
+    this.setData({ searchOpen: !this.data.searchOpen });
   },
-  onNewInsightTap() {
-    this.onShowToast('#t-toast', '洞察详情即将上线');
+  onKeywordInput(e) {
+    this.setData({ keyword: e.detail.value });
+  },
+  onSearchSubmit() {
+    const query = (this.data.keyword || '').trim();
+    if (!query) return;
+    this.setData({ keyword: '', searchOpen: false });
+    wx.navigateTo({ url: `/pages/search/index?keyword=${encodeURIComponent(query)}` });
+  },
+  // ---------- 画像卡 ----------
+  onFullAnalysisTap() {
+    wx.switchTab({ url: '/pages/explore/index' });
+  },
+  onPersonaTap(e) {
+    const { tagId, name } = e.currentTarget.dataset;
+    this.setData({ activePersona: tagId });
+    this.onShowToast('#t-toast', `你的阅读人格：${name}`);
+  },
+  onBubbleTap(e) {
+    const { name, percent } = e.currentTarget.dataset;
+    this.onShowToast('#t-toast', `${name} · 阅读占比 ${percent}%`);
+  },
+  onCoreTap() {
+    const paused = !this.data.paused;
+    this.setData({ paused });
+    this.onShowToast('#t-toast', paused ? '已减缓光影流动' : '光影继续流动');
+  },
+  onInterestTap(e) {
+    const { id, name } = e.currentTarget.dataset;
+    const selected = !this.data.selectedTags[id];
+    this.setData({ [`selectedTags.${id}`]: selected });
+    this.onShowToast('#t-toast', selected ? `已关注「${name}」` : `已取消关注「${name}」`);
+  },
+  onMoreInterestTap() {
+    this.onShowToast('#t-toast', '更多推荐即将上线');
   },
 });

@@ -4,40 +4,126 @@
   </view>
 
   <block wx:else>
-    <!-- 1. 洞察句 -->
-    <view class="headline-section">
-      <view class="headline">{{headline.text}}</view>
-      <view wx:if="{{generateAtText}}" class="generate-at">生成于 {{generateAtText}}</view>
+    <!-- 1. Hero 景观区 -->
+    <view class="scene" style="padding-top: {{statusBarHeight}}px;">
+      <view class="landscape">
+        <image class="landscape__image" src="/images/nina-arch.jpg" mode="aspectFill" />
+        <view class="landscape__cover"></view>
+        <view class="landscape__mist landscape__mist--far"></view>
+        <view class="landscape__light"></view>
+      </view>
+
+      <view class="brand-row" style="padding-right: {{brandPadRight}}px;">
+        <view class="brand">
+          <text class="brand-name">NINA</text>
+          <text class="brand-sub">看见自己</text>
+        </view>
+        <view class="search-button {{searchOpen ? 'is-open' : ''}}" bindtap="onSearchToggle">
+          <view class="search-button__lens"></view>
+          <view class="search-button__handle"></view>
+        </view>
+      </view>
+
+      <view class="copy">
+        <view class="copy-title">你读过的每一本书</view>
+        <view class="copy-title">都在悄悄塑造现在的你</view>
+        <view class="copy-desc">通过阅读数据，发现你的兴趣、思维和未被看见的自己。</view>
+      </view>
+
+      <view wx:if="{{searchOpen}}" class="search-panel">
+        <view class="search-panel__label">搜索你的阅读记录</view>
+        <view class="search-panel__row">
+          <input
+            class="search-panel__input"
+            value="{{keyword}}"
+            placeholder="书名、作者或关键词"
+            confirm-type="search"
+            focus="{{searchOpen}}"
+            bindinput="onKeywordInput"
+            bindconfirm="onSearchSubmit"
+          />
+          <view class="search-panel__btn" bindtap="onSearchSubmit">搜索</view>
+        </view>
+      </view>
     </view>
 
-    <!-- 2. newInsight 条 -->
-    <view wx:if="{{newInsight}}" class="new-insight" bindtap="onNewInsightTap">
-      <text class="new-insight-label">新洞察</text>
-      <text class="new-insight-title">{{newInsight.title}}</text>
-    </view>
+    <!-- 2. 画像卡 -->
+    <view class="stage" id="portrait">
+      <view class="portrait-card">
+        <view class="card-glow"></view>
 
-    <!-- 3. primaryTag 卡 -->
-    <view wx:if="{{primaryTag}}" class="primary-tag-section nina-card" data-tag-id="{{primaryTag.tagId}}" bindtap="onTagTap">
-      <tag-chips tags="{{[primaryTag]}}" primaryId="{{primaryTag.tagId}}" bind:tagtap="onTagTap" />
-      <view class="reason">{{primaryTag.reason}}</view>
-      <stat-line stats="{{primaryTagStats}}" />
-    </view>
+        <view class="portrait-header" bindtap="onFullAnalysisTap">
+          <text class="portrait-title">我的阅读画像</text>
+          <text class="portrait-link">查看完整分析 <text class="link-arrow">›</text></text>
+        </view>
 
-    <!-- 4. 其余身份标签胶囊流 -->
-    <view wx:if="{{tags.length}}" class="tags-section">
-      <tag-chips tags="{{tags}}" bind:tagtap="onTagTap" />
-    </view>
+        <view class="personas">
+          <view
+            wx:for="{{personas}}"
+            wx:key="tagId"
+            class="persona persona--{{item.tone}} {{activePersona === item.tagId ? 'is-active' : ''}}"
+            data-tag-id="{{item.tagId}}"
+            data-name="{{item.name}}"
+            bindtap="onPersonaTap"
+          >
+            <text class="persona-icon">{{item.icon}}</text>
+            <text class="persona-name">{{item.name}}</text>
+          </view>
+        </view>
 
-    <!-- 5. 瞬间流 -->
-    <view wx:if="{{moments.length}}" class="moments-section">
-      <moment-card wx:for="{{moments}}" wx:key="momentId" moment="{{item}}" />
-    </view>
-    <view wx:else class="empty-wrap">
-      <view class="empty-text">你的阅读痕迹还在路上，稍后再来看看。</view>
-    </view>
+        <view class="intro">基于你的阅读数据，AI 为你生成了 6 个维度的分析，快来看看，你在书中藏着怎样的自己吧～</view>
 
-    <!-- 6. 人格化收尾 -->
-    <view class="footer-text">你的下一次发现，或许就在不远处</view>
+        <!-- 知识宇宙 -->
+        <view class="universe {{paused ? 'universe--paused' : ''}}">
+          <view class="orbit orbit--one"></view>
+          <view class="orbit orbit--two"></view>
+          <view class="orbit orbit--three"></view>
+          <view class="satellite sat-1"></view>
+          <view class="satellite sat-2"></view>
+          <view class="satellite sat-3"></view>
+          <view class="satellite sat-4"></view>
+          <view class="satellite sat-5"></view>
+          <view class="satellite sat-6"></view>
+
+          <view
+            wx:for="{{bubbles}}"
+            wx:key="id"
+            class="bubble bubble--{{item.variant}}"
+            style="{{item.animStyle}}"
+            data-name="{{item.name}}"
+            data-percent="{{item.percent}}"
+            bindtap="onBubbleTap"
+          >
+            <text class="bubble-name">{{item.name}}</text>
+            <text class="bubble-percent">{{item.percent}}%</text>
+          </view>
+
+          <view class="core" bindtap="onCoreTap">
+            <view class="core__liquid"></view>
+            <view class="core__shine"></view>
+            <text class="core-text">你的知识{{'\n'}}结构</text>
+          </view>
+        </view>
+
+        <!-- 兴趣领域 -->
+        <view class="interests">
+          <view class="interests__title">
+            <text class="interests-heading"><text class="interests-star">♙ </text>你可能感兴趣的领域</text>
+            <text class="portrait-link" bindtap="onMoreInterestTap">更多推荐 <text class="link-arrow">›</text></text>
+          </view>
+          <view class="tags">
+            <view
+              wx:for="{{interests}}"
+              wx:key="id"
+              class="tag {{selectedTags[item.id] ? 'is-selected' : ''}}"
+              data-id="{{item.id}}"
+              data-name="{{item.name}}"
+              bindtap="onInterestTap"
+            >{{item.name}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
   </block>
 
   <t-toast id="t-toast" />
