@@ -1,5 +1,4 @@
 // NINA_API.md 6.2.1 GET /explore/knowledge（dimension=knowledge）
-// percent 由前端按 readingTime 占比计算：readingTime = percent × 10000，总和 1,000,000
 export default {
   path: '/explore/knowledge',
   data: {
