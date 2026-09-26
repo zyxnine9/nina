@@ -16,9 +16,6 @@ Page({
   data: {
     loading: true,
     statusBarHeight: 20,
-    brandPadRight: 24,
-    searchOpen: false,
-    keyword: '',
     paused: false,
     activePersona: '',
     selectedTags: {},
@@ -33,13 +30,9 @@ Page({
   computeNavMetrics() {
     try {
       const win = wx.getWindowInfo();
-      const menu = wx.getMenuButtonBoundingClientRect();
-      const statusBarHeight = (win && win.statusBarHeight) || 20;
-      // 右侧避让胶囊：按钮右缘对齐胶囊左缘 + 8px
-      const brandPadRight = menu && menu.left ? (win.windowWidth - menu.left) + 8 : 24;
-      this.setData({ statusBarHeight, brandPadRight });
+      this.setData({ statusBarHeight: (win && win.statusBarHeight) || 20 });
     } catch (err) {
-      this.setData({ statusBarHeight: 20, brandPadRight: 24 });
+      this.setData({ statusBarHeight: 20 });
     }
   },
   async fetchData() {
@@ -76,19 +69,6 @@ Page({
       this.setData({ loading: false });
       this.onShowToast('#t-toast', 'NINA 走神了，稍后再试试');
     }
-  },
-  // ---------- Hero ----------
-  onSearchToggle() {
-    this.setData({ searchOpen: !this.data.searchOpen });
-  },
-  onKeywordInput(e) {
-    this.setData({ keyword: e.detail.value });
-  },
-  onSearchSubmit() {
-    const query = (this.data.keyword || '').trim();
-    if (!query) return;
-    this.setData({ keyword: '', searchOpen: false });
-    wx.navigateTo({ url: `/pages/search/index?keyword=${encodeURIComponent(query)}` });
   },
   // ---------- 画像卡 ----------
   onFullAnalysisTap() {
