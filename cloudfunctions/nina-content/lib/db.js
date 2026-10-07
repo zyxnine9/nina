@@ -18,9 +18,10 @@ function db() {
   return _db;
 }
 
-/** 幂等 upsert：_id 存在则覆盖 data，不存在则创建 */
+/** 幂等 upsert：_id 存在则覆盖 data，不存在则创建（data 携带 _id 会被 TCB set 拒绝，统一剥离） */
 async function upsertDoc(name, id, data) {
-  await col(name).doc(id).set({ data: { ...data, updatedAt: now() } });
+  const { _id, ...rest } = data;
+  await col(name).doc(id).set({ data: { ...rest, updatedAt: now() } });
 }
 
 /** 读取单文档，不存在返回 null */
@@ -96,4 +97,29 @@ async function fetchAll({ name, where = {}, fields, max = 3000 }) {
   return out;
 }
 
-module.exports = { init, db, col, now, upsertDoc, getDoc, paginate, countOf, fetchAll, encodeCursor, decodeCursor };
+/** 按条件删除（云函数端单次 remove 有条数上限，循环删到 0），调用方负责 where 含 userId */
+async function removeWhere(name, where) {
+  let removed = 0;
+  for (let i = 0; i < 200; i++) {
+    const res = await col(name).where(where).remove();
+    const n = (res && res.stats && res.stats.removed) || 0;
+    removed += n;
+    if (n === 0) break;
+  }
+  return removed;
+}
+
+/** 批量插入（单次 add 上限内分片；配合调用方 remove-first 保证幂等），docs 可携带 _id */
+async function batchAddDocs(name, docs) {
+  const CHUNK = 50;
+  let added = 0;
+  for (let i = 0; i < docs.length; i += CHUNK) {
+    const chunk = docs.slice(i, i + CHUNK);
+    const res = await col(name).add({ data: chunk });
+    const ids = (res && (res.idList || res.ids)) || [];
+    added += ids.length || chunk.length;
+  }
+  return added;
+}
+
+module.exports = { init, db, col, now, upsertDoc, getDoc, paginate, countOf, fetchAll, removeWhere, batchAddDocs, encodeCursor, decodeCursor };

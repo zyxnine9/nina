@@ -1,0 +1,52 @@
+.welcome-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text-primary);
+  box-sizing: border-box;
+
+  .scene {
+    position: relative;
+    height: 52vh;
+    overflow: hidden;
+
+    .scene-img {
+      position: absolute;
+      left: 4%;
+      top: 0;
+      width: 102%;
+      height: 100%;
+    }
+
+    .scene-mask {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(252, 252, 252, 0) 55%, var(--bg) 100%);
+    }
+  }
+
+  .body {
+    flex: 1;
+    padding: 24rpx 48rpx 0;
+
+    .brand {
+      font-size: 26rpx;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--text-tertiary);
+      margin-bottom: 16rpx;
+    }
+
+    .sub {
+      margin-top: 16rpx;
+      font-size: 28rpx;
+      line-height: 1.8;
+      color: var(--text-secondary);
+    }
+  }
+
+  .footer {
+    padding: 40rpx 48rpx calc(48rpx + env(safe-area-inset-bottom));
+  }
+}

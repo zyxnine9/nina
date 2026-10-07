@@ -1,0 +1,121 @@
+.importing-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  padding: 48rpx 48rpx calc(40rpx + env(safe-area-inset-bottom));
+
+  .header {
+    margin-bottom: 48rpx;
+
+    .page-subtitle {
+      margin-top: 12rpx;
+    }
+  }
+
+  .progress-card {
+    padding: 40rpx 32rpx;
+
+    .progress-bar {
+      height: 12rpx;
+      border-radius: 999rpx;
+      background: var(--bg-secondary);
+      overflow: hidden;
+      margin-bottom: 16rpx;
+
+      .progress-fill {
+        height: 100%;
+        border-radius: 999rpx;
+        background: var(--accent-gradient);
+        transition: width 0.6s ease;
+      }
+    }
+
+    .progress-text {
+      font-size: 25rpx;
+      color: var(--text-secondary);
+      min-height: 36rpx;
+      margin-bottom: 24rpx;
+    }
+
+    .stage-list {
+      .stage {
+        display: flex;
+        align-items: center;
+        gap: 20rpx;
+        padding: 20rpx 8rpx;
+        font-size: 27rpx;
+        color: var(--text-tertiary);
+
+        & + .stage {
+          border-top: 1px solid var(--separator);
+        }
+
+        .stage-dot {
+          flex: 0 0 40rpx;
+          height: 40rpx;
+          border-radius: 50%;
+          border: 1px solid var(--separator);
+          background: var(--bg-secondary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22rpx;
+        }
+
+        &.current {
+          color: var(--text-primary);
+          font-weight: 600;
+
+          .stage-dot {
+            color: var(--accent);
+            border-color: var(--accent-soft);
+          }
+        }
+
+        &.done {
+          color: var(--text-secondary);
+
+          .stage-dot {
+            color: var(--bg);
+            background: var(--btn-primary-bg);
+            border-color: var(--btn-primary-bg);
+          }
+        }
+      }
+    }
+  }
+
+  .error-card {
+    margin-top: 24rpx;
+    padding: 32rpx;
+
+    .error-title {
+      font-size: 27rpx;
+      font-weight: 600;
+      color: #d54941;
+      margin-bottom: 8rpx;
+    }
+
+    .error-msg {
+      font-size: 25rpx;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+  }
+
+  .footer {
+    margin-top: auto;
+    padding-top: 48rpx;
+
+    .alt-link {
+      margin-top: 28rpx;
+      text-align: center;
+      font-size: 27rpx;
+      color: var(--text-secondary);
+      padding: 12rpx;
+    }
+  }
+}

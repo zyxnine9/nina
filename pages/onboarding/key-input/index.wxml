@@ -1,0 +1,26 @@
+<view class="key-input-page">
+  <view class="header">
+    <view class="headline">输入你的微信读书 KEY</view>
+    <view class="page-subtitle">KEY 以 wrk- 开头，可在微信读书授权页生成</view>
+  </view>
+
+  <view class="nina-card input-card">
+    <input
+      class="key-input"
+      type="text"
+      placeholder="wrk-..."
+      value="{{key}}"
+      bindinput="onKeyInput"
+      bindfocus="onKeyFocus"
+      confirm-type="done"
+    />
+    <view class="clip-hint {{clipKey ? 'show' : ''}}" bindtap="onFillFromClipboard">
+      检测到剪贴板中的 KEY · 一键填入
+    </view>
+  </view>
+
+  <view class="footer">
+    <button class="btn-primary" bindtap="onSubmit">开始导入</button>
+    <view class="tutorial-link" bindtap="onTutorial">查看获取 KEY 教程 →</view>
+  </view>
+</view>

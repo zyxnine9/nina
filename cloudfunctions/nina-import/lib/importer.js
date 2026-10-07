@@ -1,17 +1,32 @@
 /**
- * 导入状态机：validating → fetching_shelf → fetching_books → finalizing → done
+ * 导入状态机（极速轻量版）：validating → fetching_shelf → fetching_books → finalizing → done
+ *
+ * 两阶段「样本先行」：
+ * - 快速阶段（一次 import_step 内基本完成）：书架+笔记本概览并行拉取并批量入库，
+ *   只深拉笔记最多的前 QUICK_SAMPLE_BOOKS 本（每书前 LIGHT_HIGHLIGHTS 条划线 + LIGHT_REVIEWS 条想法），
+ *   采样完直接 finalizing → done，前端 ~10s 看到「导入完成」。
+ * - 后台补齐：analysis_step 每次顺手调 backfill()（bookIndex 从断点续推，4 本/组并行，
+ *   PIGGYBACK_BUDGET_MS 预算内尽量多组），分析期间把剩余书籍补齐入库，完成后 importMode='backfilled'。
  *
  * 断点机制：import_jobs 文档（_id=userId）持久化 pendingBooks/bookIndex/stats，
- * 每处理完一本书立即 checkpoint（每本书是独立事务单元，moments _id=${userId}_${bookmarkId|reviewId} 幂等 upsert）。
- * 单次 import_step 在 9s 软预算（STEP_DEADLINE_MS）内循环推进，超时即返回，
- * 前端轮询 import_step 驱动续跑，可无限续跑不受单次调用超时限制。
+ * 每处理完一组立即 checkpoint；moments 写入 = removeWhere(本书) + batchAddDocs（替换式，幂等）。
  */
 const db = require('./db');
 const { WereadClient } = require('./weread');
 const { matchCommentsToHighlights } = require('./matcher');
 const { getUserKey } = require('./user');
 const { BizError } = require('./respond');
-const { ERR, STEP_DEADLINE_MS } = require('../config');
+const {
+  ERR,
+  STEP_DEADLINE_MS,
+  PIGGYBACK_BUDGET_MS,
+  LIGHT_HIGHLIGHTS,
+  LIGHT_REVIEWS,
+  QUICK_SAMPLE_BOOKS,
+} = require('../config');
+
+// 后台补齐的并行组大小
+const BACKFILL_GROUP = 4;
 
 const JOB_STAGE = {
   VALIDATING: 'validating',
@@ -27,6 +42,7 @@ function newJob(userId) {
     _id: userId,
     userId,
     stage: JOB_STAGE.VALIDATING,
+    importMode: 'quick', // quick（轻量采样）→ backfilled（补齐完成）
     progress: 0,
     currentTask: '',
     error: null,
@@ -34,6 +50,7 @@ function newJob(userId) {
     pendingBooks: [],
     bookIndex: 0,
     totalBooks: 0,
+    sampleDone: false,
     failedBooks: [],
     removedCount: 0,
     startedAt: db.now(),
@@ -142,41 +159,44 @@ function buildMomentDocs({ userId, bookMeta, chapters, highlights, standaloneRev
   return docs;
 }
 
-/** 处理单本书：独立事务单元，任何非 Key 异常只影响本书（进 failedBooks） */
+/** 书籍文档公共字段（概览批量入库与采样后 upsert 共用） */
+function buildBookDoc(userId, meta) {
+  return {
+    userId,
+    bookId: meta.bookId,
+    title: meta.title,
+    author: meta.author || '',
+    cover: meta.cover || '',
+    category: meta.category || '',
+    noteCount: meta.noteCount || 0,
+    reviewCount: meta.reviewCount || 0,
+    bookmarkCount: meta.bookmarkCount || 0, // 书签内容上游不可导出，仅数量
+    finished: Boolean(meta.finished),
+    lastReadAt: meta.readUpdateTime || 0,
+    highlightTotal: meta.noteCount || 0, // 笔记本概览的全量笔记数（轻量导入只采样，供完整同步 hook）
+    progress: 0,
+    readingTime: 0,
+    startReadingTime: 0,
+    highlightCount: 0,
+    momentCount: 0,
+  };
+}
+
+/** 处理单本书（轻量采样：前 N 条划线 + N 条想法），独立事务单元，非 Key 异常只影响本书 */
 async function processOneBook(client, job, meta) {
   const userId = job.userId;
   try {
     const bm = await client.bookmarkList(meta.bookId);
-    const reviews = await client.reviewListMineAll(meta.bookId);
-    const { highlights, standaloneReviews } = matchCommentsToHighlights(bm.updated || [], reviews);
+    const highlightsAll = bm.updated || [];
+    const reviews = await client.reviewListPage(meta.bookId, LIGHT_REVIEWS);
+    const { highlights, standaloneReviews } = matchCommentsToHighlights(
+      highlightsAll.slice(0, LIGHT_HIGHLIGHTS),
+      reviews
+    );
 
-    // 阅读进度（尽力而为）
-    let progressInfo = null;
-    try {
-      const p = await client.getProgress(meta.bookId);
-      progressInfo = p.book || null;
-    } catch (e) {
-      /* 进度拿不到不影响导入 */
-    }
-
-    const bookDoc = {
-      userId,
-      bookId: meta.bookId,
-      title: meta.title,
-      author: meta.author || '',
-      cover: meta.cover || '',
-      category: meta.category || '',
-      noteCount: meta.noteCount || 0,
-      reviewCount: meta.reviewCount || 0,
-      bookmarkCount: meta.bookmarkCount || 0, // 书签内容上游不可导出，仅数量
-      finished: Boolean(meta.finished),
-      lastReadAt: meta.readUpdateTime || 0,
-      highlightCount: (bm.updated || []).length,
-      momentCount: highlights.length + standaloneReviews.length,
-      progress: progressInfo ? progressInfo.progress : 0,
-      readingTime: progressInfo ? progressInfo.readingTime : 0,
-      startReadingTime: progressInfo ? progressInfo.startReadingTime : 0,
-    };
+    const bookDoc = buildBookDoc(userId, meta);
+    bookDoc.highlightCount = highlightsAll.length;
+    bookDoc.momentCount = highlights.length + standaloneReviews.length;
     await db.upsertDoc('books', `${userId}_${meta.bookId}`, bookDoc);
 
     const docs = buildMomentDocs({
@@ -186,12 +206,11 @@ async function processOneBook(client, job, meta) {
       highlights,
       standaloneReviews,
     });
-    for (const doc of docs) {
-      const { _id, ...data } = doc;
-      await db.upsertDoc('moments', _id, data);
-    }
+    // 替换式写入：先清本书旧数据再批量插入（幂等，重跑/降级均无重复残留）
+    await db.removeWhere('moments', { userId, bookId: meta.bookId });
+    if (docs.length) await db.batchAddDocs('moments', docs);
 
-    job.stats.highlightCount += (bm.updated || []).length;
+    job.stats.highlightCount += highlightsAll.length;
     job.stats.reviewCount += reviews.length;
     job.stats.momentCount += docs.length;
     return { ok: true, momentCount: docs.length };
@@ -201,32 +220,38 @@ async function processOneBook(client, job, meta) {
   }
 }
 
-/** 拉书架 + 笔记本，构建待处理书单 */
+/** 拉书架 + 笔记本（并行），书籍概览批量入库，构建按笔记数降序的待处理书单 */
 async function doFetchingShelf(client, job) {
-  job.currentTask = '正在读取书架…';
-  const shelf = await client.shelfSync();
+  job.currentTask = '正在读取书架与笔记概览…';
+  const [shelf, nb] = await Promise.all([client.shelfSync(), client.notebooksAll()]);
   const shelfBooks = shelf.books || [];
   job.stats.bookCount = shelfBooks.length + (shelf.albums || []).length + (shelf.mp && shelf.mp.show ? 1 : 0);
-
-  job.currentTask = '正在读取笔记本列表…';
-  const nb = await client.notebooksAll();
   const notebooks = nb.books || [];
   job.stats.notebookCount = notebooks.length;
 
-  // 有笔记的书才需要逐本拉划线/想法
-  job.pendingBooks = notebooks.map((b) => ({
-    bookId: b.bookId,
-    title: (b.book && b.book.title) || '',
-    author: (b.book && b.book.author) || '',
-    cover: (b.book && b.book.cover) || '',
-    category: (b.book && b.book.categories && b.book.categories[0] && b.book.categories[0].title) || '',
-    noteCount: b.noteCount || 0,
-    reviewCount: b.reviewCount || 0,
-    bookmarkCount: b.bookmarkCount || 0,
-    finished: Boolean((b.book && b.book.finished) || 0),
-    readUpdateTime: b.sort || 0,
-  }));
-  job.totalBooks = job.pendingBooks.length;
+  // 有笔记的书才需要采样划线/想法；笔记多的排前面优先深拉
+  const metas = notebooks
+    .map((b) => ({
+      bookId: b.bookId,
+      title: (b.book && b.book.title) || '',
+      author: (b.book && b.book.author) || '',
+      cover: (b.book && b.book.cover) || '',
+      category: (b.book && b.book.categories && b.book.categories[0] && b.book.categories[0].title) || '',
+      noteCount: b.noteCount || 0,
+      reviewCount: b.reviewCount || 0,
+      bookmarkCount: b.bookmarkCount || 0,
+      finished: Boolean((b.book && b.book.finished) || 0),
+      readUpdateTime: b.sort || 0,
+    }))
+    .sort((a, b) => b.noteCount - a.noteCount);
+
+  // 书籍概览批量入库（remove-first + 批量 add，幂等）
+  await db.removeWhere('books', { userId: job.userId });
+  const bookDocs = metas.map((meta) => buildBookDoc(job.userId, meta));
+  if (bookDocs.length) await db.batchAddDocs('books', bookDocs);
+
+  job.pendingBooks = metas;
+  job.totalBooks = metas.length;
   job.stage = JOB_STAGE.BOOKS;
   job.progress = 10;
 }
@@ -282,8 +307,10 @@ async function doFinalize(client, job) {
 
 /**
  * 推进一步（由 import_step 调用）：在软预算内循环处理，超时即断点返回。
+ * 快速阶段只采样前 QUICK_SAMPLE_BOOKS 本（按 noteCount 降序），采完即 finalizing → done。
  */
-async function advance(userId) {
+async function advance(userId, opts = {}) {
+  const budgetMs = Number(opts.budgetMs) || STEP_DEADLINE_MS;
   const { client } = await requireClient(userId);
   let job = await getJob(userId);
   if (!job) throw new BizError(ERR.NOT_FOUND, '没有进行中的导入任务，请先提交 KEY');
@@ -299,7 +326,7 @@ async function advance(userId) {
   job.leaseAt = nowMs;
   await saveJob(job);
 
-  const deadline = nowMs + STEP_DEADLINE_MS;
+  const deadline = nowMs + budgetMs;
   try {
     while (Date.now() < deadline) {
       if (job.stage === JOB_STAGE.VALIDATING || job.stage === JOB_STAGE.SHELF) {
@@ -307,7 +334,10 @@ async function advance(userId) {
         await saveJob(job);
       } else if (job.stage === JOB_STAGE.BOOKS) {
         const pending = job.pendingBooks || [];
-        if (job.bookIndex >= pending.length) {
+        const sampleCount = Math.min(QUICK_SAMPLE_BOOKS, pending.length);
+        if (job.bookIndex >= sampleCount) {
+          // 采样完成 → 直接进收尾，剩余书由后台补齐
+          job.sampleDone = true;
           job.stage = JOB_STAGE.FINALIZE;
           job.progress = 95;
           await saveJob(job);
@@ -317,14 +347,12 @@ async function advance(userId) {
         job.currentTask = `正在读取《${meta.title}》的划线`;
         await saveJob(job);
         const r = await processOneBook(client, job, meta);
-        if (r.ok) {
-          job.bookIndex += 1;
-        } else {
+        if (!r.ok) {
           job.failedBooks.push({ bookId: meta.bookId, title: meta.title, error: r.error });
-          job.bookIndex += 1;
         }
-        const total = job.totalBooks || 1;
-        job.progress = 10 + Math.round(80 * (job.bookIndex / total));
+        job.bookIndex += 1;
+        const sampleTotal = sampleCount || 1;
+        job.progress = 10 + Math.round(80 * (job.bookIndex / sampleTotal));
         await saveJob(job); // 每本书完成后立即断点
       } else if (job.stage === JOB_STAGE.FINALIZE) {
         await doFinalize(client, job);
@@ -342,6 +370,55 @@ async function advance(userId) {
   return snapshot(job);
 }
 
+async function finishBackfill(job) {
+  job.importMode = 'backfilled';
+  job.currentTask = '全量数据已补齐';
+  await saveJob(job);
+  await rebuildCategories(job.userId).catch(() => {});
+}
+
+/**
+ * 后台补齐剩余书籍（由 analysis_step 顺手调用）：从 bookIndex 断点续推，
+ * 4 本/组并行，budgetMs 内尽量多组；完成后重建分类并标记 importMode='backfilled'。
+ * 任何失败静默返回（不影响分析），断点已落库，下次调用续推。
+ */
+async function backfill(userId, budgetMs = PIGGYBACK_BUDGET_MS) {
+  try {
+    const job = await getJob(userId);
+    if (!job || job.importMode !== 'quick' || job.stage !== JOB_STAGE.DONE) return;
+    const pending = job.pendingBooks || [];
+    if (job.bookIndex >= pending.length) {
+      // 快速阶段已覆盖全部书，只差补标记
+      await finishBackfill(job);
+      return;
+    }
+    // 防并发：与 advance 及其他 backfill 实例互斥
+    const nowMs = Date.now();
+    if (job.leaseAt && nowMs - job.leaseAt < 25000) return;
+    job.leaseAt = nowMs;
+    await saveJob(job);
+
+    const { client } = await requireClient(userId);
+    const deadline = Date.now() + budgetMs;
+    while (Date.now() < deadline && job.bookIndex < pending.length) {
+      const group = pending.slice(job.bookIndex, job.bookIndex + BACKFILL_GROUP);
+      const results = await Promise.all(group.map((meta) => processOneBook(client, job, meta)));
+      results.forEach((r, i) => {
+        if (!r.ok) {
+          job.failedBooks.push({ bookId: group[i].bookId, title: group[i].title, error: r.error });
+        }
+      });
+      job.bookIndex += group.length;
+      await saveJob(job);
+    }
+    if (job.bookIndex >= pending.length) {
+      await finishBackfill(job);
+    }
+  } catch (e) {
+    // 补齐失败静默：不影响分析主流程
+  }
+}
+
 module.exports = {
   JOB_STAGE,
   newJob,
@@ -350,6 +427,7 @@ module.exports = {
   requireClient,
   snapshot,
   advance,
+  backfill,
   rebuildCategories,
   bookCategory,
 };

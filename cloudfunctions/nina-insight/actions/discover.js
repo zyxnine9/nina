@@ -9,8 +9,8 @@ const { loadMoments } = require('../lib/exploreUtils');
 const { momentItem } = require('../lib/momentItem');
 
 function requireTags(userId) {
-  // 存在 tags 文档 = tags step 已完成
-  return db.col('tags').where({ userId }).limit(1).get();
+  // 存在 tags 文档 = tags step 已完成；limit 需 ≥ summary 要展示的标签数（曾因 limit(1) 导致 slice(1,3) 恒空）
+  return db.col('tags').where({ userId }).limit(5).get();
 }
 
 async function summary({ userId }) {

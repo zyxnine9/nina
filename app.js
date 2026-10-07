@@ -3,6 +3,7 @@ import config from './config';
 import Mock from './mock/index';
 import createBus from './utils/eventBus';
 import { connectSocket, fetchUnreadNum } from './mock/chat';
+import request, { callAction } from './api/request';
 
 if (config.isMock) {
   Mock();
@@ -14,6 +15,7 @@ App({
     if (!config.isMock && config.useCallFunction && wx.cloud) {
       wx.cloud.init({ env: config.envId, traceUser: true });
     }
+    this.checkOnboarding();
 
     const updateManager = wx.getUpdateManager();
 
@@ -44,6 +46,27 @@ App({
 
   /** 全局事件总线 */
   eventBus: createBus(),
+
+  /** 新用户未提供 KEY 且未跳过引导 → 进入引导流程（mock/云函数双模式） */
+  checkOnboarding() {
+    const go = (profile) => {
+      if (profile && !profile.hasKey && !wx.getStorageSync('nina_onboard_skipped')) {
+        wx.reLaunch({ url: '/pages/onboarding/welcome/index' });
+      }
+    };
+    if (config.isMock) {
+      // mock：/user/profile 由 mock/onboarding 提供（hasKey:false）
+      request('/user/profile')
+        .then((res) => go(res.data))
+        .catch(() => {});
+    } else if (config.useCallFunction) {
+      callAction('user_profile')
+        .then((res) => go(res.data && res.data.data))
+        .catch(() => {
+          // 查询失败不阻塞启动，避免网络抖动把老用户锁进引导页
+        });
+    }
+  },
 
   /** 初始化WebSocket */
   connect() {

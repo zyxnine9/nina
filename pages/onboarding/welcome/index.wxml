@@ -1,0 +1,14 @@
+<view class="welcome-page">
+  <view class="scene">
+    <image class="scene-img" src="/images/nina-arch.jpg" mode="aspectFill" />
+    <view class="scene-mask" />
+  </view>
+  <view class="body">
+    <view class="brand">NINA</view>
+    <view class="headline">你好，我是 NINA</view>
+    <view class="sub">你的 AI 阅读向导，用你的划线和笔记，<br />重新认识「读书的你」。</view>
+  </view>
+  <view class="footer">
+    <button class="btn-primary" bindtap="onStart">开始探索</button>
+  </view>
+</view>

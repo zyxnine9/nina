@@ -53,7 +53,7 @@ Page({
       }));
       if (personas.length) this.setData({ activePersona: personas[0].tagId });
 
-      const items = knowledge.items || [];
+      const items = (knowledge.items || []).slice(0, 7); // 气泡轨道按 7 个设计，取 Top7 避免小占比噪声
       const total = items.reduce((sum, it) => sum + (it.readingTime || 0), 0) || 1;
       const bubbles = items.map((it, i) => ({
         id: it.id,

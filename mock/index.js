@@ -8,10 +8,11 @@ import my from './my/index';
 import discoverMock from './discover/index';
 import exploreMock from './explore/index';
 import tracesMock from './traces/index';
+import onboardingMock from './onboarding/index';
 
 export default () => {
   // 在这里添加新的mock数据
-  const mockData = [...loginMock, ...homeMock, ...searchMock, ...dataCenter, ...my, ...discoverMock, ...exploreMock, ...tracesMock];
+  const mockData = [...loginMock, ...homeMock, ...searchMock, ...dataCenter, ...my, ...discoverMock, ...exploreMock, ...tracesMock, ...onboardingMock];
   mockData.forEach((item) => {
     // data 为函数时：函数式 mock，接收 wx.request 的 data 入参（WxMock 顶层函数模板支持）
     const template =

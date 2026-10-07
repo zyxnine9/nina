@@ -19,8 +19,13 @@ module.exports = {
 
   // 长任务软预算：单次云函数调用内推进 job 的时间上限（callFunction 客户端超时 15s~60s 均安全）
   STEP_DEADLINE_MS: 9000,
-  // 上游防限频：串行 + 最小间隔
-  UPSTREAM_INTERVAL_MS: 250,
+  // 上游并发窗口：官方 Agent 网关 + 429 退避重试兜底，4 路在途请求
+  UPSTREAM_CONCURRENCY: 4,
+  // 极速轻量导入：每书采样条数 + 快速阶段深拉书数 + 分析期补齐单次预算
+  LIGHT_HIGHLIGHTS: 3,
+  LIGHT_REVIEWS: 3,
+  QUICK_SAMPLE_BOOKS: 8,
+  PIGGYBACK_BUDGET_MS: 5000,
   // 上游 HTTP 超时与重试
   HTTP_TIMEOUT_MS: 8000,
   HTTP_RETRIES: 3,

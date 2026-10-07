@@ -1,0 +1,72 @@
+<view class="tutorial-page">
+  <view class="header">
+    <view class="headline">一键获取你的微信读书 KEY</view>
+    <view class="page-subtitle">全程约 1 分钟，KEY 经加密中转直达 NINA</view>
+  </view>
+
+  <view class="nina-card steps-card">
+    <view class="step">
+      <view class="step-num">1</view>
+      <view class="step-body">
+        <view class="step-title">复制桥接链接</view>
+        <view class="step-desc">点击下方按钮，链接自动复制到剪贴板</view>
+      </view>
+    </view>
+    <view class="step">
+      <view class="step-num">2</view>
+      <view class="step-body">
+        <view class="step-title">去微信打开链接</view>
+        <view class="step-desc">把链接发给任意聊天（如文件传输助手），点开它</view>
+      </view>
+    </view>
+    <view class="step">
+      <view class="step-num">3</view>
+      <view class="step-body">
+        <view class="step-title">登录并生成 KEY</view>
+        <view class="step-desc">按桥接页引导，到微信读书授权页生成并复制 KEY</view>
+      </view>
+    </view>
+    <view class="step">
+      <view class="step-num">4</view>
+      <view class="step-body">
+        <view class="step-title">回到这里</view>
+        <view class="step-desc">提交后切回 NINA，导入会自动开始</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- guide 态：主操作 -->
+  <view class="actions" wx:if="{{state === 'guide'}}">
+    <block wx:if="{{bridgeReady}}">
+      <button class="btn-primary" bindtap="onCopyBridgeLink">{{demoMode ? '复制演示链接' : '复制链接，去微信打开'}}</button>
+      <view class="degrade-note" wx:if="{{demoMode}}">演示模式：桥接服务未部署，8 秒后自动返回演示 KEY</view>
+      <view class="alt-link" bindtap="onManualInput">手动输入 KEY →</view>
+    </block>
+    <block wx:else>
+      <view class="degrade-note">桥接服务未配置，暂不支持一键获取</view>
+      <button class="btn-primary" bindtap="onManualInput">手动输入 KEY</button>
+    </block>
+  </view>
+
+  <!-- waiting 态：轮询中 -->
+  <view class="waiting" wx:if="{{state === 'waiting'}}">
+    <view class="pulse">
+      <view class="pulse-ring" />
+      <view class="pulse-dot" />
+    </view>
+    <view class="waiting-title">已复制链接，去微信任意聊天粘贴并打开</view>
+    <view class="waiting-sub">完成授权并提交 KEY 后，这里会自动检测到（约 10 分钟内有效）</view>
+    <view class="alt-link" bindtap="onManualInput">等不到？手动输入 KEY →</view>
+  </view>
+
+  <!-- received 态：确认尾号后导入 -->
+  <view class="received" wx:if="{{state === 'received'}}">
+    <view class="nina-card received-card">
+      <view class="received-title">✓ 已获取你的 KEY</view>
+      <view class="received-mask">{{maskKey}}</view>
+      <view class="received-sub">请确认这是你刚复制的微信读书 KEY</view>
+    </view>
+    <button class="btn-primary" bindtap="onConfirmImport">确认无误，开始导入</button>
+    <view class="alt-link" bindtap="onRetry">不是这个？重新走一遍</view>
+  </view>
+</view>

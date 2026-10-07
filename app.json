@@ -55,6 +55,18 @@
       "root": "pages/dev",
       "name": "dev",
       "pages": ["cloud/index"]
+    },
+    {
+      "root": "pages/onboarding",
+      "name": "onboarding",
+      "pages": [
+        "welcome/index",
+        "intro/index",
+        "key-input/index",
+        "key-tutorial/index",
+        "importing/index",
+        "analyzing/index"
+      ]
     }
   ],
   "window": {

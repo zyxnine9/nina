@@ -1,7 +1,24 @@
 {
   "description": "项目配置文件，详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "docs"
+      },
+      {
+        "type": "folder",
+        "value": "tools"
+      },
+      {
+        "type": "file",
+        "value": "package-lock.json"
+      },
+      {
+        "type": "file",
+        "value": "README.md"
+      }
+    ],
     "include": []
   },
   "setting": {
@@ -114,6 +131,13 @@
         {
           "name": "devCloud",
           "pathName": "pages/dev/cloud/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "onboardWelcome",
+          "pathName": "pages/onboarding/welcome/index",
           "query": "",
           "launchMode": "default",
           "scene": null

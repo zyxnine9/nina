@@ -145,7 +145,15 @@ function request(url, method = 'GET', data = {}) {
       return Promise.reject({ errMsg: `无可用 action 映射: ${url}`, data: { code: 40400, message: '接口不存在' } });
     }
     const params = { ...route.params, ...(data || {}) };
-    return callAction(route.action, params);
+    // callAction 返回信封 { statusCode, data: { code, message, data } }；
+    // 页面约定 res.data = 载荷（与 mock/WxMock 一致），此处解包，code≠0 视为失败
+    return callAction(route.action, params).then((res) => {
+      const body = res.data || {};
+      if (res.statusCode === 200 && body.code === 0) {
+        return { statusCode: 200, data: body.data };
+      }
+      return Promise.reject({ errMsg: body.message || '请求失败', data: body });
+    });
   }
 
   const header = {

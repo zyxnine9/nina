@@ -16,6 +16,9 @@ module.exports = {
   // 上游 LLM 请求超时
   LLM_TIMEOUT_MS: 60000,
 
+  // Key 桥接票据 TTL（内存 Map，不落库）
+  BRIDGE_TTL_MS: 10 * 60 * 1000,
+
   ERR: {
     UPSTREAM: 50100,
     INTERNAL: 50000,

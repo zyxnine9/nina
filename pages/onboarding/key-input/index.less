@@ -1,0 +1,58 @@
+.key-input-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  padding: 48rpx 48rpx calc(40rpx + env(safe-area-inset-bottom));
+
+  .header {
+    margin-bottom: 56rpx;
+
+    .page-subtitle {
+      margin-top: 12rpx;
+    }
+  }
+
+  .input-card {
+    padding: 32rpx;
+
+    .key-input {
+      height: 88rpx;
+      padding: 0 24rpx;
+      border-radius: var(--radius-input);
+      background: var(--bg-secondary);
+      border: 1px solid var(--separator);
+      font-size: 28rpx;
+      box-sizing: border-box;
+    }
+
+    .clip-hint {
+      margin-top: 20rpx;
+      padding: 16rpx 24rpx;
+      border-radius: var(--radius-input);
+      background: rgba(72, 144, 240, 0.08);
+      color: var(--accent);
+      font-size: 25rpx;
+      display: none;
+    }
+
+    .clip-hint.show {
+      display: block;
+    }
+  }
+
+  .footer {
+    margin-top: auto;
+    padding-top: 48rpx;
+
+    .tutorial-link {
+      margin-top: 28rpx;
+      text-align: center;
+      font-size: 27rpx;
+      color: var(--text-secondary);
+      padding: 12rpx;
+    }
+  }
+}

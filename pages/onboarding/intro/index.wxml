@@ -1,0 +1,37 @@
+<view class="intro-page">
+  <view class="header">
+    <view class="headline">NINA 会读取哪些数据？</view>
+    <view class="page-subtitle">仅读取你的微信读书数据，用于生成专属洞察</view>
+  </view>
+
+  <view class="items">
+    <view class="nina-card item">
+      <view class="item-icon">📚</view>
+      <view class="item-body">
+        <view class="item-title">书架与阅读记录</view>
+        <view class="item-desc">读过的书、阅读时长与进度，勾勒你的阅读轨迹</view>
+      </view>
+    </view>
+    <view class="nina-card item">
+      <view class="item-icon">✏️</view>
+      <view class="item-body">
+        <view class="item-title">划线与笔记</view>
+        <view class="item-desc">你在书页间留下的划线和想法，是洞察的核心素材</view>
+      </view>
+    </view>
+    <view class="nina-card item">
+      <view class="item-icon">🌌</view>
+      <view class="item-body">
+        <view class="item-title">专属知识宇宙</view>
+        <view class="item-desc">AI 分析后生成阅读人格、兴趣结构与知识图谱</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-note">🔒 你的 KEY 只保存在云端加密存储，不会展示给任何人</view>
+
+  <view class="footer">
+    <button class="btn-primary" bindtap="onStartImport">开始导入</button>
+    <view class="skip" bindtap="onSkip">暂不导入，先看看</view>
+  </view>
+</view>

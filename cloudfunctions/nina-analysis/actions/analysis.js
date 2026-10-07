@@ -4,9 +4,10 @@
  */
 const db = require('../lib/db');
 const analyzer = require('../lib/analyzer');
+const importer = require('../lib/importer');
 const { STAGE_STEP_MAP, getAnalysisDoc, saveAnalysis, newAnalysis } = require('../lib/exploreUtils');
 const { BizError } = require('../lib/respond');
-const { ERR } = require('../config');
+const { ERR, PIGGYBACK_BUDGET_MS } = require('../config');
 
 /** 触发分析：有导入数据才允许 */
 async function run({ userId }) {
@@ -43,6 +44,8 @@ async function status({ userId }) {
 
 /** 轮询推进一步（一个 step 含 1-2 次 LLM 调用，可能耗时较长） */
 async function step({ userId }) {
+  // 顺手推进轻量导入的后台补齐（quick job 未补齐时在 5s 预算内续推，失败不影响分析）
+  await importer.backfill(userId, PIGGYBACK_BUDGET_MS).catch(() => {});
   const analysis = await getAnalysisDoc(userId);
   if (!analysis) {
     throw new BizError(ERR.NOT_FOUND, '尚未开始分析，请先调用 analysis_run');

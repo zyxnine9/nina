@@ -63,7 +63,8 @@ function yearOf(ts) {
 }
 
 function countByYear(momentIds, moments) {
-  const map = new Map(moments.filter((m) => momentIds.includes(m._id)));
+  // Map 需 [key, value] 对：直接传文档数组会导致 values() 全为 undefined
+  const map = new Map(moments.filter((m) => momentIds.includes(m._id)).map((m) => [m._id, m]));
   const byYear = new Map();
   for (const m of map.values()) {
     const y = yearOf(m.createdAt);
@@ -195,6 +196,7 @@ const STEP_IMPL = {
     for (const b of books) {
       const first = String(b.category || '').split('-')[0].trim() || '其他';
       const g = grouped.get(first) || { name: first, readingTime: 0, bookCount: 0, sub: new Map() };
+      grouped.set(first, g); // ⚠️ 必须写回：曾漏掉导致 knowledge 恒为 0 items
       g.readingTime += b.readingTime || 0;
       g.bookCount += 1;
       const sub = String(b.category || '').split('-')[1];

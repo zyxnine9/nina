@@ -1,0 +1,33 @@
+<view class="importing-page">
+  <view class="header">
+    <view class="headline">正在导入你的阅读数据</view>
+    <view class="page-subtitle">{{failed ? '导入出了点问题' : '先导入核心数据，其余在后台继续整理'}}</view>
+  </view>
+
+  <view class="nina-card progress-card">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{progress}}%" />
+    </view>
+    <view class="progress-text">{{currentTask || (failed ? '' : '准备中…')}} {{progress}}%</view>
+
+    <view class="stage-list">
+      <view class="stage {{item.state}}" wx:for="{{stages}}" wx:key="key">
+        <view class="stage-dot">{{item.state === 'done' ? '✓' : item.state === 'current' ? '•' : ''}}</view>
+        <view class="stage-title">{{item.title}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="nina-card error-card" wx:if="{{failed}}">
+    <view class="error-title">导入失败</view>
+    <view class="error-msg">{{errorMsg}}</view>
+  </view>
+
+  <view class="footer">
+    <block wx:if="{{failed}}">
+      <button class="btn-primary" wx:if="{{keyIssue}}" bindtap="onBackKeyInput">重新填写 KEY</button>
+      <button class="btn-primary" wx:else bindtap="onRetry">重试</button>
+      <view class="alt-link" wx:if="{{!keyIssue}}" bindtap="onBackKeyInput">重新输入 KEY →</view>
+    </block>
+  </view>
+</view>

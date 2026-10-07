@@ -1,0 +1,23 @@
+<view class="analyzing-page">
+  <view class="header">
+    <view class="brand">NINA</view>
+    <view class="title">正在生成你的专属洞察</view>
+    <view class="sub">{{failed ? '分析出了点问题' : 'AI 正在逐层解读你的阅读世界'}}</view>
+  </view>
+
+  <view class="nina-card checklist">
+    <view class="check {{item.revealed ? 'on' : ''}}" wx:for="{{stages}}" wx:key="key">
+      <view class="check-mark">{{item.revealed ? '✓' : ''}}</view>
+      <view class="check-title">{{item.title}}</view>
+    </view>
+  </view>
+
+  <view class="progress-line" wx:if="{{!failed}}">{{progress}}%</view>
+
+  <view class="footer">
+    <block wx:if="{{failed}}">
+      <button class="btn-primary" bindtap="onRetry">重试</button>
+      <view class="alt-link" bindtap="onBack">返回</view>
+    </block>
+  </view>
+</view>

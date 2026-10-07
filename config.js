@@ -3,9 +3,9 @@
  */
 export default {
   /** true: 使用本地 mock（WxMock 拦截 wx.request），false: 走真实后端 */
-  isMock: true,
+  isMock: false,
   /** true: 通过 wx.cloud.callFunction 调用云函数 nina-api（需配合 isMock=false 使用） */
-  useCallFunction: false,
+  useCallFunction: true,
   /** 云开发环境 ID */
   envId: 'cloudbase-d7g7rfps86982b7da',
   /** 后端网关云函数名（回退别名：action 未命中函数映射时走这里） */
@@ -21,6 +21,8 @@ export default {
   },
   /** HTTP 云函数（常驻 Web 服务，wx.cloud.callHTTPFunction，支持 SSE） */
   cloudHttpFunctionName: 'nina-http',
+  /** Key 桥接 H5 公网地址（nina-http 部署后填入；为空时一键获取降级为纯教程模式） */
+  bridgeBaseUrl: '',
   /** REST 后端地址（仅 isMock=false 且 useCallFunction=false 时使用） */
   baseUrl: '',
 };
