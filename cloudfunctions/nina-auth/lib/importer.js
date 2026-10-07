@@ -230,6 +230,8 @@ async function doFetchingShelf(client, job) {
   job.stats.notebookCount = notebooks.length;
 
   // 有笔记的书才需要采样划线/想法；笔记多的排前面优先深拉
+  // 按 bookId 去重（上游 notebooks 偶发重复条目）
+  const seen = new Set();
   const metas = notebooks
     .map((b) => ({
       bookId: b.bookId,
@@ -243,11 +245,17 @@ async function doFetchingShelf(client, job) {
       finished: Boolean((b.book && b.book.finished) || 0),
       readUpdateTime: b.sort || 0,
     }))
+    .filter((m) => m.bookId && !seen.has(m.bookId) && seen.add(m.bookId))
     .sort((a, b) => b.noteCount - a.noteCount);
 
   // 书籍概览批量入库（remove-first + 批量 add，幂等）
+  // _id 与 processOneBook 的 upsertDoc 保持一致（${userId}_${bookId}），
+  // 否则采样覆盖时会另插一条 → 书单成对重复
   await db.removeWhere('books', { userId: job.userId });
-  const bookDocs = metas.map((meta) => buildBookDoc(job.userId, meta));
+  const bookDocs = metas.map((meta) => ({
+    _id: `${job.userId}_${meta.bookId}`,
+    ...buildBookDoc(job.userId, meta),
+  }));
   if (bookDocs.length) await db.batchAddDocs('books', bookDocs);
 
   job.pendingBooks = metas;
