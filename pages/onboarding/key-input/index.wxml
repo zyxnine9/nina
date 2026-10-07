@@ -1,7 +1,11 @@
 <view class="key-input-page">
   <view class="header">
-    <view class="headline">输入你的微信读书 KEY</view>
+    <view class="headline">{{replace ? '更换你的微信读书 KEY' : '输入你的微信读书 KEY'}}</view>
     <view class="page-subtitle">KEY 以 wrk- 开头，可在微信读书授权页生成</view>
+  </view>
+
+  <view wx:if="{{replace && keyHint}}" class="current-key-hint">
+    当前 KEY：{{keyHint}}（{{keyStatus === 'expired' ? '已失效' : '有效'}}）
   </view>
 
   <view class="nina-card input-card">
@@ -20,7 +24,7 @@
   </view>
 
   <view class="footer">
-    <button class="btn-primary" bindtap="onSubmit">开始导入</button>
+    <button class="btn-primary" bindtap="onSubmit">{{replace ? '确认更换' : '开始导入'}}</button>
     <view class="tutorial-link" bindtap="onTutorial">查看获取 KEY 教程 →</view>
   </view>
 </view>

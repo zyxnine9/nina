@@ -27,6 +27,12 @@ Page({
     this.computeNavMetrics();
     this.fetchData();
   },
+  onShow() {
+    if (this.getTabBar) {
+      const tb = this.getTabBar();
+      tb && tb.syncValue && tb.syncValue();
+    }
+  },
   computeNavMetrics() {
     try {
       const win = wx.getWindowInfo();

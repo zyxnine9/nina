@@ -8,6 +8,7 @@ const route = makeGateway(
   {
     auth_login: require('./actions/auth').login,
     user_profile: require('./actions/auth').profile,
+    user_update_profile: require('./actions/auth').updateProfile,
   },
   'nina-auth'
 );

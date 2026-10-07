@@ -22,6 +22,7 @@ const ACTION_FUNCTION = {
   // nina-auth
   auth_login: 'auth',
   user_profile: 'auth',
+  user_update_profile: 'auth',
   // nina-import
   import_key: 'import',
   import_status: 'import',

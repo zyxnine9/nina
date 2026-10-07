@@ -34,4 +34,14 @@ async function getUserKey(user) {
   }
 }
 
-module.exports = { ensureUser, getUserKey };
+/** 即时计算 Key 提示（尾 4 位），存量用户零回填；无有效 Key 返回 '' */
+function keyHintOf(user) {
+  return getUserKey(user).then((key) => {
+    if (/^wrk-./.test(key) && key.length >= 8) {
+      return `wrk-••••${key.slice(-4)}`;
+    }
+    return '';
+  });
+}
+
+module.exports = { ensureUser, getUserKey, keyHintOf };

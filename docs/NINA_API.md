@@ -55,6 +55,7 @@
 |---|---|---|---|
 | 认证 | `POST /auth/login` | 微信登录 | - |
 | 认证 | `GET /user/profile` | 用户信息 | - |
+| 认证 | `POST /user/profile` | 更新头像/昵称（微信头像昵称填写能力） | - |
 | 导入 | `POST /import/key` | 提交微信读书 KEY | P0-1 KEY 数据导入 |
 | 导入 | `GET /import/status` | 导入进度 | P0-2/3 数据解析 |
 | 导入 | `POST /import/sync` | 增量同步 | P0-2 数据解析 |
@@ -116,10 +117,31 @@
   "avatar": "",
   "hasKey": true,               // 是否已绑定微信读书 KEY
   "keyStatus": "valid",         // valid | expired | none
+  "keyHint": "wrk-••••a1b2",    // KEY 尾号提示（服务端即时解码计算，无有效 KEY 为 ""）
+  "keyUpdatedAt": 1759000000,   // KEY 最近绑定/更换时间（秒）
   "lastSyncAt": 1759000000,
   "stats": { "bookCount": 159, "momentCount": 1437, "analysisAt": 1759100000 }
 }
 ```
+
+### 2.3 `POST /user/profile` — 更新头像/昵称
+
+> 前端经 `callAction('user_update_profile', {...})` 直调（`GET /user/profile` 的 REST 映射已占用同路径）。
+> 头像走微信官方「头像昵称填写能力」：`button open-type="chooseAvatar"` 取临时文件 → 云存储上传 → fileID 存库。
+
+**入参：**（两字段均可选，但至少传一个）
+
+```json
+{ "nickname": "阿雪", "avatar": "cloud://cloudbase-d7g7rfps86982b7da.xxxx/avatars/u_9a8f/1.png" }
+```
+
+**返回：**
+
+```json
+{ "nickname": "阿雪", "avatar": "cloud://..." }
+```
+
+- `nickname` trim 后 ≤24 字，`avatar` ≤255 字符，否则 `42200`
 
 ---
 

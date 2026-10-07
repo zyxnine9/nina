@@ -1,4 +1,4 @@
-import { callAction } from '~/api/request';
+import request, { callAction } from '~/api/request';
 
 const KEY_RE = /^wrk-[A-Za-z0-9]+$/;
 
@@ -7,6 +7,23 @@ Page({
     key: '',
     clipKey: '',
     submitting: false,
+    // 更换 KEY 模式（从「我的」页进入）：展示当前 KEY 提示
+    replace: false,
+    keyHint: '',
+    keyStatus: 'none',
+  },
+
+  onLoad(options) {
+    if (options && options.replace === '1') {
+      this.setData({ replace: true });
+      wx.setNavigationBarTitle({ title: '更换 KEY' });
+      request('/user/profile')
+        .then((res) => {
+          const p = res.data || {};
+          this.setData({ keyHint: p.keyHint || '', keyStatus: p.keyStatus || 'none' });
+        })
+        .catch(() => {});
+    }
   },
 
   onKeyInput(e) {

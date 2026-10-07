@@ -20,6 +20,12 @@ Page({
   onLoad() {
     this.init();
   },
+  onShow() {
+    if (this.getTabBar) {
+      const tb = this.getTabBar();
+      tb && tb.syncValue && tb.syncValue();
+    }
+  },
   async init() {
     try {
       const [catRes, momentsRes, booksRes] = await Promise.all([

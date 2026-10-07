@@ -10,6 +10,12 @@ Page({
   onLoad() {
     this.fetchData();
   },
+  onShow() {
+    if (this.getTabBar) {
+      const tb = this.getTabBar();
+      tb && tb.syncValue && tb.syncValue();
+    }
+  },
   async fetchData() {
     try {
       const res = await request('/explore/overview');

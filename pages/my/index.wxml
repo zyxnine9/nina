@@ -1,75 +1,74 @@
-<t-toast id="t-toast" />
+<view class="my-page">
+  <view class="page-title">我的</view>
 
-<view class="my">
-  <image class="nav-bg" src="/static/bg_navbar.png" />
-  <nav title-text="我的" />
-  <view class="my-info">
-    <t-cell-group>
-      <t-cell wx:if="{{isLoad}}" bordered="{{false}}">
-        <t-avatar image="{{personalInfo.image}}" slot="left-icon" size="large" />
-        <view class="my-info__person" slot="description">
-          <view class="name">{{personalInfo.name}}</view>
-          <view class="tags">
-            <t-tag class="tag" variant="light" icon="discount">{{personalInfo.star}}</t-tag>
-            <t-tag class="tag" variant="light" icon="location">{{personalInfo.city}}</t-tag>
-          </view>
-        </view>
-        <t-icon slot="right-icon" name="edit" size="40rpx" color="#000000e6" bindtap="onNavigateTo" />
-      </t-cell>
-      <t-cell
-        wx:if="{{!isLoad}}"
-        title="请先登录/注册"
-        bordered="{{false}}"
-        t-class-title="cell-class-title"
-        t-class-center="cell-class-center"
-        bindtap="onLogin"
-      >
-        <t-avatar slot="left-icon" icon="user" size="128rpx" />
-      </t-cell>
-    </t-cell-group>
-    <t-divider t-class="divider-class" />
-    <t-grid t-class="grid-class">
-      <t-grid-item
-        wx:for="{{gridList}}"
-        wx:for-item="gridItem"
-        wx:key="type"
-        text="{{gridItem.name}}"
-        icon="{{gridItem.icon}}"
-        class="grid-item {{gridItem.type === 'all' ? 'split-line' : ''}}"
-        data-data="{{gridItem}}"
-        bindclick="onEleClick"
+  <!-- 头部：头像（点击拉起微信头像选择） + 昵称（微信昵称快捷填写） -->
+  <view class="nina-card user-card">
+    <button
+      class="avatar-btn"
+      open-type="chooseAvatar"
+      bindchooseavatar="onChooseAvatar"
+    >
+      <image wx:if="{{profile.avatar}}" class="avatar-img" src="{{profile.avatar}}" mode="aspectFill" />
+      <view wx:else class="avatar">{{profile.nickname && profile.nickname !== 'NINA 用户' ? profile.nickname[0] : 'N'}}</view>
+    </button>
+    <view class="user-meta">
+      <input
+        class="nickname-input"
+        type="nickname"
+        value="{{profile.nickname === 'NINA 用户' ? '' : profile.nickname}}"
+        placeholder="NINA 用户"
+        placeholder-class="nickname-placeholder"
+        bindblur="onNicknameBlur"
       />
-    </t-grid>
+      <view class="page-subtitle">微信读书 · 自我探索</view>
+    </view>
   </view>
 
-  <view class="my-service">
-    <view class="my-service--tips">推荐服务</view>
-    <t-grid column="{{4}}" class="my-service__list">
-      <t-grid-item
-        class="my-service__list-item"
-        wx:for="{{service}}"
-        wx:key="item"
-        text="{{item.name}}"
-        image="{{item.image}}"
-        url="{{item.url}}"
-        data-data="{{item}}"
-        bindclick="onEleClick"
-      />
-    </t-grid>
+  <!-- Key 状态卡 -->
+  <view class="nina-card key-card">
+    <view wx:if="{{profile.loading}}" class="key-loading">加载中…</view>
+
+    <block wx:elif="{{!profile.hasKey}}">
+      <view class="key-row">
+        <view class="dot none"></view>
+        <view class="key-title">未绑定微信读书 KEY</view>
+      </view>
+      <view class="key-desc">绑定后 NINA 才能读取你的阅读数据</view>
+      <button class="btn-primary key-btn" bindtap="onBindKey">去绑定</button>
+    </block>
+
+    <block wx:elif="{{profile.keyStatus === 'expired'}}">
+      <view class="key-row">
+        <view class="dot expired"></view>
+        <view class="key-title">KEY 已失效</view>
+      </view>
+      <view wx:if="{{profile.keyHint}}" class="key-hint">{{profile.keyHint}}</view>
+      <view class="key-desc">KEY 已过期，重新绑定后将继续导入并重新分析</view>
+      <button class="btn-primary key-btn" bindtap="onReplaceKey">重新绑定</button>
+    </block>
+
+    <block wx:else>
+      <view class="key-row">
+        <view class="dot valid"></view>
+        <view class="key-title">KEY 已绑定</view>
+      </view>
+      <view wx:if="{{profile.keyHint}}" class="key-hint">{{profile.keyHint}}</view>
+      <view wx:if="{{profile.keyUpdatedAtText}}" class="key-desc">绑定时间：{{profile.keyUpdatedAtText}}</view>
+      <button class="btn-outline key-btn" bindtap="onReplaceKey">更换 KEY</button>
+    </block>
   </view>
 
-  <t-cell-group theme="card">
-    <t-cell
-      wx:for="{{settingList}}"
-      wx:for-item="item"
-      wx:key="type"
-      title="{{item.name}}"
-      url="{{item.url}}"
-      leftIcon="{{item.icon}}"
-      hover
-      arrow
-      data-data="{{item}}"
-      bindclick="onEleClick"
-    />
-  </t-cell-group>
+  <!-- 菜单 -->
+  <view class="nina-card menu-card">
+    <view class="menu-item" bindtap="onMore">
+      <view>更多</view>
+      <view class="arrow">→</view>
+    </view>
+    <view class="menu-item" bindtap="goSetting">
+      <view>设置</view>
+      <view class="arrow">→</view>
+    </view>
+  </view>
+
+  <t-toast id="t-toast" />
 </view>

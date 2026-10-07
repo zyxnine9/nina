@@ -89,6 +89,10 @@
       {
         "pagePath": "pages/traces/index",
         "text": "痕迹"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "我的"
       }
     ]
   },

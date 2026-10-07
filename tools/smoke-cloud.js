@@ -22,7 +22,7 @@ Module._resolveFilename = function (request, ...args) {
 
 // action → 函数归属（与部署架构一致）
 const ACTION_MAP = {
-  'nina-auth': ['auth_login', 'user_profile'],
+  'nina-auth': ['auth_login', 'user_profile', 'user_update_profile'],
   'nina-import': ['import_key', 'import_status', 'import_step', 'import_sync'],
   'nina-content': ['moments_list', 'moments_detail', 'categories', 'books_list', 'topics_list', 'topics_detail', 'share_cards'],
   'nina-analysis': ['analysis_run', 'analysis_status', 'analysis_step'],

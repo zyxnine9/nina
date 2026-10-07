@@ -11,6 +11,8 @@ export default [
       avatar: '',
       hasKey: false,
       keyStatus: 'none',
+      keyHint: '',
+      keyUpdatedAt: 0,
       lastSyncAt: 0,
       stats: { bookCount: 0, momentCount: 0, analysisAt: 0 },
     },

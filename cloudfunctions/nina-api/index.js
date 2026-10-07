@@ -9,6 +9,7 @@ const actionMap = {
   // 认证
   auth_login: require('./actions/auth').login,
   user_profile: require('./actions/auth').profile,
+  user_update_profile: require('./actions/auth').updateProfile,
   // 导入
   import_key: require('./actions/import').importKey,
   import_status: require('./actions/import').importStatus,
