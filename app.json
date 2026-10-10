@@ -57,6 +57,11 @@
       "pages": ["cloud/index"]
     },
     {
+      "root": "pages/persona",
+      "name": "persona",
+      "pages": ["index"]
+    },
+    {
       "root": "pages/onboarding",
       "name": "onboarding",
       "pages": [

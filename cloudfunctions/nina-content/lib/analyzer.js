@@ -109,7 +109,7 @@ const STEP_IMPL = {
       {
         role: 'system',
         content:
-          '基于用户的阅读划线与评论语料，生成 3-5 个"身份型标签"（如：温和的怀疑者、方法论收藏家）。每个标签给出：name（4-8 字的身份型称呼）、summary（50-80 字解释，第二人称，推测语气）、reasoning（AI 从语料看到的规律）、quotes（4-8 条支撑该标签的【原文片段】，必须逐字摘自语料，每条 15-40 字）。输出 JSON：{"tags":[{name,summary,reasoning,quotes:[]}]}`',
+          '基于用户的阅读划线与评论语料，生成 3-5 个"身份型标签"（如：温和的怀疑者、方法论收藏家）。每个标签给出：name（4-8 字的身份型称呼）、summary（50-80 字解释，第二人称，推测语气）、headline（15-25 字的第二人称短句，把这个标签的读法凝成一句有画面感的话，禁止空洞口号，如"你用阅读整理不确定，而不是逃离它。"）、points（2-4 个支撑该判断的依据，每项 {"title":"4-8 字小标题，如【偏爱长期视角】","text":"30-60 字解释，第二人称，基于语料中的具体观察，不要复述 title"}）、reasoning（AI 从语料看到的规律）、quotes（4-8 条支撑该标签的【原文片段】，必须逐字摘自语料，每条 15-40 字）。输出 JSON：{"tags":[{name,summary,headline,points:[{title,text}],reasoning,quotes:[]}]}`',
       },
       { role: 'user', content: `阅读语料：\n${analysis.steps.aggregate.result.corpus}` },
     ]);
@@ -130,6 +130,13 @@ const STEP_IMPL = {
         tagId,
         name: t.name,
         summary: t.summary || '',
+        headline: typeof t.headline === 'string' ? t.headline.trim().slice(0, 40) : '',
+        points: Array.isArray(t.points)
+          ? t.points
+              .filter((p) => p && p.title && p.text)
+              .slice(0, 4)
+              .map((p) => ({ title: String(p.title).slice(0, 12), text: String(p.text).slice(0, 120) }))
+          : [],
         reasoning: t.reasoning || '',
         speculative: true, // 恒为 true：推测而非定义
         feedback: null,

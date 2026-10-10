@@ -46,7 +46,7 @@ async function status({ userId }) {
 async function step({ userId }) {
   // 顺手推进轻量导入的后台补齐（quick job 未补齐时在 5s 预算内续推，失败不影响分析）
   await importer.backfill(userId, PIGGYBACK_BUDGET_MS).catch(() => {});
-  const analysis = await getAnalysisDoc(userId);
+  let analysis = await getAnalysisDoc(userId);
   if (!analysis) {
     throw new BizError(ERR.NOT_FOUND, '尚未开始分析，请先调用 analysis_run');
   }

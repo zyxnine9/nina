@@ -44,6 +44,8 @@
             class="persona persona--{{item.tone}} {{activePersona === item.tagId ? 'is-active' : ''}}"
             data-tag-id="{{item.tagId}}"
             data-name="{{item.name}}"
+            data-tone="{{item.tone}}"
+            data-icon="{{item.icon}}"
             bindtap="onPersonaTap"
           >
             <text class="persona-icon">{{item.icon}}</text>

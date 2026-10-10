@@ -1,0 +1,73 @@
+<t-navbar title="{{name}}" left-arrow />
+<view class="page page--{{tone}}">
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <t-loading theme="dots" size="40rpx" text="正在读取这份人格" />
+  </view>
+
+  <block wx:else>
+    <!-- 1. Hero：人格胶囊 + headline -->
+    <view class="hero">
+      <view class="hero__visual">
+        <image class="hero__image" src="/images/nina-arch.jpg" mode="aspectFill" />
+        <view class="hero__mask"></view>
+      </view>
+      <view class="hero__content">
+        <view class="hero-chip">
+          <text class="hero-chip__icon">{{icon}}</text>
+          <text class="hero-chip__name">{{name}}</text>
+        </view>
+        <view class="hero-kicker">从你近一年的阅读来看</view>
+        <view class="hero-headline">{{headline}}</view>
+      </view>
+    </view>
+
+    <!-- 2. 为什么这样判断 -->
+    <view class="section" wx:if="{{points.length}}">
+      <view class="section-title">为什么这样判断</view>
+      <view class="point-card" wx:for="{{points}}" wx:key="title">
+        <view class="point-card__icon">{{item.icon}}</view>
+        <view class="point-card__body">
+          <view class="point-card__title">{{item.title}}</view>
+          <view class="point-card__text">{{item.text}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 3. 来自你的阅读 -->
+    <view class="section" wx:if="{{quotes.length}}">
+      <view class="section-title-row">
+        <view class="section-title">来自你的阅读</view>
+        <view wx:if="{{trendNote}}" class="section-note">{{trendNote}}</view>
+      </view>
+      <view class="quote-card" wx:for="{{quotes}}" wx:key="text">
+        <image
+          wx:if="{{item.cover}}"
+          class="quote-card__cover"
+          src="{{item.cover}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="quote-card__cover quote-card__cover--empty">{{item.coverText}}</view>
+        <view class="quote-card__body">
+          <view class="quote-card__text">「{{item.text}}」</view>
+          <view class="quote-card__book">—— 《{{item.bookTitle}}》</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 4. 这像你吗 -->
+    <view class="section">
+      <view class="section-title">这像你吗？</view>
+      <view class="feedback-row">
+        <view
+          wx:for="{{feedbacks}}"
+          wx:key="type"
+          class="feedback-pill {{feedback === item.type ? 'is-active' : ''}}"
+          data-type="{{item.type}}"
+          bindtap="onFeedbackTap"
+        >{{item.label}}</view>
+      </view>
+    </view>
+  </block>
+
+  <t-toast id="t-toast" />
+</view>

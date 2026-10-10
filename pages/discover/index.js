@@ -81,9 +81,11 @@ Page({
     wx.switchTab({ url: '/pages/explore/index' });
   },
   onPersonaTap(e) {
-    const { tagId, name } = e.currentTarget.dataset;
+    const { tagId, name, tone, icon } = e.currentTarget.dataset;
     this.setData({ activePersona: tagId });
-    this.onShowToast('#t-toast', `你的阅读人格：${name}`);
+    wx.navigateTo({
+      url: `/pages/persona/index?tagId=${tagId}&tone=${tone || 'blue'}&icon=${encodeURIComponent(icon || '')}&name=${encodeURIComponent(name || '')}`,
+    });
   },
   onBubbleTap(e) {
     const { name, percent } = e.currentTarget.dataset;

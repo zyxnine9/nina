@@ -136,6 +136,13 @@
           "scene": null
         },
         {
+          "name": "persona",
+          "pathName": "pages/persona/index",
+          "query": "tagId=tag_01&tone=blue&name=理性思考者",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "onboardWelcome",
           "pathName": "pages/onboarding/welcome/index",
           "query": "",

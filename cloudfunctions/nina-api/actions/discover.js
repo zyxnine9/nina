@@ -90,11 +90,17 @@ async function tagsDetail({ userId, params }) {
     if (overlap >= 3) relatedTopics.push({ topicId: t.topicId, name: t.name });
   }
 
+  const fallbackHeadline = (tag.summary || '').split(/[。！？.!?]/)[0] || '';
+  const points = Array.isArray(tag.points) && tag.points.length
+    ? tag.points
+    : [{ title: '整体判断', text: tag.reasoning || tag.summary || '' }];
+
   return {
     tagId: tag.tagId,
     name: tag.name,
     summary: tag.summary,
-    reasoning: tag.reasoning,
+    headline: tag.headline || fallbackHeadline,
+    points,
     stats: {
       bookCount: (tag.bookIds || []).length,
       momentCount: tag.momentIds.length,

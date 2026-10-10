@@ -1,0 +1,250 @@
+// 阅读人格 tag 详情页
+// tone 三色变量注入（色值迁自 pages/discover/index.less persona--blue/green/pink）
+.page {
+  min-height: 100vh;
+  padding-bottom: 80rpx;
+  background: var(--bg);
+
+  &.page--blue {
+    --persona-ink: #436bf3;
+    --persona-soft: #f2f5ff;
+    --persona-border: #cddaff;
+  }
+
+  &.page--green {
+    --persona-ink: #27b99e;
+    --persona-soft: #effcf8;
+    --persona-border: #c2f0e5;
+  }
+
+  &.page--pink {
+    --persona-ink: #bd51d1;
+    --persona-soft: #fff5fe;
+    --persona-border: #f3d8f5;
+  }
+}
+
+.loading-wrap {
+  padding-top: 240rpx;
+  display: flex;
+  justify-content: center;
+}
+
+// ---------- 1. hero ----------
+.hero {
+  position: relative;
+  padding: 24rpx 40rpx 56rpx;
+  background: linear-gradient(180deg, #d9eaff, #f3f8ff);
+  overflow: hidden;
+
+  &__visual {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  // 横图全幅铺底（同发现页）：拱门（原图 ~72% 处）落在右侧，无硬边
+  &__image {
+    position: absolute;
+    top: 0;
+    left: 4%;
+    width: 102%;
+    height: 100%;
+    filter: saturate(0.82) brightness(1.06) contrast(0.93);
+  }
+
+  // 左→右渐隐白雾：左侧文字可读，右侧透出拱门；顶部压亮、底部融入页面
+  &__mask {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(246, 250, 255, 0.96) 0%, rgba(246, 250, 255, 0.8) 40%, rgba(246, 250, 255, 0.22) 70%, rgba(246, 250, 255, 0.05) 100%),
+      linear-gradient(180deg, rgba(246, 250, 255, 0.55) 0%, rgba(246, 250, 255, 0.15) 35%, transparent 60%, rgba(240, 246, 253, 0.9) 100%);
+  }
+
+  &__content {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--persona-border);
+  color: var(--persona-ink);
+
+  &__icon {
+    font-size: 28rpx;
+    line-height: 1;
+  }
+
+  &__name {
+    font-size: 26rpx;
+    font-weight: 600;
+  }
+}
+
+.hero-kicker {
+  margin-top: 40rpx;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.hero-headline {
+  margin-top: 16rpx;
+  max-width: 92%;
+  font-size: 46rpx;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+// ---------- 分区标题 ----------
+.section {
+  margin: 48rpx 32rpx 0;
+}
+
+.section-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.section-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.section-note {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+// ---------- 2. 判断卡 ----------
+.point-card {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 24rpx;
+  padding: 32rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+
+  &__icon {
+    flex-shrink: 0;
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--persona-soft);
+    color: var(--persona-ink);
+    font-size: 32rpx;
+    line-height: 1;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 30rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  &__text {
+    margin-top: 10rpx;
+    font-size: 27rpx;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+}
+
+// ---------- 3. 引用卡 ----------
+.quote-card {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 24rpx;
+  padding: 28rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+
+  &__cover {
+    flex-shrink: 0;
+    width: 96rpx;
+    height: 132rpx;
+    border-radius: 10rpx;
+    background: var(--bg-secondary);
+
+    &--empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eceff3;
+      color: var(--text-tertiary);
+      font-size: 36rpx;
+      font-weight: 600;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__text {
+    font-size: 28rpx;
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+
+  &__book {
+    margin-top: 16rpx;
+    font-size: 25rpx;
+    color: var(--text-tertiary);
+  }
+}
+
+// ---------- 4. 反馈三键 ----------
+.feedback-row {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 28rpx;
+}
+
+.feedback-pill {
+  flex: 1;
+  height: 76rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  border: 1px solid var(--persona-border);
+  background: var(--bg-card);
+  color: var(--persona-ink);
+  font-size: 27rpx;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &.is-active {
+    background: var(--persona-ink);
+    border-color: var(--persona-ink);
+    color: #fff;
+  }
+}
