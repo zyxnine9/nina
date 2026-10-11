@@ -9,7 +9,7 @@
 .page {
   min-height: 100vh;
   padding: 0 40rpx 100rpx;
-  background: #f7fafe;
+  background: #e9f0f9;
 }
 
 .loading-wrap {
@@ -41,7 +41,8 @@
 .headline {
   margin-top: 36rpx;
   font-size: 44rpx;
-  font-weight: 700;
+  font-weight: 650;
+  letter-spacing: -0.03em;
   line-height: 1.5;
   color: @ink;
 }
@@ -50,9 +51,9 @@
 .forming-card {
   margin-top: 40rpx;
   padding: 64rpx 40rpx;
-  border-radius: 32rpx;
+  border-radius: 40rpx;
   background: linear-gradient(160deg, #ffffff, @mint-soft);
-  border: 1px solid @mint;
+  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
   text-align: center;
 
   &__title {
@@ -75,14 +76,13 @@
   align-items: flex-start;
   margin-top: 28rpx;
   padding: 32rpx;
-  border-radius: 28rpx;
-  background: var(--bg-card);
-  border: 1px solid var(--separator);
-  box-shadow: var(--shadow-card);
+  border-radius: 40rpx;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
 
   // 收起态卡片压缩高度
   &--open {
-    background: linear-gradient(180deg, var(--bg-card) 0%, @mint-soft 140%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, @mint-soft 140%);
 
     // 展开态：拱门顶对齐（设计稿）
     .realm__arch {
@@ -183,7 +183,8 @@
   &__section-title {
     font-size: 29rpx;
     color: var(--text-primary);
-    font-weight: 700;
+    font-weight: 650;
+    letter-spacing: -0.03em;
   }
 
   &__chevron {
@@ -237,10 +238,10 @@
     font-weight: 600;
   }
 
-  // 偶数枚：白底描边
+  // 偶数枚：白底
   &--spec1 {
     background: #fff;
-    border: 1px solid var(--separator);
+    box-shadow: 0 8rpx 24rpx rgba(65, 94, 135, 0.08);
     color: var(--text-primary);
   }
 }
@@ -252,10 +253,9 @@
   gap: 14rpx;
   margin-top: 16rpx;
   padding: 26rpx 28rpx;
-  border-radius: 20rpx;
+  border-radius: 24rpx;
   background: #fff;
-  border: 1px solid var(--separator);
-  box-shadow: 0 6rpx 20rpx rgba(18, 58, 107, 0.05);
+  box-shadow: 0 16rpx 44rpx rgba(65, 94, 135, 0.1);
 
   &__title {
     flex: 1;
@@ -298,16 +298,14 @@
   gap: 6rpx;
   padding: 14rpx 0;
   border-radius: 999rpx;
-  border: 1px solid var(--separator);
-  background: var(--bg-card);
+  background: linear-gradient(110deg, #f2f5ff, #eef3ff);
   font-size: 22rpx;
-  color: var(--text-secondary);
+  color: #506889;
   white-space: nowrap;
 
   &--active {
-    background: @mint;
-    border-color: @mint;
-    color: #1c5c48;
+    background: linear-gradient(110deg, #effcf8, #e9f9f4);
+    color: #27b99e;
     font-weight: 600;
   }
 }

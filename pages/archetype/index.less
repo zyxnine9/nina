@@ -8,7 +8,7 @@
 .page {
   min-height: 100vh;
   padding: 0 40rpx 100rpx;
-  background: #f7fafe;
+  background: #e9f0f9;
 }
 
 .loading-wrap {
@@ -102,14 +102,14 @@
 .panel {
   margin-top: 32rpx;
   padding: 36rpx 32rpx;
-  border-radius: 28rpx;
-  background: var(--bg-card);
-  border: 1px solid var(--separator);
-  box-shadow: var(--shadow-card);
+  border-radius: 40rpx;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
 
   &__title {
     font-size: 31rpx;
-    font-weight: 700;
+    font-weight: 650;
+    letter-spacing: -0.03em;
     color: var(--text-primary);
 
     &--with-icon {
@@ -177,9 +177,9 @@
 .forming-card {
   margin-top: 32rpx;
   padding: 56rpx 40rpx;
-  border-radius: 28rpx;
+  border-radius: 40rpx;
   background: linear-gradient(160deg, #ffffff, @lavender-soft);
-  border: 1px solid @lavender;
+  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
   text-align: center;
 
   &__title {
@@ -269,16 +269,14 @@
   flex: 1;
   padding: 18rpx 0;
   border-radius: 999rpx;
-  border: 1px solid var(--separator);
-  background: var(--bg-secondary);
+  background: linear-gradient(110deg, #f2f5ff, #eef3ff);
   text-align: center;
   font-size: 26rpx;
-  color: var(--text-secondary);
+  color: #506889;
 
   &--active {
-    background: @gold;
-    border-color: @gold;
-    color: #6b4d1c;
+    background: linear-gradient(110deg, #fdf3dd, #fbe7bb);
+    color: #a97f2e;
     font-weight: 600;
   }
 }
