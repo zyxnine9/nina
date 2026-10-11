@@ -1,8 +1,6 @@
 <view class="my-page">
-  <view class="page-title">我的</view>
-
-  <!-- 头部：头像（点击拉起微信头像选择） + 昵称（微信昵称快捷填写） -->
-  <view class="nina-card user-card">
+  <!-- 用户 hero 卡：薰衣草→暖金渐变，呼应「阅读人格」维度卡 -->
+  <view class="user-card">
     <button
       class="avatar-btn"
       open-type="chooseAvatar"
@@ -20,53 +18,58 @@
         placeholder-class="nickname-placeholder"
         bindblur="onNicknameBlur"
       />
-      <view class="page-subtitle">微信读书 · 自我探索</view>
+      <view class="user-sub">微信读书 · 自我探索</view>
     </view>
   </view>
 
-  <!-- Key 状态卡 -->
-  <view class="nina-card key-card">
+  <!-- Key 状态面板 -->
+  <view class="panel key-card">
+    <view class="panel__eyebrow">WEREAD KEY</view>
     <view wx:if="{{profile.loading}}" class="key-loading">加载中…</view>
 
     <block wx:elif="{{!profile.hasKey}}">
       <view class="key-row">
-        <view class="dot none"></view>
+        <view class="dot dot--none"></view>
         <view class="key-title">未绑定微信读书 KEY</view>
       </view>
       <view class="key-desc">绑定后 NINA 才能读取你的阅读数据</view>
-      <button class="btn-primary key-btn" bindtap="onBindKey">去绑定</button>
+      <button class="pill-btn" bindtap="onBindKey">去绑定</button>
     </block>
 
     <block wx:elif="{{profile.keyStatus === 'expired'}}">
       <view class="key-row">
-        <view class="dot expired"></view>
+        <view class="dot dot--expired"></view>
         <view class="key-title">KEY 已失效</view>
       </view>
       <view wx:if="{{profile.keyHint}}" class="key-hint">{{profile.keyHint}}</view>
       <view class="key-desc">KEY 已过期，重新绑定后将继续导入并重新分析</view>
-      <button class="btn-primary key-btn" bindtap="onReplaceKey">重新绑定</button>
+      <button class="pill-btn" bindtap="onReplaceKey">重新绑定</button>
     </block>
 
     <block wx:else>
       <view class="key-row">
-        <view class="dot valid"></view>
+        <view class="dot dot--valid"></view>
         <view class="key-title">KEY 已绑定</view>
       </view>
       <view wx:if="{{profile.keyHint}}" class="key-hint">{{profile.keyHint}}</view>
       <view wx:if="{{profile.keyUpdatedAtText}}" class="key-desc">绑定时间：{{profile.keyUpdatedAtText}}</view>
-      <button class="btn-outline key-btn" bindtap="onReplaceKey">更换 KEY</button>
+      <button class="pill-btn pill-btn--ghost" bindtap="onReplaceKey">更换 KEY</button>
     </block>
   </view>
 
-  <!-- 菜单 -->
-  <view class="nina-card menu-card">
+  <!-- 菜单面板 -->
+  <view class="panel menu-card">
     <view class="menu-item" bindtap="onMore">
-      <view>更多</view>
-      <view class="arrow">→</view>
+      <view class="menu-item__label">更多</view>
+      <view class="menu-item__arrow">
+        <t-icon name="chevron-right" size="28rpx" color="#7288a4" />
+      </view>
     </view>
     <view class="menu-item" bindtap="goSetting">
-      <view>设置</view>
-      <view class="arrow">→</view>
+      <view class="menu-item__label">设置</view>
+      <view class="menu-item__arrow">
+        <t-icon name="chevron-right" size="28rpx" color="#7288a4" />
+      </view>
     </view>
   </view>
 

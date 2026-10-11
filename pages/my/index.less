@@ -1,172 +1,303 @@
+// 我的（v2 视觉语言：对齐发现/探索 —— #f7fafe 底 + 软玻璃面板 + 海军蓝 token）
+@navy: #123a6b;
+@navy-deep: #082f60;
+@muted: #6f86a5;
+@line: rgba(69, 116, 171, 0.15);
+@serif: 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
+
 .my-page {
+  position: relative;
   min-height: 100vh;
   box-sizing: border-box;
-  padding: 32rpx 32rpx calc(140rpx + env(safe-area-inset-bottom));
+  padding: 24rpx 38rpx calc(140rpx + env(safe-area-inset-bottom));
+  // 多层色底：右上薰衣草 + 左侧薄荷 + 底部浅蓝，呼应三张卡的渐变
+  background:
+    radial-gradient(ellipse 720rpx 500rpx at 94% -4%, rgba(216, 210, 245, 0.6), transparent 70%),
+    radial-gradient(ellipse 640rpx 520rpx at -10% 42%, rgba(191, 228, 215, 0.45), transparent 72%),
+    radial-gradient(ellipse 820rpx 600rpx at 52% 106%, rgba(190, 216, 242, 0.44), transparent 78%),
+    linear-gradient(180deg, #eef4fb, #f7fafe 42%, #ecf3fb 100%),
+    #f7fafe;
 
-  .page-title {
-    margin-bottom: 28rpx;
+  // 顶部斜向光带（探索入口同款）
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 640rpx;
+    pointer-events: none;
+    background: linear-gradient(164deg, transparent 60%, rgba(175, 202, 224, 0.22) 61%, transparent 70%);
+  }
+}
+
+// ---------- 用户 hero 卡 ----------
+.user-card {
+  position: relative;
+  display: flex;
+  gap: 28rpx;
+  align-items: center;
+  padding: 44rpx 40rpx;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 52rpx;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(216, 210, 245, 0.66) 58%, rgba(241, 212, 156, 0.52));
+  box-shadow: 0 35rpx 78rpx rgba(41, 83, 132, 0.11);
+
+  // 右下角装饰圆环
+  &::after {
+    content: '';
+    position: absolute;
+    right: -73rpx;
+    bottom: -115rpx;
+    width: 297rpx;
+    height: 297rpx;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+  }
+}
+
+.avatar-btn {
+  width: 128rpx;
+  height: 128rpx;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  background: transparent;
+  line-height: 1;
+  flex-shrink: 0;
+
+  &::after {
+    border: none;
+  }
+}
+
+.avatar {
+  width: 128rpx;
+  height: 128rpx;
+  border: 6rpx solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 14rpx 31rpx rgba(54, 90, 133, 0.16);
+  background: linear-gradient(110deg, #0f3e75, #1d5a9e);
+  color: #fff;
+  font-size: 48rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.avatar-img {
+  width: 128rpx;
+  height: 128rpx;
+  border: 6rpx solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 14rpx 31rpx rgba(54, 90, 133, 0.16);
+  box-sizing: border-box;
+  display: block;
+}
+
+.user-meta {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.nickname-input {
+  height: 56rpx;
+  font-family: @serif;
+  font-size: 40rpx;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: @navy-deep;
+}
+
+.nickname-placeholder {
+  color: @navy-deep;
+  opacity: 0.45;
+}
+
+.user-sub {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #6883a2;
+}
+
+// ---------- 通用软玻璃面板 ----------
+.panel {
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 49rpx;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 38rpx 84rpx rgba(40, 79, 124, 0.1);
+}
+
+.panel__eyebrow {
+  font-size: 21rpx;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #6991c0;
+}
+
+// ---------- Key 状态面板（蓝调渐变，呼应「思维方式」卡） ----------
+.key-card {
+  position: relative;
+  overflow: hidden;
+  margin-top: 24rpx;
+  padding: 37rpx 31rpx;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(207, 226, 245, 0.84));
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: -73rpx;
+    bottom: -115rpx;
+    width: 297rpx;
+    height: 297rpx;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+}
+
+.key-loading {
+  margin-top: 18rpx;
+  font-size: 26rpx;
+  color: @muted;
+}
+
+.key-row {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+  margin-top: 18rpx;
+}
+
+.dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--none {
+    background: #a9bcd4;
   }
 
-  .user-card {
-    display: flex;
-    align-items: center;
-    padding: 32rpx;
-
-    .avatar-btn {
-      width: 96rpx;
-      height: 96rpx;
-      padding: 0;
-      margin: 0;
-      border-radius: 50%;
-      background: transparent;
-      line-height: 1;
-      flex-shrink: 0;
-
-      &::after {
-        border: none;
-      }
-    }
-
-    .avatar {
-      width: 96rpx;
-      height: 96rpx;
-      border-radius: 50%;
-      background: var(--accent-gradient);
-      color: #fff;
-      font-size: 40rpx;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .avatar-img {
-      width: 96rpx;
-      height: 96rpx;
-      border-radius: 50%;
-      display: block;
-    }
-
-    .user-meta {
-      margin-left: 24rpx;
-      flex: 1;
-      min-width: 0;
-
-      .nickname-input {
-        height: 48rpx;
-        font-size: 34rpx;
-        font-weight: 700;
-        color: var(--text-primary);
-      }
-
-      .nickname-placeholder {
-        color: var(--text-primary);
-      }
-
-      .page-subtitle {
-        margin-top: 8rpx;
-      }
-    }
+  &--valid {
+    background: #268579;
+    box-shadow: 0 0 12rpx rgba(38, 133, 121, 0.45);
   }
 
-  .key-card {
-    margin-top: 24rpx;
-    padding: 32rpx;
+  &--expired {
+    background: #d7a34d;
+    box-shadow: 0 0 12rpx rgba(215, 163, 77, 0.45);
+  }
+}
 
-    .key-loading {
-      font-size: 27rpx;
-      color: var(--text-secondary);
-    }
+.key-title {
+  font-size: 31rpx;
+  font-weight: 600;
+  color: @navy-deep;
+}
 
-    .key-row {
-      display: flex;
-      align-items: center;
+.key-hint {
+  display: inline-block;
+  max-width: 100%;
+  margin-top: 20rpx;
+  padding: 12rpx 22rpx;
+  border-radius: 999rpx;
+  background: #eff4fc;
+  color: #426a9d;
+  font-size: 24rpx;
+  font-family: Menlo, Consolas, monospace;
+  box-sizing: border-box;
+}
 
-      .dot {
-        width: 16rpx;
-        height: 16rpx;
-        border-radius: 50%;
-        margin-right: 16rpx;
-        flex-shrink: 0;
+.key-desc {
+  margin-top: 18rpx;
+  font-size: 25rpx;
+  line-height: 1.7;
+  color: @muted;
+}
 
-        &.none {
-          background: var(--text-tertiary);
-        }
+// ---------- 胶囊按钮 ----------
+.pill-btn {
+  display: flex;
+  gap: 14rpx;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 88rpx;
+  margin-top: 30rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(110deg, #0f3e75, #1d5a9e);
+  box-shadow:
+    0 23rpx 49rpx rgba(22, 70, 122, 0.24),
+    inset 0 2rpx 0 rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 29rpx;
+  font-weight: 700;
+  box-sizing: border-box;
 
-        &.valid {
-          background: #34c77b;
-        }
-
-        &.expired {
-          background: #f59a23;
-        }
-      }
-
-      .key-title {
-        font-size: 30rpx;
-        font-weight: 600;
-        color: var(--text-primary);
-      }
-    }
-
-    .key-hint {
-      margin-top: 16rpx;
-      padding: 12rpx 20rpx;
-      border-radius: var(--radius-input);
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-      font-size: 25rpx;
-      font-family: Menlo, Consolas, monospace;
-    }
-
-    .key-desc {
-      margin-top: 16rpx;
-      font-size: 25rpx;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    .key-btn {
-      margin-top: 28rpx;
-    }
+  &::after {
+    border: none;
   }
 
-  .btn-outline {
-    height: 48px;
-    padding: 0 24px;
-    border-radius: 999px;
-    background: transparent;
-    border: 1px solid var(--separator);
-    color: var(--text-primary);
-    font-size: 16px;
+  // 次级（更换 KEY）：描边幽灵款
+  &--ghost {
+    border: 1px solid #a9bfde;
+    background: rgba(255, 255, 255, 0.56);
+    box-shadow: none;
+    color: #536f93;
     font-weight: 600;
-    width: 100%;
+  }
+}
+
+// ---------- 菜单面板（薄荷绿渐变，呼应「未读之境」卡） ----------
+.menu-card {
+  position: relative;
+  overflow: hidden;
+  margin-top: 24rpx;
+  padding: 10rpx 31rpx;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(191, 228, 215, 0.72));
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: -73rpx;
+    top: -115rpx;
+    width: 297rpx;
+    height: 297rpx;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+}
+
+.menu-item {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+  justify-content: space-between;
+  height: 108rpx;
+
+  & + .menu-item {
+    border-top: 1px solid @line;
+  }
+
+  &__label {
+    font-size: 29rpx;
+    color: @navy;
+  }
+
+  &__arrow {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-sizing: border-box;
-  }
-
-  .menu-card {
-    margin-top: 24rpx;
-    padding: 8rpx 32rpx;
-
-    .menu-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 104rpx;
-      font-size: 29rpx;
-      color: var(--text-primary);
-
-      & + .menu-item {
-        border-top: 1px solid var(--separator);
-      }
-
-      .arrow {
-        color: var(--text-tertiary);
-        font-size: 27rpx;
-      }
-    }
+    width: 48rpx;
+    height: 48rpx;
+    border-radius: 50%;
+    background: rgba(224, 233, 244, 0.33);
   }
 }
