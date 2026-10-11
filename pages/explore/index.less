@@ -1,63 +1,199 @@
-.explore-page {
+// 探索入口（v2 原型 home：远景拱门 + 斜向光带 + 衬线大标题 + 三张渐变维度卡）
+// token 对齐 docs/ui-previews/styles.css
+@navy: #123a6b;
+@navy-deep: #082f60;
+@muted: #6f86a5;
+@serif: 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
+
+.page--explore {
+  position: relative;
+  height: auto; // 覆盖全局 .page 的 height:100vh，否则内容溢出无法滚动
   min-height: 100vh;
-  background: var(--bg);
-  padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
+  padding: 24rpx 38rpx calc(60rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
+  background:
+    radial-gradient(ellipse 620rpx 420rpx at 88% 6%, rgba(177, 211, 245, 0.62), transparent 72%),
+    linear-gradient(180deg, rgba(247, 250, 254, 0.22), #f7fafe 38%),
+    #f7fafe;
 
-  .loading-wrap {
+  // 顶部斜向光带 + 左侧白幕，托住标题
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 576rpx;
+    pointer-events: none;
+    background:
+      linear-gradient(164deg, transparent 61%, rgba(175, 202, 224, 0.2) 62%, transparent 70%),
+      linear-gradient(90deg, rgba(247, 250, 254, 0.98) 10%, rgba(247, 250, 254, 0.69) 56%, rgba(247, 250, 254, 0.08));
+  }
+
+  // 远景拱门（纯 CSS 手绘：柔和天空渐变 + 光点，避免生硬斜带）
+  &::after {
+    content: '';
+    position: absolute;
+    top: 73rpx;
+    right: 31rpx;
+    width: 248rpx;
+    height: 436rpx;
+    border: 14rpx solid rgba(255, 255, 255, 0.56);
+    border-bottom: 0;
+    border-radius: 129rpx 129rpx 0 0;
+    opacity: 0.6;
+    background:
+      radial-gradient(circle at 62% 40%, rgba(255, 249, 218, 0.95) 0 14rpx, rgba(255, 244, 205, 0.4) 26rpx, transparent 46rpx),
+      linear-gradient(175deg, #cfe3f7, #f4ecdd 58%, #dcebf6);
+    box-shadow:
+      inset 0 0 52rpx rgba(255, 255, 255, 0.75),
+      0 28rpx 56rpx rgba(56, 91, 129, 0.08);
+  }
+}
+
+.loading-wrap {
+  position: relative;
+  z-index: 1;
+  padding-top: 40vh;
+  display: flex;
+  justify-content: center;
+}
+
+// ---------- hero ----------
+.hero {
+  position: relative;
+  z-index: 1;
+  padding-top: 48rpx;
+
+  &__eyebrow {
+    font-size: 21rpx;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: #6991c0;
+  }
+
+  &__headline {
+    max-width: 560rpx;
+    margin: 23rpx 0 24rpx;
+    font-family: @serif;
+    font-size: 66rpx;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.045em;
+    color: @navy-deep;
+  }
+
+  &__intro {
+    max-width: 576rpx;
+    font-size: 28rpx;
+    line-height: 1.8;
+    color: @muted;
+  }
+}
+
+// ---------- 维度卡组 ----------
+.dim-list {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 24rpx;
+  margin-top: 77rpx;
+}
+
+.dim-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 59rpx 1fr 59rpx;
+  gap: 17rpx;
+  min-height: 310rpx;
+  padding: 40rpx 31rpx 35rpx;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 52rpx;
+  box-shadow: 0 35rpx 78rpx rgba(41, 83, 132, 0.11);
+
+  // 右下角装饰圆环
+  &::after {
+    content: '';
+    position: absolute;
+    right: -73rpx;
+    bottom: -115rpx;
+    width: 297rpx;
+    height: 297rpx;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+  }
+
+  &--thinking {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(207, 226, 245, 0.84));
+  }
+
+  &--persona {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(216, 210, 245, 0.66) 58%, rgba(241, 212, 156, 0.52));
+  }
+
+  &--unknown {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(191, 228, 215, 0.72));
+  }
+
+  &:active {
+    transform: scale(0.985);
+  }
+
+  &__index {
+    font-size: 20rpx;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: rgba(18, 58, 107, 0.45);
+  }
+
+  &__body {
+    min-width: 0;
+  }
+
+  &__label {
+    margin-bottom: 9rpx;
+    font-size: 21rpx;
+    color: #6883a2;
+  }
+
+  &__title {
+    margin-bottom: 16rpx;
+    font-size: 48rpx;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: @navy;
+  }
+
+  &__desc {
+    max-width: 445rpx;
+    font-size: 26rpx;
+    line-height: 1.65;
+    color: #5f7692;
+  }
+
+  &__arrow {
+    align-self: end;
     display: flex;
+    align-items: center;
     justify-content: center;
-    padding-top: 40vh;
+    width: 56rpx;
+    height: 56rpx;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.66);
   }
+}
 
-  .page-header {
-    .page-subtitle {
-      margin-top: 6px;
-    }
-  }
+// ---------- 空态 ----------
+.empty-wrap {
+  position: relative;
+  z-index: 1;
+  padding: 120rpx 0;
+  text-align: center;
+}
 
-  .dim-list {
-    margin-top: 24px;
-    display: grid;
-    gap: 12px;
-
-    .dim-item {
-      padding: 18px 20px;
-
-      .dim-head {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-
-        .dim-title {
-          font-size: 15px;
-          font-weight: 600;
-          color: var(--text-primary);
-        }
-
-        .dim-arrow {
-          font-size: 16px;
-          color: var(--text-tertiary);
-        }
-      }
-
-      .dim-oneline {
-        margin-top: 8px;
-        font-size: 13px;
-        color: var(--text-secondary);
-        line-height: 1.6;
-      }
-    }
-  }
-
-  .empty-wrap {
-    padding: 60px 0;
-    text-align: center;
-
-    .empty-text {
-      font-size: 13px;
-      color: var(--text-tertiary);
-      line-height: 1.6;
-    }
-  }
+.empty-text {
+  font-size: 26rpx;
+  color: @muted;
+  line-height: 1.6;
 }

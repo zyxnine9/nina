@@ -1,28 +1,38 @@
-<view class="explore-page">
+<view class="page page--explore">
   <view wx:if="{{loading}}" class="loading-wrap">
     <t-loading theme="dots" size="40rpx" text="正在翻开这本关于你的书" />
   </view>
 
   <block wx:else>
-    <view class="page-header">
-      <view class="page-title">探索</view>
-      <view class="page-subtitle">这是一本关于我的书</view>
+    <!-- 场景 hero：远景拱门 + 斜向光带（装饰由 .page--explore 伪元素绘制） -->
+    <view class="hero">
+      <view class="hero__eyebrow">阅读画像 · 探索</view>
+      <view class="hero__headline">
+        <view>从读过的世界里，</view>
+        <view>辨认正在成为的你。</view>
+      </view>
+      <view class="hero__intro">选择一个维度，看它如何展开为完整的分析。</view>
     </view>
 
+    <!-- 维度卡组：序号 + 引导语 + 衬线标题 + 摘要 -->
     <view wx:if="{{dimensions.length}}" class="dim-list">
       <view
         wx:for="{{dimensions}}"
         wx:key="key"
-        class="dim-item nina-card"
+        class="dim-card dim-card--{{item.key}}"
         data-key="{{item.key}}"
         data-title="{{item.title}}"
         bindtap="onDimensionTap"
       >
-        <view class="dim-head">
-          <text class="dim-title">{{item.title}}</text>
-          <text class="dim-arrow">›</text>
+        <text class="dim-card__index">{{item.index}}</text>
+        <view class="dim-card__body">
+          <view class="dim-card__label">{{item.label}}</view>
+          <view class="dim-card__title">{{item.title}}</view>
+          <view class="dim-card__desc">{{item.desc}}</view>
         </view>
-        <view class="dim-oneline">{{item.preview || item.oneLine}}</view>
+        <view class="dim-card__arrow">
+          <t-icon name="chevron-right" size="30rpx" color="#123a6b" />
+        </view>
       </view>
     </view>
     <view wx:else class="empty-wrap">

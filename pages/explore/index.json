@@ -1,8 +1,9 @@
 {
   "navigationBarTitleText": "探索",
-  "navigationBarBackgroundColor": "#FCFCFC",
+  "navigationBarBackgroundColor": "#F7FAFE",
   "navigationBarTextStyle": "black",
   "usingComponents": {
-    "t-loading": "tdesign-miniprogram/loading/loading"
+    "t-loading": "tdesign-miniprogram/loading/loading",
+    "t-icon": "tdesign-miniprogram/icon/icon"
   }
 }
