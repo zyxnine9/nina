@@ -1,5 +1,5 @@
 <t-navbar title="未读之境" left-arrow />
-<view class="page">
+<view class="page page--unread">
   <view wx:if="{{loading}}" class="loading-wrap">
     <t-loading theme="dots" size="40rpx" text="正在寻找你的新方向" />
   </view>
@@ -10,7 +10,21 @@
   </view>
 
   <block wx:else>
-    <view class="headline">三个你可能会喜欢的新方向</view>
+    <!-- 场景 hero：三扇远方拱门 -->
+    <view class="hero">
+      <image class="hero__scene" src="/images/unread-scene.png" mode="aspectFill" />
+      <view class="hero__fade"></view>
+      <view class="hero__copy">
+        <view class="hero__headline">
+          <view>三个你可能会喜欢</view>
+          <view>的新方向</view>
+        </view>
+        <view class="hero__sub">
+          <view>它们尚未出现在你的阅读里，</view>
+          <view>却与你已经关心的问题悄悄相连。</view>
+        </view>
+      </view>
+    </view>
 
     <!-- 正在形成 -->
     <view wx:if="{{forming}}" class="forming-card">
@@ -18,110 +32,92 @@
       <view class="forming-card__desc">再积累一些阅读足迹，NINA 会为你找到与已有兴趣相连的新方向。</view>
     </view>
 
-    <!-- 三张「远方入口」卡片：拱门插画 + 收起态 A × B 副标题 + 展开详情 -->
-    <block wx:else>
+    <!-- 手风琴卡片：迷你拱门 + 收起态副标题 / 展开详情 -->
+    <view wx:else class="content">
       <view
         wx:for="{{items}}"
         wx:key="id"
-        class="realm realm--spec{{item.spec}} {{expandedId === item.id ? 'realm--open' : ''}}"
-        data-id="{{item.id}}"
-        bindtap="onCardTap"
+        class="realm {{expandedId === item.id ? 'realm--open' : ''}}"
       >
-        <view class="realm__arch realm__arch--spec{{item.spec}}"></view>
+        <view class="realm__summary" data-id="{{item.id}}" bindtap="onCardTap">
+          <image class="realm__portal" src="{{item.portal}}" mode="aspectFill" />
+          <view class="realm__name">
+            <view class="realm__titlerow">
+              <text class="realm__title">{{item.name}}</text>
+              <view wx:if="{{item.affinityLabel}}" class="match-tag match-tag--{{item.tagSpec}}">
+                <t-icon name="{{item.tagIcon}}" size="22rpx" color="{{item.tagColor}}" />
+                <text>{{item.affinityLabel}}</text>
+              </view>
+            </view>
+            <view wx:if="{{item.subtitle}}" class="realm__subtitle">{{item.subtitle}}</view>
+          </view>
+          <view class="realm__chevron">
+            <t-icon name="chevron-right" size="26rpx" color="#7288a4" />
+          </view>
+        </view>
 
-        <view class="realm__body">
-          <view class="realm__head">
-            <view class="realm__name">{{item.name}}</view>
-            <view wx:if="{{item.affinityLabel}}" class="badge badge--{{item.badgeSpec}}">
-              <t-icon name="{{item.badgeIcon}}" size="24rpx" color="{{item.badgeColor}}" />
-              <text>{{item.affinityLabel}}</text>
+        <view wx:if="{{expandedId === item.id}}" class="realm__details">
+          <view class="realm__rationale">
+            <view class="realm__h3">为什么可能适合你</view>
+            <view class="realm__why">{{item.reason || item.intro}}</view>
+            <view wx:if="{{item.connections.length}}" class="links">
+              <view
+                class="link"
+                wx:for="{{item.connections}}"
+                wx:for-item="conn"
+                wx:key="name"
+                catchtap="onConnectionTap"
+              >{{conn.name}}</view>
             </view>
           </view>
 
-          <!-- 收起态：A × B 副标题 -->
-          <view wx:if="{{expandedId !== item.id && item.subtitle}}" class="realm__subtitle">{{item.subtitle}}</view>
-
-          <block wx:if="{{expandedId === item.id}}">
-            <view wx:if="{{item.intro}}" class="realm__intro">{{item.intro}}</view>
-
-            <!-- 与已有兴趣的连接 -->
-            <view wx:if="{{item.connections.length}}" class="realm__section">
-              <view class="realm__section-title">为什么可能适合你</view>
-              <view class="conn-list">
-                <view
-                  wx:for="{{item.connections}}"
-                  wx:for-item="conn"
-                  wx:for-index="connIndex"
-                  wx:key="name"
-                  class="conn conn--spec{{connIndex % 2}}"
-                  catchtap="onConnectionTap"
-                >
-                  <t-icon name="{{connIndex % 2 ? 'time' : 'heart'}}" size="26rpx" color="{{connIndex % 2 ? '#4a7fb5' : '#2e7d64'}}" />
-                  <text>{{conn.name}}</text>
-                </view>
-              </view>
+          <view class="realm__h3">从这里开始</view>
+          <view wx:if="{{item.entry}}" class="entry" catchtap="onStartTap">
+            <t-icon name="book-open" size="34rpx" color="#123a6b" />
+            <view class="entry__body">
+              <text class="entry__label">{{item.entry.label}}</text>
+              <text class="entry__q">{{item.entry.q}}</text>
             </view>
+            <t-icon name="chevron-right" size="30rpx" color="#7288a4" />
+          </view>
 
-            <!-- 主要进入方式 -->
-            <view wx:if="{{item.entry}}" class="realm__section">
-              <view class="realm__section-title">从这里开始</view>
-              <view class="entry-row" catchtap="onStartTap">
-                <t-icon name="book-open" size="30rpx" color="#123a6b" />
-                <text class="entry-row__title">{{item.entry.title}}</text>
-                <t-icon name="chevron-right" size="32rpx" color="#b8c6d8" />
-              </view>
-            </view>
+          <view wx:if="{{item.entry}}" class="primary-action" catchtap="onStartTap">
+            从这里开始
+            <t-icon name="chevron-right" size="26rpx" color="#ffffff" />
+          </view>
 
-            <!-- 主按钮 -->
+          <view class="fb">
             <view
-              wx:if="{{item.entry}}"
-              class="entry-btn"
-              data-type="{{item.entry.type}}"
-              catchtap="onStartTap"
+              class="fb__pill {{item.myFeedback === 'interested' ? 'fb__pill--active' : ''}}"
+              data-id="{{item.id}}"
+              data-type="interested"
+              catchtap="onFeedbackTap"
             >
-              <text>从这里开始</text>
-              <t-icon name="chevron-right" size="30rpx" color="#ffffff" />
+              <t-icon name="heart" size="26rpx" color="{{item.myFeedback === 'interested' ? '#1d7566' : '#60738f'}}" />
+              <text>想了解</text>
             </view>
-
-            <!-- 轻量反馈 -->
-            <view class="fb">
-              <view
-                class="fb__pill {{item.myFeedback === 'interested' ? 'fb__pill--active' : ''}}"
-                data-id="{{item.id}}"
-                data-type="interested"
-                catchtap="onFeedbackTap"
-              >
-                <t-icon name="heart" size="26rpx" color="{{item.myFeedback === 'interested' ? '#1c5c48' : '#7ba7d4'}}" />
-                <text>想了解</text>
-              </view>
-              <view
-                class="fb__pill {{item.myFeedback === 'not_interested' ? 'fb__pill--active' : ''}}"
-                data-id="{{item.id}}"
-                data-type="not_interested"
-                catchtap="onFeedbackTap"
-              >
-                <t-icon name="minus-circle" size="26rpx" color="{{item.myFeedback === 'not_interested' ? '#1c5c48' : '#7ba7d4'}}" />
-                <text>暂时没兴趣</text>
-              </view>
-              <view
-                class="fb__pill {{item.myFeedback === 'already_read' ? 'fb__pill--active' : ''}}"
-                data-id="{{item.id}}"
-                data-type="already_read"
-                catchtap="onFeedbackTap"
-              >
-                <t-icon name="check-circle" size="26rpx" color="{{item.myFeedback === 'already_read' ? '#1c5c48' : '#7ba7d4'}}" />
-                <text>其实我读过</text>
-              </view>
+            <view
+              class="fb__pill {{item.myFeedback === 'not_interested' ? 'fb__pill--active' : ''}}"
+              data-id="{{item.id}}"
+              data-type="not_interested"
+              catchtap="onFeedbackTap"
+            >
+              <t-icon name="minus-circle" size="26rpx" color="{{item.myFeedback === 'not_interested' ? '#1d7566' : '#60738f'}}" />
+              <text>暂时没兴趣</text>
             </view>
-          </block>
-        </view>
-
-        <!-- 收起态右侧箭头 -->
-        <view wx:if="{{expandedId !== item.id}}" class="realm__chevron">
-          <t-icon name="chevron-right" size="32rpx" color="#b8c6d8" />
+            <view
+              class="fb__pill {{item.myFeedback === 'already_read' ? 'fb__pill--active' : ''}}"
+              data-id="{{item.id}}"
+              data-type="already_read"
+              catchtap="onFeedbackTap"
+            >
+              <t-icon name="check-circle" size="26rpx" color="{{item.myFeedback === 'already_read' ? '#1d7566' : '#60738f'}}" />
+              <text>其实我读过</text>
+            </view>
+          </view>
         </view>
       </view>
-    </block>
+    </view>
   </block>
 
   <t-toast id="t-toast" />

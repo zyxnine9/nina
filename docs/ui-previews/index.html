@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7fafe" />
+    <meta
+      name="description"
+      content="NINA 探索页三种阅读分析的独立交互原型，使用本地假数据。"
+    />
+    <title>NINA · 探索原型</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <svg class="svg-sprite" aria-hidden="true">
+      <defs>
+        <linearGradient id="world-mint-sky" x2="0" y2="1"><stop stop-color="#8fccc8"/><stop offset=".5" stop-color="#ddede3"/><stop offset="1" stop-color="#f8faf0"/></linearGradient>
+        <linearGradient id="world-blue-sky" x2=".3" y2="1"><stop stop-color="#a3c9f1"/><stop offset=".58" stop-color="#dae9f9"/><stop offset="1" stop-color="#f5f8fc"/></linearGradient>
+        <linearGradient id="world-gold-sky" x2=".4" y2="1"><stop stop-color="#ecd1a3"/><stop offset=".55" stop-color="#fff1c7"/><stop offset="1" stop-color="#eadac0"/></linearGradient>
+        <linearGradient id="world-lake" x2="0" y2="1"><stop stop-color="#c4dfd8"/><stop offset=".6" stop-color="#e9f4ec"/><stop offset="1" stop-color="#b2d3d1"/></linearGradient>
+        <linearGradient id="world-building" x2="1" y2=".3"><stop stop-color="#769cbe"/><stop offset=".45" stop-color="#d6e3ed"/><stop offset=".72" stop-color="#a0b9ce"/><stop offset="1" stop-color="#6d93b4"/></linearGradient>
+        <linearGradient id="world-gold-building" x2="1" y2=".2"><stop stop-color="#bea277"/><stop offset=".4" stop-color="#e1cfa5"/><stop offset="1" stop-color="#9d895f"/></linearGradient>
+        <linearGradient id="world-leaf" x2="1" y2="1"><stop stop-color="#bbd4c2"/><stop offset="1" stop-color="#628c7e"/></linearGradient>
+        <radialGradient id="world-sunlight"><stop stop-color="#fffbe5" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient>
+        <filter id="world-soft"><feGaussianBlur stdDeviation=".6"/></filter>
+        <path id="world-leaf-shape" d="M0 0C-8-3-10-11-5-17 2-13 4-5 0 0Z"/>
+        <pattern id="world-windows" width="7" height="10" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="2" height="5" fill="#fff5da" opacity=".6"/></pattern>
+      </defs>
+      <symbol id="scene-mint" viewBox="0 0 100 180" preserveAspectRatio="xMidYMid slice">
+        <rect width="100" height="180" fill="url(#world-mint-sky)"/>
+        <circle cx="70" cy="52" r="27" fill="url(#world-sunlight)"/>
+        <circle cx="70" cy="52" r="9" fill="#fffce9"/>
+        <path d="M0 98l11-12 7 2 12-17 8 6 12-8 11 11 8-2 11 8 10-9 10 7v36H0Z" fill="#bad4d0"/>
+        <path d="M0 112l12-15 10 3 14-15 7 4 16 23 11-7 8 3 9-12 13 7v30H0Z" fill="#7da9a7" opacity=".75"/>
+        <path d="M0 124l12-6 10 3 17-9 8 3 11 10 20-5 12-8 10 4v27H0Z" fill="#729d99" opacity=".62"/>
+        <path d="M0 134c24-4 55-7 100-5v51H0Z" fill="url(#world-lake)"/>
+        <path d="M0 132l15-4 8 3 13-4 13 4-12 3-18 4Z" fill="#477e71" opacity=".75"/>
+        <path d="M100 128l-16-6-11 6-6 2 15 5 18-1Z" fill="#5b8d7b" opacity=".75"/>
+        <g fill="none" stroke="#fffef3" stroke-width=".7" opacity=".85"><path d="M29 140h61M18 148h28m13 0h38M9 158h59m12 0h18M23 167h68M31 176h50"/></g>
+        <g fill="none" stroke="#6d9c8e" stroke-width=".8" opacity=".5"><path d="M34 144h18m27 8h19M6 165h20m20 6h18"/></g>
+        <path d="M9 180c1-25 6-56 4-94-1-15-5-28-13-39m13 56c6-12 17-23 26-29m-26 39c8-11 20-19 27-21" fill="none" stroke="#567c67" stroke-width="1.5"/>
+        <g fill="url(#world-leaf)">
+          <use href="#world-leaf-shape" transform="translate(11 78) rotate(-53) scale(.8)"/>
+          <use href="#world-leaf-shape" transform="translate(14 86) rotate(35) scale(.7)"/>
+          <use href="#world-leaf-shape" transform="translate(21 91) rotate(-35) scale(.7)"/>
+          <use href="#world-leaf-shape" transform="translate(28 86) rotate(40) scale(.55)"/>
+          <use href="#world-leaf-shape" transform="translate(30 77) rotate(-28) scale(.7)"/>
+          <use href="#world-leaf-shape" transform="translate(39 75) rotate(48) scale(.5)"/>
+          <use href="#world-leaf-shape" transform="translate(23 103) rotate(50) scale(.6)"/>
+          <use href="#world-leaf-shape" transform="translate(32 98) rotate(-24) scale(.65)"/>
+          <use href="#world-leaf-shape" transform="translate(11 115) rotate(-60) scale(.7)"/>
+          <use href="#world-leaf-shape" transform="translate(16 128) rotate(45) scale(.65)"/>
+          <use href="#world-leaf-shape" transform="translate(7 159) rotate(-30)"/>
+          <use href="#world-leaf-shape" transform="translate(22 175) rotate(50)"/>
+          <use href="#world-leaf-shape" transform="translate(95 169) rotate(-45) scale(.8)"/>
+        </g>
+        <g fill="#4d8171" opacity=".55"><path d="M15 127l2-9 3 8 3-12 3 13ZM72 129l4-11 4 10 3-6 3 9Z"/></g>
+      </symbol>
+      <symbol id="scene-blue" viewBox="0 0 100 180" preserveAspectRatio="xMidYMid slice">
+        <rect width="100" height="180" fill="url(#world-blue-sky)"/>
+        <g fill="#fff" opacity=".48" filter="url(#world-soft)"><path d="M7 37c14 2 21-9 37-8-8 6-18 11-37 8ZM42 18c22 4 32-5 47-3-15 7-33 12-47 3Z"/></g>
+        <path d="M0 112l18-21 12 10 16-7 13 13 21-19 20 18v74H0Z" fill="#a8c4dc" opacity=".75"/>
+        <g fill="#a2bdd5"><path d="M3 109v-19l5-9 5 9v19ZM81 109V87l7-12 7 12v25Z"/><rect x="12" y="102" width="69" height="17"/></g>
+        <g fill="url(#world-building)">
+          <path d="M30 108V72h44v36ZM26 72h52l-4-5H30ZM35 65V51h33v14Z"/>
+          <path d="M36 51c1-13 6-21 15-24 11 3 15 12 16 24Z"/>
+          <path d="M48 27v-8h6v8ZM51 15l-2 5h4Z"/>
+          <path d="M21 103V71l4-7 4 7v32ZM75 103V71l4-7 4 7v32Z"/>
+        </g>
+        <g fill="none" stroke="#edf6ff" stroke-width=".8" opacity=".9">
+          <path d="M30 77h44M30 82h44M36 54h30M38 61h26M42 50c1-9 4-15 9-19m0-1v20m8 0c-1-9-4-15-8-19"/>
+          <path d="M34 86v20M41 86v20M48 86v20M55 86v20M62 86v20M69 86v20"/>
+        </g>
+        <path d="M43 106V93c0-11 16-11 16 0v13Z" fill="#6489ac" opacity=".7"/>
+        <path d="M0 117c23-8 55-10 100-1v64H0Z" fill="#d6e5f2"/>
+        <path d="M21 120c32 7 45 14 42 21-4 10-39 15-33 24 5 8 34 7 54 15" fill="none" stroke="#9fbdd9" stroke-width="13" opacity=".45"/>
+        <path d="M21 119c32 7 45 14 42 21-4 10-39 15-33 24 5 8 34 7 54 15" fill="none" stroke="#f9fcff" stroke-width="10"/>
+        <g fill="#668ba8" opacity=".58"><path d="M0 133l6-16 7 14 8-19 5 22ZM76 129l6-14 4 10 6-17 8 18v8ZM0 170l9-22 8 16 7-7 6 23H0Z"/></g>
+        <g fill="#a5bfd2"><use href="#world-leaf-shape" transform="translate(14 177) rotate(40)"/><use href="#world-leaf-shape" transform="translate(94 164) rotate(-35)"/><use href="#world-leaf-shape" transform="translate(89 180) rotate(45)"/></g>
+      </symbol>
+      <symbol id="scene-gold" viewBox="0 0 100 180" preserveAspectRatio="xMidYMid slice">
+        <rect width="100" height="180" fill="url(#world-gold-sky)"/>
+        <circle cx="65" cy="66" r="36" fill="url(#world-sunlight)"/><circle cx="65" cy="66" r="9" fill="#fffade"/>
+        <path d="M0 107l9-7 7 3 18-10 12 7 16-8 18 8 20-9v89H0Z" fill="#d6c6a8" opacity=".5"/>
+        <g fill="url(#world-gold-building)">
+          <path d="M36 123V70l14-8v61ZM50 123V62l5 7v54ZM8 123V96h14v27ZM25 123V90h8v33ZM62 123V94h13v29ZM81 123V82h12v41Z"/>
+        </g>
+        <g fill="url(#world-windows)"><path d="M8 98h14v25H8ZM26 92h7v31h-7ZM39 74h10v49H39ZM63 96h12v27H63ZM82 84h11v39H82Z"/></g>
+        <path d="M0 128c37-6 71-4 100 0v52H0Z" fill="#e5d5b4"/>
+        <path d="M62 130l-8 50h29l-15-50Z" fill="#fff3ca" opacity=".8"/>
+        <path d="M4 123h92v6H4Z" fill="#b1a17d"/>
+        <path d="M7 129v9h7v-9q8-15 16 0v9h7v-9q8-15 16 0v9h7v-9q8-15 16 0v9h7v-9h10v12H7Z" fill="#b4a184" opacity=".85"/>
+        <g fill="none" stroke="#fff9dd" stroke-width=".8"><path d="M30 148h60M15 158h75M28 168h66M52 176h31"/></g>
+        <path d="M7 180c3-28 7-53 2-75m0 17c8-13 15-20 24-25" fill="none" stroke="#9c946a" stroke-width="1.4"/>
+        <g fill="#9da482" opacity=".85"><use href="#world-leaf-shape" transform="translate(10 114) rotate(-45) scale(.7)"/><use href="#world-leaf-shape" transform="translate(20 109) rotate(42) scale(.7)"/><use href="#world-leaf-shape" transform="translate(30 103) rotate(-27) scale(.6)"/><use href="#world-leaf-shape" transform="translate(12 144) rotate(50)"/><use href="#world-leaf-shape" transform="translate(9 165) rotate(-40)"/><use href="#world-leaf-shape" transform="translate(93 174) rotate(35)"/></g>
+      </symbol>
+      <symbol id="scene-thought" viewBox="0 0 100 180" preserveAspectRatio="xMidYMid slice">
+        <rect width="100" height="180" fill="url(#world-blue-sky)"/>
+        <circle cx="67" cy="89" r="34" fill="url(#world-sunlight)"/>
+        <path d="M0 115l13-10 13 3 12-8 8 5 18-12 12 10 10-6 14 8v75H0Z" fill="#afc8de"/>
+        <path d="M0 129l10-10 12 4 13-7 18 7 17-10 14 7 16-5v65H0Z" fill="#8eafc9" opacity=".65"/>
+        <path d="M0 140c40-5 65-5 100 0v40H0Z" fill="#dbe8f1"/>
+        <path d="M0 154h38m10-7h45m-71 20h53" fill="none" stroke="#f8fcff" stroke-width="1.2"/>
+        <path d="M37 174c2-9 5-15 6-22 1-4 6-6 10-4 3 2 5 8 5 15l7 11Z" fill="#6c8597"/>
+        <path d="M45 148l2-6h4l2 6Z" fill="#778592"/>
+        <path d="M45 141c-1-9 9-10 10-3 1 4-2 7-5 7Z" fill="#4c667b"/>
+        <path d="M45 152l1 14-7 8m14-23 4 18" fill="none" stroke="#a8bbca" stroke-width="1"/>
+        <path d="M0 176l22-5 19 3 21-2 38 4v4H0Z" fill="#a0b9ce" opacity=".7"/>
+      </symbol>
+      <symbol id="icon-arrow-left" viewBox="0 0 24 24">
+        <path d="m15 18-6-6 6-6" />
+      </symbol>
+      <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+        <path d="m9 18 6-6-6-6" />
+      </symbol>
+      <symbol id="icon-book" viewBox="0 0 24 24">
+        <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11a3 3 0 0 1 3 3v15a3 3 0 0 0-3-3H4Z" />
+        <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H14v18a3 3 0 0 1 3-3h3Z" />
+      </symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4.5 21a7.5 7.5 0 0 1 15 0Z" />
+      </symbol>
+      <symbol id="icon-spark" viewBox="0 0 24 24">
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
+        <circle cx="12" cy="12" r="4" />
+      </symbol>
+      <symbol id="icon-leaf" viewBox="0 0 24 24">
+        <path d="M20 4C11 4 5 8 5 15c0 2.8 2.2 5 5 5 7 0 10-7 10-16Z" />
+        <path d="M4 21c2.5-5 6-8.5 11-11" />
+      </symbol>
+      <symbol id="icon-link" viewBox="0 0 24 24">
+        <path d="m10 13 4-4" />
+        <path d="M8.5 16.5 6 19a3.5 3.5 0 0 1-5-5l3-3a3.5 3.5 0 0 1 5 0" />
+        <path d="m15.5 7.5 2.5-2.5a3.5 3.5 0 0 1 5 5l-3 3a3.5 3.5 0 0 1-5 0" />
+      </symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </symbol>
+      <symbol id="icon-moon" viewBox="0 0 24 24">
+        <path d="M20.5 15.5A9 9 0 0 1 8.5 3.5a9 9 0 1 0 12 12Z" />
+      </symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
+      </symbol>
+      <symbol id="icon-chat" viewBox="0 0 24 24">
+        <path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9.5 9.5 0 0 1-4-.9L3 21l1.6-4.3A8.5 8.5 0 1 1 21 11.5Z" />
+        <path d="M8 12h.01M12 12h.01M16 12h.01" />
+      </symbol>
+      <symbol id="icon-heart" viewBox="0 0 24 24">
+        <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z" />
+      </symbol>
+      <symbol id="icon-minus" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" /><path d="M8 12h8" />
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" /><path d="m8 12 2.5 2.5L16 9" />
+      </symbol>
+      <symbol id="icon-compass" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="m15.5 8.5-2 5-5 2 2-5Z" />
+      </symbol>
+      <symbol id="icon-waves" viewBox="0 0 24 24">
+        <path d="M2 10c3-3 5 3 9 0s6 3 11 0M2 15c3-3 5 3 9 0s6 3 11 0M4 20c3-2 4 2 8 0s5 2 8 0M9 5l3-2 3 2"/>
+      </symbol>
+      <symbol id="icon-mountains" viewBox="0 0 24 24">
+        <path d="m2 20 6-11 4 6 5-11 6 16ZM5 14l3 1 2-2M14 11l3 2 2-2"/>
+      </symbol>
+    </svg>
+
+    <main class="app-shell" id="app">
+      <section class="screen screen--home is-active" data-screen="home" aria-labelledby="home-title">
+        <header class="home-hero">
+          <div class="brand-lockup">
+            <span class="brand-name">NINA</span>
+            <span class="brand-subtitle">看见自己</span>
+          </div>
+          <p class="eyebrow">阅读画像 · 交互原型</p>
+          <h1 id="home-title">从读过的世界里，<br />辨认正在成为的你。</h1>
+          <p class="home-intro">以下内容均为演示数据。选择一个维度，查看它如何展开为完整分析。</p>
+        </header>
+
+        <div class="dimension-list" aria-label="探索维度">
+          <a class="dimension-card dimension-card--thinking" href="#thinking">
+            <span class="dimension-index">01</span>
+            <div>
+              <p class="dimension-label">你如何回应观点</p>
+              <h2>思维方式</h2>
+              <p>从原文与你的回应中，看见反复出现的思维动作。</p>
+            </div>
+            <span class="dimension-arrow" aria-hidden="true"><svg><use href="#icon-arrow-right" /></svg></span>
+          </a>
+          <a class="dimension-card dimension-card--persona" href="#persona">
+            <span class="dimension-index">02</span>
+            <div>
+              <p class="dimension-label">你带着怎样的气质阅读</p>
+              <h2>阅读人格</h2>
+              <p>一个精神原型，加上一天之中的真实阅读节律。</p>
+            </div>
+            <span class="dimension-arrow" aria-hidden="true"><svg><use href="#icon-arrow-right" /></svg></span>
+          </a>
+          <a class="dimension-card dimension-card--unread" href="#unread">
+            <span class="dimension-index">03</span>
+            <div>
+              <p class="dimension-label">去往尚未抵达的地方</p>
+              <h2>未读之境</h2>
+              <p>三个还没读过，却可能与你悄悄相连的新方向。</p>
+            </div>
+            <span class="dimension-arrow" aria-hidden="true"><svg><use href="#icon-arrow-right" /></svg></span>
+          </a>
+        </div>
+
+        <p class="prototype-note">Standalone prototype · Fake data only</p>
+      </section>
+
+      <section class="screen screen--detail thinking-page" data-screen="thinking" aria-labelledby="thinking-title">
+        <header class="detail-nav">
+          <a href="#home" class="icon-button" aria-label="返回探索原型">
+            <svg><use href="#icon-arrow-left" /></svg>
+          </a>
+          <h1 id="thinking-title">思维方式</h1>
+          <span class="nav-spacer" aria-hidden="true"></span>
+        </header>
+
+        <div class="thinking-hero">
+          <div class="thinking-scene" aria-hidden="true">
+            <svg viewBox="0 0 430 230" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="t-sky" x2=".6" y2="1"><stop stop-color="#e8f2fd"/><stop offset=".6" stop-color="#fcfdfc"/><stop offset="1" stop-color="#dfebf9"/></linearGradient>
+                <linearGradient id="t-frame" x2="1" y2="1"><stop stop-color="#ebede9"/><stop offset=".45" stop-color="#fff"/><stop offset="1" stop-color="#d4e0f0"/></linearGradient>
+                <clipPath id="t-arch"><path d="M319 211V83a49 49 0 0 1 98 0v128Z"/></clipPath>
+              </defs>
+              <rect width="430" height="230" fill="url(#t-sky)"/>
+              <path d="M295 211V84a64 64 0 0 1 128 0v127Z" fill="url(#t-frame)"/>
+              <g clip-path="url(#t-arch)"><use href="#scene-thought" x="314" y="31" width="111" height="182"/></g>
+              <path d="M0 187c43-16 81-13 115 4L0 226Z" fill="#cbe0f9" opacity=".54"/>
+              <path d="M95 230c45-36 108-36 172-24 45 9 105 1 163-7v31Z" fill="#dce9f9"/>
+              <path d="M36 230c83-20 136-22 193-5 42 13 126 10 201-8v13Z" fill="#f7fafe" opacity=".84"/>
+            </svg>
+          </div>
+          <p class="basis">基于 36 条评论与划线</p>
+          <h2>你很少被动接受一个观点，<br />更习惯用具体经验检验它。</h2>
+        </div>
+
+        <div class="detail-content thinking-content">
+          <div class="section-heading">
+            <p class="eyebrow">READING DIALOGUE</p>
+            <h2>你与书的对话</h2>
+          </div>
+
+          <article class="thinking-block">
+            <header>
+              <span class="accent-bar"></span>
+              <div>
+                <h3>例证式思维</h3>
+                <p>面对一个观点时，你会主动寻找具体的例子，用自己的经历验证它是否成立。</p>
+              </div>
+            </header>
+            <div class="dialogue-pair">
+              <svg class="dialogue-connector" viewBox="0 0 400 220" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M176 96C205 70 189 12 258 13" stroke="#75a5fa" opacity=".78"/>
+                <path d="M176 96C198 101 211 113 224 127C207 177 185 203 73 210" stroke="#a9c7ff" opacity=".74"/>
+                <circle cx="176" cy="96" r="3" fill="#f7fafe" stroke="#377ee5"/><circle cx="224" cy="127" r="3" fill="#f7fafe" stroke="#377ee5"/>
+              </svg>
+              <button class="quote-card quote-card--book" type="button" data-toast="已定位到《原子习惯》的阅读瞬间">
+                <span class="card-kicker"><svg><use href="#icon-book" /></svg>书里说</span>
+                <q>人们往往高估自己在短期内能完成的事情，而低估长期坚持所带来的复利效应。</q>
+                <span class="source">《原子习惯》</span>
+              </button>
+              <button class="quote-card quote-card--reader" type="button" data-toast="已定位到你的这条评论">
+                <span class="card-kicker"><svg><use href="#icon-user" /></svg>你回应</span>
+                <span>我曾经也这样认为，但在一次备考中，每天只坚持 25 分钟，三个月后竟然完成了从零到一的积累。这让我意识到，持续的小行动同样能带来显著变化。</span>
+              </button>
+            </div>
+            <div class="insight-strip">
+              <span class="insight-icon"><svg><use href="#icon-spark" /></svg></span>
+              <div><strong>你习惯用具体经验检验抽象定义。</strong><span>这种方式还出现于 12 条阅读记录</span></div>
+              <button class="text-action" type="button" data-expand="example">查看更多证据 <svg><use href="#icon-arrow-right" /></svg></button>
+            </div>
+            <div class="evidence-more" id="evidence-example" hidden>
+              <div><span>《掌控习惯》</span><p>“如果改变环境，意志力是否还那么重要？”</p></div>
+              <div><span>《刻意练习》</span><p>你用练琴经历区分了重复与有反馈的训练。</p></div>
+            </div>
+          </article>
+
+          <article class="thinking-block">
+            <header>
+              <span class="accent-bar"></span>
+              <div>
+                <h3>联系式思维</h3>
+                <p>你擅长将不同领域的知识串联起来，从更大的背景理解眼前的问题。</p>
+              </div>
+            </header>
+            <div class="dialogue-pair">
+              <svg class="dialogue-connector" viewBox="0 0 400 220" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M176 96C205 70 189 12 258 13" stroke="#75a5fa" opacity=".78"/>
+                <path d="M176 96C198 101 211 113 224 127C207 177 185 203 73 210" stroke="#a9c7ff" opacity=".74"/>
+                <circle cx="176" cy="96" r="3" fill="#f7fafe" stroke="#377ee5"/><circle cx="224" cy="127" r="3" fill="#f7fafe" stroke="#377ee5"/>
+              </svg>
+              <button class="quote-card quote-card--book" type="button" data-toast="已定位到《思考，快与慢》的阅读瞬间">
+                <span class="card-kicker"><svg><use href="#icon-book" /></svg>书里说</span>
+                <q>真正的理解，是看到不同事物之间的联系，而不仅仅是孤立的事实。</q>
+                <span class="source">《思考，快与慢》</span>
+              </button>
+              <button class="quote-card quote-card--reader" type="button" data-toast="已定位到你的这条评论">
+                <span class="card-kicker"><svg><use href="#icon-user" /></svg>你回应</span>
+                <span>这让我想起工作中遇到的问题：用户增长不仅与产品功能有关，也与心理动机、社会环境和文化背景相关。</span>
+              </button>
+            </div>
+            <div class="insight-strip">
+              <span class="insight-icon"><svg><use href="#icon-link" /></svg></span>
+              <div><strong>你倾向于在更广的背景中理解问题。</strong><span>这种方式还出现于 8 条阅读记录</span></div>
+              <button class="text-action" type="button" data-expand="connection">查看更多证据 <svg><use href="#icon-arrow-right" /></svg></button>
+            </div>
+            <div class="evidence-more" id="evidence-connection" hidden>
+              <div><span>《枪炮、病菌与钢铁》</span><p>你把地理条件与组织决策放在同一条因果线上讨论。</p></div>
+              <div><span>《社会性动物》</span><p>你将群体影响连接到了产品评论区的从众行为。</p></div>
+            </div>
+          </article>
+
+          <article class="thinking-block thinking-block--last">
+            <header>
+              <span class="accent-bar"></span>
+              <div>
+                <h3>质疑式思维</h3>
+                <p>你不会轻易接受一个完整结论，而会追问它成立的边界和被忽略的条件。</p>
+              </div>
+            </header>
+            <div class="dialogue-pair">
+              <svg class="dialogue-connector" viewBox="0 0 400 220" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M176 96C205 70 189 12 258 13" stroke="#75a5fa" opacity=".78"/>
+                <path d="M176 96C198 101 211 113 224 127C207 177 185 203 73 210" stroke="#a9c7ff" opacity=".74"/>
+                <circle cx="176" cy="96" r="3" fill="#f7fafe" stroke="#377ee5"/><circle cx="224" cy="127" r="3" fill="#f7fafe" stroke="#377ee5"/>
+              </svg>
+              <button class="quote-card quote-card--book" type="button" data-toast="已定位到《深度工作》的示例阅读瞬间">
+                <span class="card-kicker"><svg><use href="#icon-book" /></svg>书里说</span>
+                <q>把注意力放在真正重要的事情上，减少不必要的切换。</q>
+                <span class="source">《深度工作》 · 示例摘录</span>
+              </button>
+              <button class="quote-card quote-card--reader" type="button" data-toast="已定位到你的示例评论">
+                <span class="card-kicker"><svg><use href="#icon-user" /></svg>你回应</span>
+                <span>效率不一定意味着价值。我们优化掉的，也许正是体验的一部分。创作有时需要停顿，偶然的交流也可能带来新想法。</span>
+              </button>
+            </div>
+            <div class="insight-strip">
+              <span class="insight-icon"><svg><use href="#icon-compass" /></svg></span>
+              <div><strong>你会追问结论成立的条件与边界。</strong><span>这种方式还出现于 7 条阅读记录</span></div>
+              <button class="text-action" type="button" data-expand="question">查看更多证据 <svg><use href="#icon-arrow-right" /></svg></button>
+            </div>
+            <div class="evidence-more" id="evidence-question" hidden>
+              <div><span>《清醒思考的艺术》</span><p>你追问一个成功案例中，是否还存在被遗漏的失败样本。</p></div>
+              <div><span>《反脆弱》</span><p>你把“有益的波动”与“无法承受的风险”区分开来讨论。</p></div>
+            </div>
+          </article>
+          <button class="thinking-footer" type="button" data-toast="已展开本次分析涉及的 36 条示例记录">继续查看思维证据 <svg><use href="#icon-arrow-right" /></svg></button>
+        </div>
+      </section>
+
+      <section class="screen screen--detail persona-page" data-screen="persona" aria-labelledby="persona-title">
+        <div class="persona-hero">
+          <div class="persona-scene" aria-hidden="true">
+            <svg viewBox="0 0 430 375" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="p-sky" x2=".75" y2="1"><stop stop-color="#e4effd"/><stop offset=".47" stop-color="#f9f5ed"/><stop offset="1" stop-color="#f5d9ad"/></linearGradient>
+                <radialGradient id="p-dawn"><stop stop-color="#fff5c8" stop-opacity=".95"/><stop offset=".4" stop-color="#ffe2ab" stop-opacity=".5"/><stop offset="1" stop-color="#ffe0b4" stop-opacity="0"/></radialGradient>
+                <linearGradient id="p-lake" x2="0" y2="1"><stop stop-color="#cddce3"/><stop offset=".5" stop-color="#e4e8e5"/><stop offset="1" stop-color="#d5e2eb"/></linearGradient>
+                <linearGradient id="p-reflection" x2="0" y2="1"><stop stop-color="#fff8db" stop-opacity=".9"/><stop offset="1" stop-color="#f7dcaf" stop-opacity="0"/></linearGradient>
+                <linearGradient id="p-shirt" x2="1" y2=".4"><stop stop-color="#a9b3b9"/><stop offset=".3" stop-color="#dbd8cc"/><stop offset=".65" stop-color="#e6dfcc"/><stop offset="1" stop-color="#acaaa0"/></linearGradient>
+                <linearGradient id="p-cloth" x2="1" y2="1"><stop stop-color="#8796a4"/><stop offset=".45" stop-color="#526878"/><stop offset=".72" stop-color="#748b99"/><stop offset="1" stop-color="#a2b1b9"/></linearGradient>
+                <linearGradient id="p-trousers" x2="1" y2="1"><stop stop-color="#9b9f98"/><stop offset=".35" stop-color="#797f7f"/><stop offset=".7" stop-color="#6d777b"/><stop offset="1" stop-color="#a6a59a"/></linearGradient>
+                <linearGradient id="p-hair" x2=".9" y2="1"><stop stop-color="#4b5360"/><stop offset=".45" stop-color="#293845"/><stop offset="1" stop-color="#596064"/></linearGradient>
+                <linearGradient id="p-rock" x2=".6" y2="1"><stop stop-color="#c3c4b6"/><stop offset=".48" stop-color="#9ca8a6"/><stop offset="1" stop-color="#5c727e"/></linearGradient>
+                <linearGradient id="p-leaf" x2="1" y2="1"><stop stop-color="#d5ca9d"/><stop offset=".6" stop-color="#9d9e7e"/><stop offset="1" stop-color="#748a7e"/></linearGradient>
+                <linearGradient id="p-fade" x2="0" y2="1"><stop stop-color="#f5f8fd" stop-opacity="0"/><stop offset="1" stop-color="#f5f8fd"/></linearGradient>
+                <filter id="p-soft"><feGaussianBlur stdDeviation="1.3"/></filter>
+                <filter id="p-fog"><feGaussianBlur stdDeviation="9"/></filter>
+                <filter id="p-paper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".6" numOctaves="3" seed="21"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".07"/></feComponentTransfer></filter>
+                <path id="p-leaf-shape" d="M0 0C-8-4-11-13-6-21 2-18 5-8 0 0Z"/>
+              </defs>
+              <rect width="430" height="375" fill="url(#p-sky)"/>
+              <g fill="#fff" opacity=".48" filter="url(#p-soft)">
+                <path d="M183 83c36 3 58-5 79-14 11-4 24-2 36-4-15 10-41 14-59 23-23 10-40 9-56-5Z"/>
+                <path d="M287 47c29 0 55-11 79-17-15 9-20 18-43 18-15 1-21 6-36-1Z"/>
+                <path d="M307 106c33-10 50-1 75-17 15-10 31-6 48-18v9c-29 22-58 17-82 28-18 7-28 5-41-2Z"/>
+              </g>
+              <g class="persona-mountains">
+                <path d="M80 146l27-20 13 8 18-18 10 5 17-9 24 20 15-3 14 15 18-6 11 11 19-5 23 16 13-12 17 1 15-12 14 3 20-15 10 4 21-15 9 5 22-9v149H80Z" fill="#b9c6d9" opacity=".5"/>
+                <path d="M166 187l20-11 19 4 21-12 18 9 16-6 16 13 19-4 20-15 11 4 15-10 14 7 16-12 12 3 18-15 13 4 16-10v111H166Z" fill="#9cb2ca" opacity=".52"/>
+                <path d="M430 95l-17 7-7-2-10 13-10-2-10 16-8-3-17 23-15-2-19 18-24 6 8 21 32 5 24-17 25-3 15-10 18 10 15-4Z" fill="#8ca0bd" opacity=".46"/>
+                <path d="M180 207l27-15 13 3 19-7 21 11 15-9 20 12 13-8 15 8 14-6 19 5 17-12 15 5 13-10 13 8 16-4v35H180Z" fill="#607e91" opacity=".49"/>
+              </g>
+              <g filter="url(#p-fog)" fill="#fff" opacity=".55"><ellipse cx="250" cy="181" rx="107" ry="12"/><ellipse cx="341" cy="159" rx="58" ry="7"/></g>
+              <circle cx="367" cy="183" r="59" fill="url(#p-dawn)"/>
+              <circle cx="369" cy="181" r="7" fill="#fffbe4"/>
+              <path d="M0 219c104-5 172-4 237-3 75 1 139-2 193-7v166H0Z" fill="url(#p-lake)"/>
+              <path d="M368 216l13 95h-40l20-95Z" fill="url(#p-reflection)"/>
+              <g class="persona-ripples" fill="none" stroke-linecap="round">
+                <path d="M302 223h41m19 0h22m9 1h37M245 232h95m20 1h33m7-2h30M300 242h43m11 0h45M283 252h67m10-1h44M240 269h43m46 0h42m12-1h37M224 285h54m42 1h73" stroke="#f9faf3" stroke-width="1.2" opacity=".85"/>
+                <path d="M358 220h19m-20 8h23m-27 9h30m-33 9h41m-42 11h36m-53 13h57m-72 12h83" stroke="#fff4cd" stroke-width="2" opacity=".75"/>
+                <path d="M225 227h43m117 14h30m-179 18h42m107 24h30" stroke="#aabfca" stroke-width=".7" opacity=".7"/>
+              </g>
+              <path d="M0 243c53-6 108-12 161-13l50-1-34 10-98 15-79 11Z" fill="#aac4d1" opacity=".32"/>
+              <g fill="#66818b" opacity=".56" filter="url(#p-soft)"><path d="M285 213l2-10 4 6 2-13 4 17ZM299 215l4-13 3 4 3-11 4 20ZM403 215l3-14 4 4 4-15 4 24Z"/></g>
+              <!-- Back-facing figure: neck only; the head has no facial features. -->
+              <g class="persona-seated">
+                <path d="M267 270c21-7 42-24 64-45 6-5 14-6 19-2 9 9 11 31 10 43l-17 26-66 5Z" fill="url(#p-trousers)"/>
+                <path d="M329 225c-8 17-7 38-14 49l25 15c6-18 7-38 4-60Z" fill="#626f77" opacity=".6"/>
+                <path d="M336 230c-5 16-6 27-5 40m7-41c1 13 3 24 1 37m-14-19-14 24m27-14-5 17" fill="none" stroke="#b2b4a9" stroke-width="1" opacity=".6"/>
+                <path d="M294 154l-4 20-20 8-7-10 16-20Z" fill="#b4a38d"/>
+                <path d="M283 164c-13 0-28 8-35 20-12 20-18 40-23 60 6 18 19 28 42 29l24-13c7-14 12-31 11-49-1-22-3-42-19-47Z" fill="url(#p-shirt)"/>
+                <path d="M277 171c8 19 15 42 18 62l-13 29-20 9 8-42-4-46Z" fill="#b0b0a7" opacity=".65"/>
+                <path d="M260 177c-12 12-19 32-27 48l-11 27 17 10 18-32 10-40Z" fill="#c8ccca"/>
+                <path d="M292 176c10 9 17 19 20 37l-9 15-16-11-5-20Z" fill="#e4ddca"/>
+                <path d="M305 211c8 0 14 3 18 7l-3 5-17-4Z" fill="#baa98e"/>
+                <path d="M306 212l-3 5 8 5 9 1 3-4-8-4Z" fill="#d4bea0"/>
+                <path d="M244 191c3 17 0 36-7 57l25 17 13-17c-1-31-2-52 8-75-14 3-28 10-39 18Z" fill="url(#p-cloth)"/>
+                <path d="M247 192c10-12 20-17 34-20l7 6c-18 4-30 11-39 24Z" fill="#405969" opacity=".75"/>
+                <path d="M250 207c-4 19-9 33-18 48l12 15 13-24 15-52Z" fill="#6c8391" opacity=".8"/>
+                <g fill="none" stroke-width=".8" opacity=".7">
+                  <path d="M251 190c13-8 21-13 29-14m-35 36c4-13 12-22 22-28m-29 57c8-7 14-17 21-31m-11 40 14-35m-1 37 9-22" stroke="#a5b4bc"/>
+                  <path d="M271 186l7 25m10-20 9 28m-16 11 5 10m-10 14-3 8" stroke="#777f80"/>
+                  <path d="M290 184c6 9 10 18 12 29m-19-38 8 22" stroke="#f4eedf"/>
+                </g>
+                <path d="M272 112c9-9 22-11 31-3 9 7 9 21 7 30-2 8-6 14-14 20l-18-5c-8-15-13-29-6-42Z" fill="url(#p-hair)"/>
+                <path d="M274 115c-5-1-12 5-11 10-4 3-7 8-3 11-8 5-6 11 0 13-4 4-1 10 5 9-3 6 2 10 7 7 5 5 13 2 14-4 7 2 12-3 13-10 10-1 16-12 13-19 6-4 3-12-3-13 0-7-5-11-12-10-7-5-17-5-23 6Z" fill="url(#p-hair)"/>
+                <g fill="none" stroke-width=".9" stroke-linecap="round">
+                  <path d="M271 122c3-8 10-12 18-13m-22 24c8-2 17-9 20-17m-27 27c9 2 21-4 25-12m-16 20c8 0 16-5 21-12m-12 20c8-1 16-7 18-15m0-30c5 7 4 13 1 20m7-12c4 5 5 11 2 17" stroke="#687078" opacity=".55"/>
+                  <path d="M267 117c-5-4-9 0-10 5m6 17c-10 0-11 6-7 9m10 10c-6 8 2 14 8 9m28-54c6-6 10 1 9 6m-4 19c7-3 10-9 6-12" stroke="#344856" opacity=".7"/>
+                </g>
+              </g>
+              <g class="persona-rocks">
+                <path d="M219 285l21-17 35 5 28 13 23-1 23 23 12 54H191l7-39Z" fill="url(#p-rock)"/>
+                <path d="M235 276l39 9 25 19-30 2-17-15-33 5Z" fill="#d0cbb7" opacity=".8"/>
+                <path d="M276 280l24 6 9 19-17 5-8-13Z" fill="#839297"/>
+                <path d="M211 306l33-3 17 16-8 36-52-5Z" fill="#8da0a4"/>
+                <path d="M264 315l34-8 24 14 11 36-61 8Z" fill="#667d87"/>
+                <path d="M325 303l30-14 30 2 17 17 28-4v71H329Z" fill="url(#p-rock)"/>
+                <path d="M341 303l27-5 18 11-34 3Z" fill="#e0d3b6"/>
+                <path d="M376 317l32 4 22-9v25l-46 13Z" fill="#819599"/>
+                <path d="M204 325l30-13 14 5m21 9 25-12 19 9m34-12 24-6m15 24 28-10" stroke="#d9d7c4" stroke-width="1.5" fill="none" opacity=".55"/>
+                <path d="M275 288l-5 4-8-2m18 7-5 3-6-2m72 18 8 3 6-4" fill="none" stroke="#6d826b" stroke-width="3" opacity=".65"/>
+              </g>
+              <g fill="none" stroke="#a6976e" stroke-width=".8" opacity=".8">
+                <path d="M206 366c9-31 18-54 35-83m-12 77c11-36 12-53 9-83m104 93c-4-33-11-59-22-78m61 83c4-43 17-66 33-84"/>
+              </g>
+              <g fill="url(#p-leaf)" opacity=".76">
+                <use href="#p-leaf-shape" transform="translate(218 328) rotate(-30) scale(.8)"/>
+                <use href="#p-leaf-shape" transform="translate(232 305) rotate(38) scale(.75)"/>
+                <use href="#p-leaf-shape" transform="translate(233 329) rotate(66)"/>
+                <use href="#p-leaf-shape" transform="translate(333 322) rotate(-34) scale(.8)"/>
+                <use href="#p-leaf-shape" transform="translate(345 346) rotate(26) scale(1.15)"/>
+                <use href="#p-leaf-shape" transform="translate(397 319) rotate(-35)"/>
+                <use href="#p-leaf-shape" transform="translate(406 303) rotate(38) scale(.8)"/>
+              </g>
+              <g class="persona-canopy">
+                <path d="M89-4c12 25 30 42 48 61 22 23 37 39 49 59" fill="none" stroke="#b4ac8d" stroke-width="1"/>
+                <g fill="url(#p-leaf)" opacity=".7">
+                  <use href="#p-leaf-shape" transform="translate(102 18) rotate(-58)"/>
+                  <use href="#p-leaf-shape" transform="translate(114 31) rotate(54) scale(.8)"/>
+                  <use href="#p-leaf-shape" transform="translate(129 44) rotate(-52) scale(.9)"/>
+                  <use href="#p-leaf-shape" transform="translate(140 58) rotate(43)"/>
+                  <use href="#p-leaf-shape" transform="translate(152 70) rotate(-57) scale(.85)"/>
+                  <use href="#p-leaf-shape" transform="translate(163 85) rotate(35) scale(.8)"/>
+                  <use href="#p-leaf-shape" transform="translate(176 99) rotate(-48) scale(.75)"/>
+                  <use href="#p-leaf-shape" transform="translate(185 112) rotate(35) scale(.6)"/>
+                </g>
+              </g>
+              <g data-scene-detail="shoreline"></g>
+              <rect width="430" height="375" filter="url(#p-paper)" opacity=".45" style="mix-blend-mode:multiply"/>
+              <rect y="318" width="430" height="57" fill="url(#p-fade)"/>
+            </svg>
+          </div>
+          <header class="detail-nav detail-nav--overlay">
+            <a href="#home" class="icon-button" aria-label="返回探索原型">
+              <svg><use href="#icon-arrow-left" /></svg>
+            </a>
+            <h1 id="persona-title">阅读人格</h1>
+            <span class="nav-spacer" aria-hidden="true"></span>
+          </header>
+          <div class="persona-copy">
+            <p class="basis">你的阅读让人联想到</p>
+            <h2>《悉达多》<br />中的悉达多</h2>
+            <p class="character-source">人物来源：赫尔曼 · 黑塞《悉达多》</p>
+            <p class="persona-summary">相信亲身经验，<br />也始终保留内在秩序。</p>
+            <div class="basis-pill"><svg><use href="#icon-book" /></svg>基于 275 个阅读日及读过的 42 本书</div>
+          </div>
+        </div>
+
+        <div class="detail-content persona-content">
+          <section class="soft-panel trait-panel" aria-labelledby="trait-title">
+            <h2 id="trait-title">你与他相似的地方</h2>
+            <button class="trait-row" type="button" data-toast="来自 11 本书中的 19 条相关记录">
+              <span class="trait-icon trait-icon--blue"><svg><use href="#icon-leaf" /></svg></span>
+              <span><strong>通过体验形成判断</strong><small>不只依赖他人的观点，而是在真实的阅读与生活体验中，逐步形成自己的理解。</small></span>
+              <svg class="row-arrow"><use href="#icon-arrow-right" /></svg>
+            </button>
+            <button class="trait-row" type="button" data-toast="来自你的夜间阅读与长期书摘">
+              <span class="trait-icon trait-icon--gold"><svg><use href="#icon-waves" /></svg></span>
+              <span><strong>在安静中深入自己</strong><small>你享受独处与阅读的时光，在安静里看见更真实的想法与感受。</small></span>
+              <svg class="row-arrow"><use href="#icon-arrow-right" /></svg>
+            </button>
+            <button class="trait-row" type="button" data-toast="来自 3 组跨年度的重复主题">
+              <span class="trait-icon trait-icon--lavender"><svg><use href="#icon-mountains" /></svg></span>
+              <span><strong>不急于接受现成答案</strong><small>你愿意保持开放，在不断的阅读与思考中，慢慢接近属于自己的答案。</small></span>
+              <svg class="row-arrow"><use href="#icon-arrow-right" /></svg>
+            </button>
+          </section>
+
+          <section class="soft-panel rhythm-panel" aria-labelledby="rhythm-title">
+            <p class="eyebrow">YOUR READING DAY</p>
+            <h2 id="rhythm-title">你的阅读一天</h2>
+            <div class="rhythm-line" aria-hidden="true"><span></span><i></i><span></span><i></i><span></span><i></i><span></span></div>
+            <div class="rhythm-grid">
+              <div><span class="rhythm-symbol rhythm-symbol--sun"></span><strong>09:00</strong><b>阅读高峰</b><small>这段时间你最容易进入阅读状态。</small></div>
+              <div><span class="rhythm-symbol"><svg><use href="#icon-moon" /></svg></span><strong>24%</strong><b>夜间阅读</b><small>在夜深入静时，你仍会与书相伴。</small></div>
+              <div><span class="rhythm-symbol"><svg><use href="#icon-clock" /></svg></span><strong>40 分钟</strong><b>平均沉浸</b><small>每次阅读都能保持较长的专注时长。</small></div>
+              <div><span class="rhythm-symbol"><svg><use href="#icon-calendar" /></svg></span><strong>275 天</strong><b>累计阅读</b><small>阅读已经成为你生活的一部分。</small></div>
+            </div>
+          </section>
+
+          <section class="soft-panel feedback-panel" aria-labelledby="persona-feedback-title">
+            <h2 id="persona-feedback-title"><svg><use href="#icon-chat" /></svg>这像你吗？</h2>
+            <div class="feedback-options" data-feedback-group="persona">
+              <button type="button" data-value="很像我">很像我</button>
+              <button type="button" data-value="一部分像">一部分像</button>
+              <button type="button" data-value="不太像我">不太像我</button>
+            </div>
+            <p class="feedback-hint">你的选择会帮助下一次画像更贴近你，本次人物不会立即改变。</p>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen screen--detail unread-page" data-screen="unread" aria-labelledby="unread-title">
+        <header class="detail-nav">
+          <a href="#home" class="icon-button" aria-label="返回探索原型">
+            <svg><use href="#icon-arrow-left" /></svg>
+          </a>
+          <h1 id="unread-title">未读之境</h1>
+          <span class="nav-spacer" aria-hidden="true"></span>
+        </header>
+
+        <div class="unread-hero">
+          <div class="unread-scene" aria-hidden="true">
+            <svg viewBox="0 0 430 320" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="u-sky" x2="0" y2="1"><stop stop-color="#e5f0fd"/><stop offset=".55" stop-color="#f7fafc"/><stop offset="1" stop-color="#dceaf4"/></linearGradient>
+                <linearGradient id="u-frame" x2="1" y2=".5"><stop stop-color="#edf0e8"/><stop offset=".25" stop-color="#fff"/><stop offset="1" stop-color="#bfcfd4"/></linearGradient>
+                <linearGradient id="u-terrace" x2=".5" y2="1"><stop stop-color="#fcfdff"/><stop offset=".5" stop-color="#e8f0f9"/><stop offset="1" stop-color="#bacde3"/></linearGradient>
+                <linearGradient id="u-fade" x2="0" y2="1"><stop stop-color="#f6f9fd" stop-opacity="0"/><stop offset="1" stop-color="#f6f9fd"/></linearGradient>
+                <clipPath id="u-mint"><path d="M221 249V111a35 35 0 0 1 70 0v138Z"/></clipPath>
+                <clipPath id="u-blue"><path d="M300 214V69a28 28 0 0 1 56 0v145Z"/></clipPath>
+                <clipPath id="u-gold"><path d="M367 248V124a26 26 0 0 1 52 0v124Z"/></clipPath>
+                <filter id="u-shadow" x="-35%" y="-20%" width="180%" height="150%"><feDropShadow dx="4" dy="6" stdDeviation="4" flood-color="#7994b0" flood-opacity=".19"/></filter>
+              </defs>
+              <rect width="430" height="320" fill="url(#u-sky)"/>
+              <path d="M0 84l14-9 13 5 17-7 14 5 23-7 14 8 21-3 13 9 21-6 18 5 18-12 16 6 17-7 22 5 18-8 23 8 17-5 23 12 17-7 15 5 14-12 12 5 16-17 18-5v231H0Z" fill="#d1e3f7" opacity=".42"/>
+              <path d="M0 146c60-13 110-4 153 12 38 15 67 2 102-9 40-12 87-7 175 17v154H0Z" fill="#dfeaf4" opacity=".35"/>
+              <path d="M294 214V70a34 34 0 0 1 68 0v144Z" fill="url(#u-frame)" filter="url(#u-shadow)"/>
+              <g clip-path="url(#u-blue)"><use href="#scene-blue" x="295" y="41" width="67" height="178"/></g>
+              <path d="M360 248V124a33 33 0 0 1 66 0v124Z" fill="url(#u-frame)" filter="url(#u-shadow)"/>
+              <g clip-path="url(#u-gold)"><use href="#scene-gold" x="360" y="96" width="66" height="159"/></g>
+              <path d="M214 249V111a42 42 0 0 1 84 0v138Z" fill="url(#u-frame)" filter="url(#u-shadow)"/>
+              <g clip-path="url(#u-mint)"><use href="#scene-mint" x="211" y="77" width="90" height="177"/></g>
+              <path d="M246 251c45 10 88-5 127-21 34-14 36-25 8-36l-52-18c-13-5-12-10 1-16" fill="none" stroke="#b2c7dd" stroke-width="16" opacity=".28"/>
+              <path d="M246 247c45 10 88-5 127-21 34-14 36-25 8-36l-52-18c-13-5-12-10 1-16" fill="none" stroke="#fcfdff" stroke-width="12"/>
+              <path d="M0 260c44-23 82-11 124-12 30-1 50-18 85-9 35 10 46 21 82 18 28-3 41-3 67 12 21 12 44 13 72 5v46H0Z" fill="url(#u-terrace)"/>
+              <path d="M0 260c44-23 82-11 124-12 30-1 50-18 85-9 35 10 46 21 82 18 28-3 41-3 67 12 21 12 44 13 72 5" fill="none" stroke="#fff" stroke-width="2" opacity=".9"/>
+              <path d="M183 286c31-18 64-18 87-24" fill="none" stroke="#fff" stroke-width="11"/>
+              <g stroke="#88a9a0" stroke-width="1" fill="none"><path d="M0 311c8-36 9-54 25-84M20 320c15-37 25-57 44-76M407 320c-4-24-13-51-24-70"/></g>
+              <g fill="url(#world-leaf)" opacity=".65">
+                <use href="#world-leaf-shape" transform="translate(9 275) rotate(-45)"/><use href="#world-leaf-shape" transform="translate(13 262) rotate(50) scale(.8)"/><use href="#world-leaf-shape" transform="translate(21 245) rotate(-25) scale(.75)"/><use href="#world-leaf-shape" transform="translate(29 299) rotate(48)"/><use href="#world-leaf-shape" transform="translate(41 279) rotate(-40)"/><use href="#world-leaf-shape" transform="translate(54 262) rotate(48) scale(.8)"/><use href="#world-leaf-shape" transform="translate(396 289) rotate(-25)"/><use href="#world-leaf-shape" transform="translate(390 272) rotate(45) scale(.8)"/>
+              </g>
+              <rect y="274" width="430" height="46" fill="url(#u-fade)"/>
+            </svg>
+          </div>
+          <h2>三个你可能会喜欢<br />的新方向</h2>
+          <p>它们尚未出现在你的阅读里，<br />却与你已经关心的问题悄悄相连。</p>
+        </div>
+
+        <div class="detail-content realm-content" data-accordion="realms">
+          <article class="realm-card is-open" data-realm="anthropology">
+            <button class="realm-summary" type="button" aria-expanded="true">
+              <span class="mini-portal mini-portal--mint" aria-hidden="true"><svg viewBox="0 0 100 180" preserveAspectRatio="xMidYMid slice"><use href="#scene-mint" width="100" height="180"/></svg></span>
+              <span class="realm-name"><span><strong>人类学</strong><small class="match-tag match-tag--mint"><svg><use href="#icon-link" /></svg>连接很强</small></span><b>从心理与历史出发，看文化如何塑造人的选择。</b></span>
+              <svg class="realm-chevron"><use href="#icon-arrow-right" /></svg>
+            </button>
+            <div class="realm-details">
+              <div class="realm-rationale">
+              <h3>为什么可能适合你</h3>
+              <p>你关注选择背后的环境与动机。换一种文化视角，或许能接上你熟悉的问题。</p>
+              <div class="interest-links"><span><svg><use href="#icon-leaf" /></svg>心理</span><span><svg><use href="#icon-clock" /></svg>历史</span></div>
+              </div>
+              <h3>从这里开始</h3>
+              <button class="entry-question" type="button" data-toast="已把这个问题加入你的探索清单">
+                <svg><use href="#icon-book" /></svg><span>带着一个问题去读<q>为什么不同文化会塑造不同的选择？</q></span><svg><use href="#icon-arrow-right" /></svg>
+              </button>
+              <button class="primary-action" type="button" data-toast="已生成一条由浅入深的人类学阅读路径">从这里开始 <svg><use href="#icon-arrow-right" /></svg></button>
+              <div class="realm-feedback" data-feedback-group="anthropology">
+                <button type="button" data-value="想了解"><svg><use href="#icon-heart" /></svg>想了解</button>
+                <button type="button" data-value="暂时没兴趣"><svg><use href="#icon-minus" /></svg>暂时没兴趣</button>
+                <button type="button" data-value="其实我读过"><svg><use href="#icon-check" /></svg>其实我读过</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="realm-card" data-realm="science-history">
+            <button class="realm-summary" type="button" aria-expanded="false">
+              <span class="mini-portal mini-portal--blue" aria-hidden="true"><svg viewBox="0 0 100 180" preserveAspectRatio="xMidYMid slice"><use href="#scene-blue" width="100" height="180"/></svg></span>
+              <span class="realm-name"><span><strong>科学史</strong><small class="match-tag match-tag--blue"><svg><use href="#icon-compass" /></svg>值得试试</small></span><b>计算机 × 历史</b></span>
+              <svg class="realm-chevron"><use href="#icon-arrow-right" /></svg>
+            </button>
+            <div class="realm-details" hidden>
+              <div class="realm-rationale">
+              <h3>为什么可能适合你</h3>
+              <p>从技术如何运作，走向观念如何形成：这与你对计算机和历史的兴趣相连。</p>
+              <div class="interest-links"><span>计算机</span><span>历史</span></div>
+              </div>
+              <h3>从这里开始</h3>
+              <button class="entry-question" type="button" data-toast="已把《科学革命的结构》加入探索清单">
+                <svg><use href="#icon-book" /></svg><span>从一本书开始<q>《科学革命的结构》</q></span><svg><use href="#icon-arrow-right" /></svg>
+              </button>
+              <button class="primary-action" type="button" data-toast="已生成科学史入门书单">从这里开始 <svg><use href="#icon-arrow-right" /></svg></button>
+              <div class="realm-feedback" data-feedback-group="science-history">
+                <button type="button" data-value="想了解"><svg><use href="#icon-heart" /></svg>想了解</button>
+                <button type="button" data-value="暂时没兴趣"><svg><use href="#icon-minus" /></svg>暂时没兴趣</button>
+                <button type="button" data-value="其实我读过"><svg><use href="#icon-check" /></svg>其实我读过</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="realm-card" data-realm="urban-studies">
+            <button class="realm-summary" type="button" aria-expanded="false">
+              <span class="mini-portal mini-portal--gold" aria-hidden="true"><svg viewBox="0 0 100 180" preserveAspectRatio="xMidYMid slice"><use href="#scene-gold" width="100" height="180"/></svg></span>
+              <span class="realm-name"><span><strong>城市研究</strong><small class="match-tag match-tag--gold"><svg><use href="#icon-spark" /></svg>意外的可能</small></span><b>文学 × 商业</b></span>
+              <svg class="realm-chevron"><use href="#icon-arrow-right" /></svg>
+            </button>
+            <div class="realm-details" hidden>
+              <div class="realm-rationale">
+              <h3>为什么可能适合你</h3>
+              <p>你关注人的故事，也留意商业如何运转。街道与社区能把这两种兴趣连接起来。</p>
+              <div class="interest-links"><span>文学</span><span>商业</span></div>
+              </div>
+              <h3>从这里开始</h3>
+              <button class="entry-question" type="button" data-toast="已把城市观察路线加入探索清单">
+                <svg><use href="#icon-book" /></svg><span>沿着一条阅读路径<q>从街道观察，到理解一座城市</q></span><svg><use href="#icon-arrow-right" /></svg>
+              </button>
+              <button class="primary-action" type="button" data-toast="已生成城市研究阅读路径">从这里开始 <svg><use href="#icon-arrow-right" /></svg></button>
+              <div class="realm-feedback" data-feedback-group="urban-studies">
+                <button type="button" data-value="想了解"><svg><use href="#icon-heart" /></svg>想了解</button>
+                <button type="button" data-value="暂时没兴趣"><svg><use href="#icon-minus" /></svg>暂时没兴趣</button>
+                <button type="button" data-value="其实我读过"><svg><use href="#icon-check" /></svg>其实我读过</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>

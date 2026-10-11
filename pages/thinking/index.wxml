@@ -1,5 +1,5 @@
 <t-navbar title="思维方式" left-arrow />
-<view class="page">
+<view class="page page--thinking">
   <view wx:if="{{loading}}" class="loading-wrap">
     <t-loading theme="dots" size="40rpx" text="正在回看你的思考轨迹" />
   </view>
@@ -11,56 +11,89 @@
 
   <block wx:else>
     <!-- 正在形成（主动评论不足） -->
-    <block wx:if="{{forming}}">
-      <view class="forming-card">
-        <view class="forming-card__title">你的思维轨迹正在形成</view>
-        <view class="forming-card__desc">在书页旁写下更多想法与回应，NINA 才能看清你反复出现的思考方式。</view>
-      </view>
-    </block>
+    <view wx:if="{{forming}}" class="forming-card">
+      <view class="forming-card__title">你的思维轨迹正在形成</view>
+      <view class="forming-card__desc">在书页旁写下更多想法与回应，NINA 才能看清你反复出现的思考方式。</view>
+    </view>
 
     <block wx:else>
-      <!-- 依据 + 核心判断（衬线） -->
-      <view wx:if="{{basisText}}" class="basis">{{basisText}}</view>
-      <view wx:if="{{summary}}" class="headline">{{summary}}</view>
+      <!-- 场景 hero：拱门里的思考者 + 依据 + 衬线核心判断 -->
+      <view class="hero">
+        <image class="hero__scene" src="/images/thinking-scene.png" mode="aspectFill" />
+        <view class="hero__fade"></view>
+        <view class="hero__copy">
+          <view wx:if="{{basisText}}" class="hero__basis">{{basisText}}</view>
+          <view wx:if="{{summary}}" class="hero__headline">{{summary}}</view>
+        </view>
+      </view>
 
-      <view class="section-title">你与书的对话</view>
+      <view class="content">
+        <view class="section-heading">你与书的对话</view>
 
-      <view class="think-card" wx:for="{{items}}" wx:for-item="dim" wx:key="id">
-        <view class="think-card__name">{{dim.name}}</view>
-        <view class="think-card__desc">{{dim.description}}</view>
-
-        <!-- 对话式证据：左「书里说」白卡 / 右「你回应」蓝卡下错位 -->
         <view
-          wx:for="{{dim.evidenceGroups}}"
-          wx:for-item="g"
-          wx:key="sourceMomentId"
-          class="dialog {{g.sourceText ? '' : 'dialog--solo'}}"
+          class="block {{index === items.length - 1 ? 'block--last' : ''}}"
+          wx:for="{{items}}"
+          wx:for-item="dim"
+          wx:key="id"
         >
-          <view wx:if="{{g.sourceText}}" class="say" bindtap="onEvidenceTap">
-            <view class="say__head">
-              <t-icon name="book-open" size="30rpx" color="#8fb3d9" />
-              <text class="say__who">书里说</text>
+          <!-- 竖条 + 思维方式名 + 描述 -->
+          <view class="block__head">
+            <view class="block__bar"></view>
+            <view class="block__headbody">
+              <view class="block__name">{{dim.name}}</view>
+              <view class="block__desc">{{dim.description}}</view>
             </view>
-            <view class="say__quote">“ {{g.sourceText}} ”</view>
-            <view wx:if="{{g.bookTitle}}" class="say__meta">——《{{g.bookTitle}}》</view>
           </view>
-          <view class="reply" bindtap="onEvidenceTap">
-            <view class="reply__head">
-              <t-icon name="user" size="28rpx" color="#7ba7d4" />
-              <text class="reply__who">你回应</text>
+
+          <!-- 对话双卡：左「书里说」白卡 / 右「你回应」蓝卡下错位 -->
+          <view wx:if="{{dim.lead}}" class="dialogue {{dim.lead.sourceText ? '' : 'dialogue--solo'}}">
+            <view wx:if="{{dim.lead.sourceText}}" class="qcard qcard--book" bindtap="onEvidenceTap">
+              <view class="qcard__kicker">
+                <t-icon name="book-open" size="28rpx" color="#5d86bd" />
+                <text>书里说</text>
+              </view>
+              <view class="qcard__quote">"{{dim.lead.sourceText}}"</view>
+              <view wx:if="{{dim.lead.bookTitle}}" class="qcard__source">《{{dim.lead.bookTitle}}》</view>
             </view>
-            <view class="reply__text">{{g.userResponse}}</view>
-            <view wx:if="{{g.bookTitle}}" class="reply__meta">《{{g.bookTitle}}》</view>
+            <view class="qcard qcard--reader" bindtap="onEvidenceTap">
+              <view class="qcard__kicker">
+                <t-icon name="user" size="26rpx" color="#5d86bd" />
+                <text>你回应</text>
+              </view>
+              <view class="qcard__reply">{{dim.lead.userResponse}}</view>
+              <view wx:if="{{dim.lead.sourceText && dim.lead.bookTitle}}" class="qcard__source">《{{dim.lead.bookTitle}}》</view>
+            </view>
+          </view>
+
+          <!-- 洞察条 -->
+          <view class="insight">
+            <view class="insight__icon">
+              <t-icon name="{{dim.insightIcon}}" size="34rpx" color="#6494db" />
+            </view>
+            <view class="insight__body">
+              <view class="insight__strong">{{dim.name}}</view>
+              <view class="insight__sub">{{dim.momentCount ? '这种方式还出现于 ' + dim.momentCount + ' 条阅读记录' : '来自你的真实阅读记录'}}</view>
+            </view>
+            <view
+              wx:if="{{dim.more.length}}"
+              class="text-action {{dim.expanded ? 'text-action--open' : ''}}"
+              data-id="{{dim.id}}"
+              catchtap="onExpandTap"
+            >{{dim.expanded ? '收起证据' : '查看更多证据'}}</view>
+          </view>
+
+          <!-- 展开的更多证据 -->
+          <view wx:if="{{dim.expanded && dim.more.length}}" class="evidence-more">
+            <view class="evidence-more__row" wx:for="{{dim.more}}" wx:for-item="ev" wx:key="sourceMomentId">
+              <text class="evidence-more__book">《{{ev.bookTitle}}》</text>
+              <text class="evidence-more__text">{{ev.userResponse || ev.sourceText}}</text>
+            </view>
           </view>
         </view>
 
-        <view class="think-card__foot">
-          <view class="think-card__count">
-            <t-icon name="tips" size="30rpx" color="#9db8d4" />
-            <text wx:if="{{dim.momentCount}}">这种方式还出现于 {{dim.momentCount}} 条阅读记录</text>
-            <text wx:else>来自你的真实阅读记录</text>
-          </view>
-          <view class="think-card__more" catchtap="onMoreTap">查看更多证据 ›</view>
+        <view class="thinking-footer" bindtap="onMoreTap">
+          继续查看思维证据
+          <t-icon name="chevron-right" size="24rpx" color="#6d8db8" />
         </view>
       </view>
     </block>

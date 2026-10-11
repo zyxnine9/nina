@@ -21,9 +21,9 @@ function formatSession(seconds) {
 }
 
 const TRAIT_ICONS = [
-  { icon: 'compass', iconColor: '#7c6cf0' },
-  { icon: 'moon', iconColor: '#c08a2d' },
-  { icon: 'bookmark', iconColor: '#4a7fb5' },
+  { icon: 'compass', iconColor: '#3f6eb3' }, // trait-icon--blue
+  { icon: 'moon', iconColor: '#b68025' }, // trait-icon--gold
+  { icon: 'bookmark', iconColor: '#725bd1' }, // trait-icon--lavender
 ];
 
 const RHYTHM_SPECS = [
@@ -42,6 +42,7 @@ Page({
     summary: '',
     archetype: null,
     titleText: '', // 人物名（+来源）
+    characterSource: '',
     traits: [],
     rhythm: null, // 四格统计
     myFeedback: '', // like | somewhat | dislike
@@ -77,6 +78,7 @@ Page({
         summary: d.summary || '',
         archetype: a,
         titleText: a ? (a.sourceTitle ? `《${a.sourceTitle}》中的${a.name}` : a.name) : '',
+        characterSource: a && a.sourceTitle ? `人物来源：《${a.sourceTitle}》` : '',
         traits: a ? (a.traits || []).map((t, i) => ({ ...t, ...TRAIT_ICONS[i % TRAIT_ICONS.length] })) : [],
         rhythm: rhythmItems,
         myFeedback: (d.myFeedback && d.myFeedback.type) || '',

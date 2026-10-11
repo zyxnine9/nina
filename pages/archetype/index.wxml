@@ -1,5 +1,5 @@
 <t-navbar title="阅读人格" left-arrow />
-<view class="page">
+<view class="page page--persona">
   <view wx:if="{{loading}}" class="loading-wrap">
     <t-loading theme="dots" size="40rpx" text="正在描绘你的阅读气质" />
   </view>
@@ -10,87 +10,97 @@
   </view>
 
   <block wx:else>
-    <!-- 依据胶囊（居中） -->
-    <view wx:if="{{basisText}}" class="basis">
-      <t-icon name="calendar" size="26rpx" color="#8a7bb8" />
-      <text>{{basisText}}</text>
+    <!-- 场景 hero：湖畔晨读人 + 左侧文案浮层 -->
+    <view class="hero">
+      <image class="hero__scene" src="/images/persona-scene.png" mode="aspectFill" />
+      <view class="hero__fade"></view>
+      <view class="hero__copy">
+        <view class="hero__basis">你的阅读让人联想到</view>
+        <block wx:if="{{archetype}}">
+          <view class="hero__name">{{titleText}}</view>
+          <view class="hero__underline"></view>
+          <view wx:if="{{characterSource}}" class="hero__source">{{characterSource}}</view>
+        </block>
+        <view wx:if="{{summary}}" class="hero__summary">{{summary}}</view>
+        <view wx:if="{{basisText}}" class="hero__pill">
+          <t-icon name="book-open" size="24rpx" color="#6f69d8" />
+          <text>{{basisText}}</text>
+        </view>
+      </view>
     </view>
 
-    <!-- 人物原型：framing + 名字（衬线） + 气质句 -->
-    <block wx:if="{{archetype}}">
-      <view class="arch-hero">
-        <view class="arch-hero__aura"></view>
-        <view class="arch-hero__framing">{{archetype.framing}}</view>
-        <view class="arch-hero__name">{{titleText}}</view>
-        <view wx:if="{{summary}}" class="arch-hero__summary">{{summary}}</view>
-      </view>
+    <!-- 人物证据不足 -->
+    <view wx:if="{{!archetype}}" class="forming-card">
+      <view class="forming-card__title">你的人物原型正在浮现</view>
+      <view wx:if="{{summary}}" class="forming-card__desc">{{summary}}</view>
+      <view wx:else class="forming-card__desc">再多读一些书，NINA 会为你找到那个遥遥呼应的人物。</view>
+    </view>
 
-      <!-- 你与他相似的地方：一张大卡内的图标行 -->
-      <view class="panel">
+    <view class="content">
+      <!-- 你与他相似的地方 -->
+      <view wx:if="{{traits.length}}" class="panel">
         <view class="panel__title">你与他相似的地方</view>
-        <view
-          class="trait"
-          wx:for="{{traits}}"
-          wx:key="name"
-        >
+        <view class="trait" wx:for="{{traits}}" wx:key="name">
           <view class="trait__icon trait__icon--spec{{index % 3}}">
-            <t-icon name="{{item.icon}}" size="34rpx" color="{{item.iconColor}}" />
+            <t-icon name="{{item.icon}}" size="42rpx" color="{{item.iconColor}}" />
           </view>
           <view class="trait__body">
             <view class="trait__name">{{item.name}}</view>
             <view class="trait__desc">{{item.description}}</view>
           </view>
-          <t-icon name="chevron-right" size="36rpx" color="#b8c6d8" />
+          <t-icon name="chevron-right" size="34rpx" color="#7f95b1" />
         </view>
       </view>
-    </block>
 
-    <!-- 人物证据不足 -->
-    <block wx:if="{{!archetype}}">
-      <view class="forming-card">
-        <view class="forming-card__title">你的人物原型正在浮现</view>
-        <view wx:if="{{summary}}" class="forming-card__desc">{{summary}}</view>
-        <view wx:else class="forming-card__desc">再多读一些书，NINA 会为你找到那个遥遥呼应的人物。</view>
-      </view>
-    </block>
-
-    <!-- 你的阅读一天：四列图标格 -->
-    <view wx:if="{{rhythm.length}}" class="panel">
-      <view class="panel__title">{{archetype ? '你的阅读一天' : '你的阅读节律'}}</view>
-      <view class="rhythm">
-        <view class="rhythm__item" wx:for="{{rhythm}}" wx:key="label">
-          <view class="rhythm__icon rhythm__icon--spec{{index % 4}}">
-            <t-icon name="{{item.icon}}" size="34rpx" color="{{item.iconColor}}" />
+      <!-- 你的阅读一天：虚线 + 四格 -->
+      <view wx:if="{{rhythm.length}}" class="panel">
+        <view class="panel__eyebrow">YOUR READING DAY</view>
+        <view class="panel__title">{{archetype ? '你的阅读一天' : '你的阅读节律'}}</view>
+        <view class="rhythm-line">
+          <view class="rhythm-line__dot"></view>
+          <view class="rhythm-line__gap"></view>
+          <view class="rhythm-line__dot"></view>
+          <view class="rhythm-line__gap"></view>
+          <view class="rhythm-line__dot"></view>
+          <view class="rhythm-line__gap"></view>
+          <view class="rhythm-line__dot"></view>
+        </view>
+        <view class="rhythm">
+          <view class="rhythm__item" wx:for="{{rhythm}}" wx:key="label">
+            <view class="rhythm__symbol {{index === 0 ? 'rhythm__symbol--sun' : ''}}">
+              <t-icon wx:if="{{index !== 0}}" name="{{item.icon}}" size="40rpx" color="#477bbf" />
+            </view>
+            <view class="rhythm__value">{{item.value}}</view>
+            <view class="rhythm__label">{{item.label}}</view>
+            <view class="rhythm__note">{{item.note}}</view>
           </view>
-          <view class="rhythm__value">{{item.value}}</view>
-          <view class="rhythm__label">{{item.label}}</view>
-          <view class="rhythm__note">{{item.note}}</view>
         </view>
       </view>
-    </view>
 
-    <!-- 这像你吗？ -->
-    <view class="panel">
-      <view class="panel__title panel__title--with-icon">
-        <t-icon name="chat" size="34rpx" color="#123a6b" />
-        <text>这像你吗？</text>
-      </view>
-      <view class="feedback__pills">
-        <view
-          class="pill {{myFeedback === 'like' ? 'pill--active' : ''}}"
-          data-type="like"
-          bindtap="onFeedbackTap"
-        >很像你</view>
-        <view
-          class="pill {{myFeedback === 'somewhat' ? 'pill--active' : ''}}"
-          data-type="somewhat"
-          bindtap="onFeedbackTap"
-        >一部分像</view>
-        <view
-          class="pill {{myFeedback === 'dislike' ? 'pill--active' : ''}}"
-          data-type="dislike"
-          bindtap="onFeedbackTap"
-        >不太像我</view>
+      <!-- 这像你吗？ -->
+      <view class="panel">
+        <view class="panel__title panel__title--with-icon">
+          <t-icon name="chat" size="34rpx" color="#082f60" />
+          <text>这像你吗？</text>
+        </view>
+        <view class="feedback">
+          <view
+            class="feedback__btn {{myFeedback === 'like' ? 'feedback__btn--active' : ''}}"
+            data-type="like"
+            bindtap="onFeedbackTap"
+          >很像我</view>
+          <view
+            class="feedback__btn {{myFeedback === 'somewhat' ? 'feedback__btn--active' : ''}}"
+            data-type="somewhat"
+            bindtap="onFeedbackTap"
+          >一部分像</view>
+          <view
+            class="feedback__btn {{myFeedback === 'dislike' ? 'feedback__btn--active' : ''}}"
+            data-type="dislike"
+            bindtap="onFeedbackTap"
+          >不太像我</view>
+        </view>
+        <view class="feedback__hint">你的选择会帮助下一次画像更贴近你，本次人物不会立即改变。</view>
       </view>
     </view>
   </block>

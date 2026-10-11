@@ -1,15 +1,16 @@
-// 未读之境（三张「远方入口」卡：CSS 拱门插画 + 收起态 A × B 副标题）
-@ink: #123a6b;
-@mint: #bfe4d7;
-@mint-soft: #eef9f4;
-@gold: #f1d49c;
-@gold-soft: #fdf6e9;
-@blue-soft: #eef5fc;
+// 未读之境（v2 原型：三扇拱门场景 hero + 手风琴卡片 + 迷你拱门插画）
+// token 对齐 docs/ui-previews/styles.css
+@navy: #123a6b;
+@navy-deep: #082f60;
+@muted: #6f86a5;
+@line: rgba(69, 116, 171, 0.15);
 
-.page {
+.page--unread {
   min-height: 100vh;
-  padding: 0 40rpx 100rpx;
-  background: #e9f0f9;
+  padding: 0 0 100rpx;
+  background:
+    radial-gradient(circle at 10% 15%, rgba(191, 228, 215, 0.2), transparent 520rpx),
+    #f6f9fd;
 }
 
 .loading-wrap {
@@ -25,7 +26,7 @@
 
 .state-text {
   font-size: 27rpx;
-  color: var(--text-tertiary);
+  color: @muted;
 }
 
 .btn-retry {
@@ -33,279 +34,316 @@
   margin-top: 32rpx;
   padding: 16rpx 56rpx;
   border-radius: 999rpx;
-  background: @ink;
+  background: @navy;
   color: #fff;
   font-size: 27rpx;
 }
 
-.headline {
-  margin-top: 36rpx;
-  font-size: 44rpx;
-  font-weight: 650;
-  letter-spacing: -0.03em;
-  line-height: 1.5;
-  color: @ink;
+// ---------- 场景 hero ----------
+.hero {
+  position: relative;
+  height: 558rpx;
+  padding: 192rpx 35rpx 0;
+  overflow: hidden;
+  background: #f2f8fb;
+
+  &__scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  // 左侧白色渐隐，保证文案可读
+  &__fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(247, 250, 254, 0.53), rgba(247, 250, 254, 0.29) 39%, transparent 59%);
+  }
+
+  &__copy {
+    position: relative;
+    z-index: 2;
+  }
+
+  &__headline {
+    max-width: 420rpx;
+    font-size: 45rpx;
+    font-weight: 600;
+    line-height: 1.28;
+    letter-spacing: -0.035em;
+    color: @navy-deep;
+  }
+
+  &__sub {
+    max-width: 440rpx;
+    margin-top: 26rpx;
+    font-size: 24rpx;
+    line-height: 1.8;
+    color: #71829d;
+  }
 }
 
 // ---------- 正在形成 ----------
 .forming-card {
-  margin-top: 40rpx;
-  padding: 64rpx 40rpx;
-  border-radius: 40rpx;
-  background: linear-gradient(160deg, #ffffff, @mint-soft);
-  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
+  margin: 24rpx 21rpx 0;
+  padding: 56rpx 40rpx;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 47rpx;
+  background: linear-gradient(130deg, rgba(255, 255, 255, 0.9), rgba(249, 252, 255, 0.83));
+  box-shadow: 0 28rpx 59rpx rgba(69, 103, 147, 0.08);
   text-align: center;
 
   &__title {
     font-size: 32rpx;
     font-weight: 700;
-    color: @ink;
+    color: @navy-deep;
   }
 
   &__desc {
-    margin-top: 20rpx;
-    font-size: 26rpx;
-    line-height: 1.8;
-    color: var(--text-secondary);
-  }
-}
-
-// ---------- 远方入口卡片 ----------
-.realm {
-  display: flex;
-  align-items: flex-start;
-  margin-top: 28rpx;
-  padding: 32rpx;
-  border-radius: 40rpx;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
-
-  // 收起态卡片压缩高度
-  &--open {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, @mint-soft 140%);
-
-    // 展开态：拱门顶对齐（设计稿）
-    .realm__arch {
-      align-self: flex-start;
-    }
-  }
-
-  // ---------- CSS 拱门插画（天空渐变 + 山丘 + 月亮） ----------
-  &__arch {
-    flex-shrink: 0;
-    align-self: center;
-    width: 140rpx;
-    height: 180rpx;
-    border-radius: 70rpx 70rpx 20rpx 20rpx;
-    position: relative;
-    overflow: hidden;
-    box-shadow: inset 0 0 24rpx rgba(18, 58, 107, 0.08);
-
-    // 月亮
-    &::before {
-      content: '';
-      position: absolute;
-      top: 28rpx;
-      right: 26rpx;
-      width: 34rpx;
-      height: 34rpx;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 0 16rpx rgba(255, 255, 255, 0.8);
-    }
-
-    // 山丘（两层）
-    &::after {
-      content: '';
-      position: absolute;
-      left: -20%;
-      right: -20%;
-      bottom: 0;
-      height: 58%;
-      background:
-        radial-gradient(120% 90% at 20% 100%, rgba(255, 255, 255, 0.35) 0 60%, transparent 61%),
-        radial-gradient(140% 110% at 85% 100%, currentColor 0 70%, transparent 71%);
-    }
-
-    &--spec1 {
-      color: #9cc0e4;
-      background: linear-gradient(180deg, #e3eefb 0%, #cfe2f5 70%, #b7d3ec 100%);
-    }
-
-    &--spec2 {
-      color: #96cbb2;
-      background: linear-gradient(180deg, #e2f5ec 0%, #cdeadf 70%, #b3dccb 100%);
-    }
-
-    &--spec3 {
-      color: #e2bd80;
-      background: linear-gradient(180deg, #fdf1d8 0%, #f8e3ba 70%, #f0d49f 100%);
-    }
-  }
-
-  &__body {
-    flex: 1;
-    min-width: 0;
-    margin: 0 20rpx;
-  }
-
-  &__head {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 14rpx;
-  }
-
-  &__name {
-    font-family: 'Songti SC', 'STSong', 'Source Han Serif SC', serif;
-    font-size: 38rpx;
-    font-weight: 700;
-    color: @ink;
-  }
-
-  &__subtitle {
-    margin-top: 12rpx;
-    font-size: 25rpx;
-    color: var(--text-tertiary);
-  }
-
-  &__intro {
     margin-top: 18rpx;
     font-size: 26rpx;
-    line-height: 1.7;
-    color: var(--text-secondary);
-  }
-
-  &__section {
-    margin-top: 30rpx;
-  }
-
-  &__section-title {
-    font-size: 29rpx;
-    color: var(--text-primary);
-    font-weight: 650;
-    letter-spacing: -0.03em;
-  }
-
-  &__chevron {
-    flex-shrink: 0;
-    align-self: center;
+    line-height: 1.8;
+    color: @muted;
   }
 }
 
-// ---------- 亲缘徽章 ----------
-.badge {
+// ---------- 手风琴卡组 ----------
+.content {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: 17rpx;
+  margin-top: -73rpx;
+  padding: 0 21rpx;
+}
+
+.realm {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 47rpx;
+  background: linear-gradient(130deg, rgba(255, 255, 255, 0.9), rgba(249, 252, 255, 0.83));
+  box-shadow: 0 28rpx 59rpx rgba(69, 103, 147, 0.08);
+}
+
+// 收起态：迷你拱门 + 名称 + 徽章 + 副标题 + 圆形箭头
+.realm__summary {
   display: flex;
+  gap: 24rpx;
   align-items: center;
-  gap: 6rpx;
-  padding: 6rpx 18rpx;
-  border-radius: 999rpx;
-  font-size: 22rpx;
-
-  &--potential {
-    background: @blue-soft;
-    border: 1px solid #cfe2f5;
-    color: #3a6ea5;
-  }
-
-  &--blind {
-    background: @gold-soft;
-    border: 1px solid @gold;
-    color: #a97f2e;
-  }
+  min-height: 181rpx;
+  padding: 10rpx 28rpx 10rpx 17rpx;
 }
 
-// ---------- 连接依据 chips ----------
-.conn-list {
+.realm__portal {
+  flex: none;
+  width: 148rpx;
+  height: 171rpx;
+  border: 7rpx solid rgba(239, 245, 248, 0.94);
+  border-bottom: 0;
+  border-radius: 82rpx 82rpx 0 0;
+  background: #dfe9f3;
+}
+
+.realm__name {
+  flex: 1;
+  min-width: 0;
+}
+
+.realm__titlerow {
   display: flex;
   flex-wrap: wrap;
   gap: 14rpx;
-  margin-top: 16rpx;
+  align-items: center;
 }
 
-.conn {
-  display: flex;
+.realm__title {
+  font-size: 45rpx;
+  line-height: 1.35;
+  color: @navy-deep;
+}
+
+.realm--open .realm__title {
+  font-size: 49rpx;
+}
+
+.match-tag {
+  display: inline-flex;
+  gap: 7rpx;
   align-items: center;
-  gap: 8rpx;
-  padding: 10rpx 24rpx;
+  padding: 9rpx 14rpx;
   border-radius: 999rpx;
-  font-size: 24rpx;
+  font-size: 21rpx;
+  font-weight: 500;
+  white-space: nowrap;
 
-  // 奇数枚：薄荷实底
-  &--spec0 {
-    background: @mint;
-    color: #1c5c48;
-    font-weight: 600;
+  &--mint {
+    color: #268579;
+    background: #def5ee;
   }
 
-  // 偶数枚：白底
-  &--spec1 {
-    background: #fff;
-    box-shadow: 0 8rpx 24rpx rgba(65, 94, 135, 0.08);
-    color: var(--text-primary);
+  &--blue {
+    color: #426a9d;
+    background: #e2edfe;
   }
-}
 
-// ---------- 进入方式行 ----------
-.entry-row {
-  display: flex;
-  align-items: center;
-  gap: 14rpx;
-  margin-top: 16rpx;
-  padding: 26rpx 28rpx;
-  border-radius: 24rpx;
-  background: #fff;
-  box-shadow: 0 16rpx 44rpx rgba(65, 94, 135, 0.1);
-
-  &__title {
-    flex: 1;
-    min-width: 0;
-    font-size: 27rpx;
-    font-weight: 600;
-    color: var(--text-primary);
-    line-height: 1.6;
+  &--gold {
+    color: #90642e;
+    background: #ffedca;
   }
 }
 
-// ---------- 主按钮 ----------
-.entry-btn {
+.realm__subtitle {
+  margin-top: 14rpx;
+  font-size: 25rpx;
+  line-height: 1.65;
+  color: #73849e;
+}
+
+.realm__chevron {
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8rpx;
-  margin-top: 26rpx;
-  padding: 22rpx 0;
+  width: 42rpx;
+  height: 42rpx;
+  border-radius: 50%;
+  background: rgba(224, 233, 244, 0.33);
+}
+
+// 展开态：拱门变高立左侧，标题区让位
+.realm--open .realm__summary {
+  align-items: flex-start;
+  min-height: 175rpx;
+  padding: 40rpx 31rpx 9rpx 206rpx;
+}
+
+.realm--open .realm__portal {
+  position: absolute;
+  top: 37rpx;
+  left: 26rpx;
+  width: 150rpx;
+  height: 314rpx;
+  border-color: #e3ede9;
+  border-width: 9rpx;
+  border-radius: 84rpx 84rpx 0 0;
+}
+
+.realm--open .realm__chevron {
+  margin-top: 10rpx;
+  background: transparent;
+}
+
+.realm__details {
+  padding: 0 28rpx 31rpx;
+}
+
+// 展开态文案区：右侧让出拱门位置
+.realm__rationale {
+  min-height: 195rpx;
+  margin-left: 178rpx;
+}
+
+.realm__h3 {
+  margin: 7rpx 0 12rpx;
+  font-size: 31rpx;
+  color: @navy-deep;
+}
+
+.realm__why {
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #7d8da4;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 17rpx;
+}
+
+.link {
+  padding: 10rpx 17rpx;
   border-radius: 999rpx;
-  background: @ink;
+  background: #e6f6f2;
+  color: #3b7180;
+  font-size: 23rpx;
+}
+
+// ---------- 从这里开始 ----------
+.entry {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+  padding: 26rpx;
+  border-radius: 31rpx;
+  background: #eff4fc;
+}
+
+.entry__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.entry__label {
+  display: block;
+  font-size: 23rpx;
+  color: #7990ac;
+}
+
+.entry__q {
+  display: block;
+  margin-top: 5rpx;
+  font-size: 29rpx;
+  color: @navy;
+}
+
+.primary-action {
+  display: flex;
+  gap: 14rpx;
+  align-items: center;
+  justify-content: center;
+  min-height: 91rpx;
+  margin-top: 23rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(110deg, #0f3e75, #1d5a9e);
+  box-shadow:
+    0 23rpx 49rpx rgba(22, 70, 122, 0.24),
+    inset 0 2rpx 0 rgba(255, 255, 255, 0.16);
   color: #fff;
   font-size: 29rpx;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 // ---------- 轻量反馈 ----------
 .fb {
-  display: flex;
-  gap: 16rpx;
-  margin-top: 30rpx;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+  padding-top: 26rpx;
+  margin-top: 28rpx;
+  border-top: 1px solid @line;
 }
 
 .fb__pill {
-  flex: 1;
-  min-width: 0;
   display: flex;
+  gap: 9rpx;
   align-items: center;
   justify-content: center;
-  gap: 6rpx;
-  padding: 14rpx 0;
+  min-height: 66rpx;
+  padding: 4rpx 0;
+  border: 1px solid #dce5f1;
   border-radius: 999rpx;
-  background: linear-gradient(110deg, #f2f5ff, #eef3ff);
+  background: rgba(255, 255, 255, 0.55);
+  color: #60738f;
   font-size: 22rpx;
-  color: #506889;
   white-space: nowrap;
+}
 
-  &--active {
-    background: linear-gradient(110deg, #effcf8, #e9f9f4);
-    color: #27b99e;
-    font-weight: 600;
-  }
+.fb__pill--active {
+  border-color: #7ebdad;
+  background: #e4f6f0;
+  color: #1d7566;
 }

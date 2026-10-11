@@ -1,14 +1,15 @@
-// 阅读人格详情页（人物肖像 × 行为数据层叠，对齐设计稿）
-@ink: #123a6b;
-@lavender: #d8d2f5;
-@lavender-soft: #f1effc;
-@gold: #f1d49c;
-@gold-soft: #fdf6e9;
+// 阅读人格详情页（v2 原型：湖畔场景 hero + 软玻璃卡）
+// token 对齐 docs/ui-previews/styles.css
+@navy: #123a6b;
+@navy-deep: #082f60;
+@muted: #6f86a5;
+@line: rgba(69, 116, 171, 0.15);
+@serif: 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
 
-.page {
+.page--persona {
   min-height: 100vh;
-  padding: 0 40rpx 100rpx;
-  background: #e9f0f9;
+  padding: 0 0 100rpx;
+  background: #f5f8fd;
 }
 
 .loading-wrap {
@@ -24,7 +25,7 @@
 
 .state-text {
   font-size: 27rpx;
-  color: var(--text-tertiary);
+  color: @muted;
 }
 
 .btn-retry {
@@ -32,251 +33,333 @@
   margin-top: 32rpx;
   padding: 16rpx 56rpx;
   border-radius: 999rpx;
-  background: @ink;
+  background: @navy;
   color: #fff;
   font-size: 27rpx;
 }
 
-// ---------- 依据胶囊（居中） ----------
-.basis {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8rpx;
-  margin-top: 28rpx;
-  font-size: 24rpx;
-  color: #8a7bb8;
-}
-
-// ---------- 人物原型 hero（暖紫 + 晨金层叠） ----------
-.arch-hero {
+// ---------- 场景 hero ----------
+.hero {
   position: relative;
-  margin-top: 24rpx;
-  padding: 52rpx 40rpx;
-  border-radius: 32rpx;
-  background: linear-gradient(150deg, @lavender-soft 10%, @lavender 55%, @gold 130%);
+  height: 698rpx;
   overflow: hidden;
+  background: #eef5fb;
 
-  &__aura {
+  &__scene {
     position: absolute;
-    top: -80rpx;
-    right: -60rpx;
-    width: 320rpx;
-    height: 320rpx;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.45);
-    filter: blur(16rpx);
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
 
-  &__framing {
+  // 左侧白幕 + 底部渐隐，托住文案
+  &__fade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(247, 250, 254, 0.92) 0%, rgba(247, 250, 254, 0.84) 26%, rgba(247, 250, 254, 0.3) 49%, transparent 67%),
+      linear-gradient(0deg, rgba(245, 248, 253, 0.8), transparent 22%);
+  }
+
+  &__copy {
     position: relative;
-    z-index: 1;
-    font-size: 26rpx;
-    color: @ink;
-    opacity: 0.75;
+    z-index: 2;
+    padding: 143rpx 42rpx 0;
+  }
+
+  &__basis {
+    margin-bottom: 16rpx;
+    font-size: 22rpx;
+    line-height: 1.4;
+    color: #6c83a4;
   }
 
   &__name {
-    position: relative;
-    z-index: 1;
+    max-width: 420rpx;
+    font-family: @serif;
+    font-size: 56rpx;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    color: @navy-deep;
+  }
+
+  // 金色手绘下划线
+  &__underline {
+    width: 307rpx;
+    height: 4rpx;
     margin-top: 16rpx;
-    font-family: 'Songti SC', 'STSong', 'Source Han Serif SC', serif;
-    font-size: 52rpx;
-    font-weight: 700;
-    line-height: 1.4;
-    color: @ink;
+    background: linear-gradient(90deg, #eebb64, transparent);
+    transform: rotate(-3deg);
+  }
+
+  &__source {
+    margin-top: 19rpx;
+    font-size: 22rpx;
+    line-height: 1.5;
+    color: #7289a8;
   }
 
   &__summary {
-    position: relative;
-    z-index: 1;
-    margin-top: 20rpx;
-    font-size: 27rpx;
-    line-height: 1.7;
-    color: @ink;
-    opacity: 0.85;
+    max-width: 400rpx;
+    margin-top: 35rpx;
+    font-family: @serif;
+    font-size: 33rpx;
+    line-height: 1.4;
+    color: @navy-deep;
+  }
+
+  &__pill {
+    display: flex;
+    gap: 12rpx;
+    align-items: center;
+    width: max-content;
+    max-width: 100%;
+    margin-top: 23rpx;
+    padding: 16rpx 24rpx;
+    border: 1px solid rgba(124, 111, 237, 0.18);
+    border-radius: 999rpx;
+    background: rgba(255, 255, 255, 0.66);
+    color: #6f69d8;
+    font-size: 22rpx;
   }
 }
 
-// ---------- 大卡 + 卡内小节标题 ----------
-.panel {
-  margin-top: 32rpx;
-  padding: 36rpx 32rpx;
-  border-radius: 40rpx;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
+// ---------- 人物证据不足 ----------
+.forming-card {
+  position: relative;
+  z-index: 3;
+  margin: -66rpx 21rpx 0;
+  padding: 56rpx 40rpx;
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 49rpx;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 38rpx 84rpx rgba(40, 79, 124, 0.1);
+  text-align: center;
 
   &__title {
-    font-size: 31rpx;
-    font-weight: 650;
-    letter-spacing: -0.03em;
-    color: var(--text-primary);
+    font-size: 32rpx;
+    font-weight: 700;
+    color: @navy-deep;
+  }
 
-    &--with-icon {
-      display: flex;
-      align-items: center;
-      gap: 10rpx;
-    }
+  &__desc {
+    margin-top: 18rpx;
+    font-size: 26rpx;
+    line-height: 1.8;
+    color: @muted;
   }
 }
 
-// ---------- 相似之处：图标行 ----------
+// ---------- 内容卡组 ----------
+.content {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: 24rpx;
+  margin-top: -66rpx;
+  padding: 0 21rpx;
+}
+
+.panel {
+  padding: 37rpx 31rpx;
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 49rpx;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 38rpx 84rpx rgba(40, 79, 124, 0.1);
+}
+
+.panel__eyebrow {
+  font-size: 22rpx;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #6991c0;
+}
+
+.panel__title {
+  margin-top: 9rpx;
+  font-size: 42rpx;
+  color: @navy-deep;
+}
+
+.panel__title--with-icon {
+  display: flex;
+  gap: 14rpx;
+  align-items: center;
+  margin-top: 0;
+}
+
+// ---------- 特质行 ----------
 .trait {
   display: flex;
+  gap: 23rpx;
   align-items: center;
+  padding: 30rpx 0;
+  border-bottom: 1px solid @line;
 
-  & + .trait {
-    margin-top: 32rpx;
-    padding-top: 32rpx;
-    border-top: 1px solid var(--separator);
+  &:last-child {
+    border-bottom: 0;
+    padding-bottom: 9rpx;
   }
 
   &__icon {
-    flex-shrink: 0;
-    width: 76rpx;
-    height: 76rpx;
-    border-radius: 22rpx;
+    flex: none;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 87rpx;
+    height: 87rpx;
+    border-radius: 50%;
+    box-shadow:
+      inset 0 0 0 5rpx rgba(255, 255, 255, 0.42),
+      0 14rpx 31rpx rgba(54, 90, 133, 0.08);
 
     &--spec0 {
-      background: @lavender-soft;
+      background: #e7f1fd;
     }
 
     &--spec1 {
-      background: @gold-soft;
+      background: #fff1d5;
     }
 
     &--spec2 {
-      background: #eaf3fc;
+      background: #eee9ff;
     }
   }
 
   &__body {
     flex: 1;
     min-width: 0;
-    margin: 0 20rpx;
   }
 
   &__name {
-    font-size: 29rpx;
+    margin-bottom: 5rpx;
+    font-size: 33rpx;
     font-weight: 600;
-    color: @ink;
+    color: @navy-deep;
   }
 
   &__desc {
-    margin-top: 8rpx;
-    font-size: 25rpx;
-    line-height: 1.65;
-    color: var(--text-secondary);
-  }
-}
-
-// ---------- 人物不足 ----------
-.forming-card {
-  margin-top: 32rpx;
-  padding: 56rpx 40rpx;
-  border-radius: 40rpx;
-  background: linear-gradient(160deg, #ffffff, @lavender-soft);
-  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
-  text-align: center;
-
-  &__title {
-    font-size: 32rpx;
-    font-weight: 700;
-    color: @ink;
-  }
-
-  &__desc {
-    margin-top: 20rpx;
     font-size: 26rpx;
-    line-height: 1.8;
-    color: var(--text-secondary);
+    line-height: 1.5;
+    color: @muted;
   }
 }
 
-// ---------- 你的阅读一天：四列图标格 ----------
+// ---------- 阅读节律：虚线 + 四格 ----------
+.rhythm-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 61rpx;
+  margin-top: 24rpx;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    left: 5%;
+    border-top: 1px dashed #91b6e4;
+  }
+
+  &__dot {
+    position: relative;
+    z-index: 1;
+    width: 15rpx;
+    height: 15rpx;
+    border: 4rpx solid #fff;
+    border-radius: 50%;
+    background: #4a7fc4;
+  }
+
+  &__gap {
+    width: 9rpx;
+  }
+}
+
 .rhythm {
-  display: flex;
-  gap: 12rpx;
-  margin-top: 30rpx;
-}
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 38rpx 24rpx;
+  margin-top: 10rpx;
 
-.rhythm__item {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.rhythm__icon {
-  width: 68rpx;
-  height: 68rpx;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &--spec0 {
-    background: @lavender-soft;
+  &__item {
+    display: grid;
+    grid-template-columns: 45rpx 1fr;
+    align-items: center;
   }
 
-  &--spec1 {
-    background: #eaf3fc;
+  &__symbol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-row: span 2;
+    width: 44rpx;
+    height: 44rpx;
+    color: #477bbf;
   }
 
-  &--spec2 {
-    background: @gold-soft;
+  // 太阳：金色圆点 + 光晕
+  &__symbol--sun {
+    border-radius: 50%;
+    background: #f5c56a;
+    box-shadow: 0 0 31rpx rgba(236, 171, 54, 0.52);
+    transform: scale(0.56);
   }
 
-  &--spec3 {
-    background: #e3f3ec;
-  }
-}
-
-.rhythm__value {
-  margin-top: 16rpx;
-  font-size: 28rpx;
-  font-weight: 700;
-  color: @ink;
-  white-space: nowrap;
-}
-
-.rhythm__label {
-  margin-top: 6rpx;
-  font-size: 22rpx;
-  color: var(--text-secondary);
-}
-
-.rhythm__note {
-  margin-top: 8rpx;
-  font-size: 20rpx;
-  line-height: 1.5;
-  color: var(--text-tertiary);
-}
-
-// ---------- 这像你吗 ----------
-.feedback__pills {
-  display: flex;
-  gap: 20rpx;
-  margin-top: 26rpx;
-}
-
-.pill {
-  flex: 1;
-  padding: 18rpx 0;
-  border-radius: 999rpx;
-  background: linear-gradient(110deg, #f2f5ff, #eef3ff);
-  text-align: center;
-  font-size: 26rpx;
-  color: #506889;
-
-  &--active {
-    background: linear-gradient(110deg, #fdf3dd, #fbe7bb);
-    color: #a97f2e;
+  &__value {
+    font-size: 31rpx;
     font-weight: 600;
+    color: @navy-deep;
+  }
+
+  &__label {
+    font-size: 26rpx;
+    color: @navy;
+  }
+
+  &__note {
+    grid-column: 1 / -1;
+    margin-top: 9rpx;
+    font-size: 24rpx;
+    line-height: 1.45;
+    color: @muted;
+  }
+}
+
+// ---------- 反馈 ----------
+.feedback {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14rpx;
+  margin-top: 28rpx;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 75rpx;
+    border: 1px solid #a9bfde;
+    border-radius: 999rpx;
+    background: rgba(255, 255, 255, 0.56);
+    color: #536f93;
+    font-size: 26rpx;
+  }
+
+  &__btn--active {
+    border-color: #d7a34d;
+    background: #fff0cf;
+    color: #9a691b;
+  }
+
+  &__hint {
+    margin-top: 21rpx;
+    font-size: 22rpx;
+    line-height: 1.5;
+    color: #92a2b7;
+    text-align: center;
   }
 }

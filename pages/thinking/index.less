@@ -1,13 +1,17 @@
-// 思维方式详情页（编辑杂志感：左右错位的对话线）
-// 视觉语言对齐 pages/discover：无描边大软阴影卡 + #e9f0f9 页底
-@ink: #123a6b;
-@mist: #cfe2f5;
-@mist-soft: #eaf3fc;
+// 思维方式详情页（v2 原型：拱门场景 hero + 对话双卡 + 洞察条）
+// token 对齐 docs/ui-previews/styles.css
+@navy: #123a6b;
+@navy-deep: #082f60;
+@muted: #6f86a5;
+@line: rgba(69, 116, 171, 0.15);
+@serif: 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
 
-.page {
+.page--thinking {
   min-height: 100vh;
-  padding: 0 40rpx 100rpx;
-  background: #e9f0f9;
+  padding: 0 0 100rpx;
+  background:
+    radial-gradient(circle at 90% 9%, rgba(207, 226, 245, 0.45), transparent 700rpx),
+    #f7fafe;
 }
 
 .loading-wrap {
@@ -23,7 +27,7 @@
 
 .state-text {
   font-size: 27rpx;
-  color: var(--text-tertiary);
+  color: @muted;
 }
 
 .btn-retry {
@@ -31,199 +35,284 @@
   margin-top: 32rpx;
   padding: 16rpx 56rpx;
   border-radius: 999rpx;
-  background: @ink;
+  background: @navy;
   color: #fff;
   font-size: 27rpx;
 }
 
 // ---------- 正在形成 ----------
 .forming-card {
-  margin-top: 40rpx;
+  margin: 40rpx 35rpx 0;
   padding: 64rpx 40rpx;
-  border-radius: 40rpx;
-  background: linear-gradient(160deg, #ffffff, @mist-soft);
-  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
+  border-radius: 47rpx;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 24rpx 80rpx rgba(41, 83, 132, 0.11);
   text-align: center;
 
   &__title {
     font-size: 32rpx;
     font-weight: 700;
-    color: @ink;
+    color: @navy-deep;
   }
 
   &__desc {
     margin-top: 20rpx;
     font-size: 26rpx;
     line-height: 1.8;
-    color: var(--text-secondary);
+    color: @muted;
   }
 }
 
-// ---------- 依据 + 核心判断 ----------
-.basis {
-  margin-top: 32rpx;
-  font-size: 24rpx;
-  color: var(--text-tertiary);
-}
+// ---------- 场景 hero ----------
+.hero {
+  position: relative;
+  height: 402rpx;
+  padding: 119rpx 35rpx 0;
+  overflow: hidden;
 
-.headline {
-  margin-top: 16rpx;
-  font-family: 'Songti SC', 'STSong', 'Source Han Serif SC', serif;
-  font-size: 46rpx;
-  font-weight: 700;
-  line-height: 1.55;
-  color: @ink;
-}
+  &__scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
 
-.section-title {
-  margin-top: 64rpx;
-  margin-bottom: 24rpx;
-  font-size: 34rpx;
-  font-weight: 650;
-  letter-spacing: -0.03em;
-  color: var(--text-primary);
-}
+  // 左侧白色渐隐，保证文案可读
+  &__fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(247, 250, 254, 0.5), rgba(247, 250, 254, 0.25) 62%, transparent 80%);
+  }
 
-// ---------- 思维动作卡 ----------
-.think-card {
-  margin-bottom: 32rpx;
-  padding: 36rpx 32rpx 28rpx;
-  border-radius: 40rpx;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 24rpx 80rpx rgba(65, 94, 135, 0.14);
-
-  // 竖条标题（设计稿：▎例证式思维）
-  &__name {
+  &__copy {
     position: relative;
-    padding-left: 22rpx;
-    font-size: 31rpx;
-    font-weight: 700;
-    color: @ink;
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 8rpx;
-      bottom: 8rpx;
-      width: 8rpx;
-      border-radius: 4rpx;
-      background: @mist;
-    }
+    z-index: 2;
   }
 
-  &__desc {
-    margin-top: 14rpx;
-    font-size: 26rpx;
-    line-height: 1.7;
-    color: var(--text-secondary);
-  }
-
-  &__foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 28rpx;
-    padding-top: 24rpx;
-    border-top: 1px solid var(--separator);
-  }
-
-  &__count {
-    display: flex;
-    align-items: center;
-    gap: 10rpx;
+  &__basis {
+    margin-bottom: 21rpx;
     font-size: 23rpx;
-    color: var(--text-tertiary);
+    line-height: 1.5;
+    color: #7393b9;
   }
 
-  &__more {
-    font-size: 24rpx;
-    color: #4a7fb5;
+  &__headline {
+    font-family: @serif;
+    font-size: 45rpx;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: @navy-deep;
   }
 }
 
-// ---------- 对话式证据（左右两栏，回应下错位） ----------
-.dialog {
+// ---------- 内容（压在 hero 上） ----------
+.content {
+  position: relative;
+  z-index: 3;
+  padding: 0 35rpx 0;
+  margin-top: -26rpx;
+}
+
+.section-heading {
+  margin-bottom: 35rpx;
+  font-family: @serif;
+  font-size: 43rpx;
+  line-height: 1.4;
+  color: @navy-deep;
+}
+
+// ---------- 思维方式块 ----------
+.block {
+  padding-bottom: 38rpx;
+  margin-bottom: 38rpx;
+  border-bottom: 1px solid @line;
+}
+
+.block--last {
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+
+.block__head {
+  display: flex;
+  gap: 17rpx;
+  margin-bottom: 24rpx;
+}
+
+.block__bar {
+  flex: none;
+  width: 9rpx;
+  height: 33rpx;
+  margin-top: 4rpx;
+  border-radius: 14rpx;
+  background: linear-gradient(#9fc3f5, #b6d0f5);
+}
+
+.block__name {
+  font-size: 38rpx;
+  font-weight: 600;
+  color: @navy-deep;
+}
+
+.block__desc {
+  margin-top: 10rpx;
+  font-size: 27rpx;
+  line-height: 1.6;
+  color: @muted;
+}
+
+// ---------- 对话双卡 ----------
+.dialogue {
   display: flex;
   align-items: flex-start;
-  margin-top: 30rpx;
+  justify-content: space-between;
 }
 
-.say {
-  flex: 1;
-  min-width: 0;
-  padding: 24rpx 26rpx;
-  border-radius: 24rpx;
-  background: #fff;
-  box-shadow: 0 16rpx 44rpx rgba(65, 94, 135, 0.1);
+.qcard {
+  width: 100%;
+  min-height: 253rpx;
+  padding: 28rpx 26rpx;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 47rpx;
+  color: @navy;
 
-  &__head {
-    display: flex;
-    align-items: center;
-    gap: 8rpx;
+  &--book {
+    width: 44%;
+    background: rgba(255, 255, 255, 0.91);
+    box-shadow: 0 24rpx 52rpx rgba(79, 116, 162, 0.07);
   }
 
-  &__who {
-    font-size: 21rpx;
-    color: #8fb3d9;
-    letter-spacing: 2rpx;
+  &--reader {
+    width: 44%;
+    margin-top: 24rpx;
+    background: linear-gradient(150deg, rgba(239, 247, 255, 0.98), rgba(218, 234, 252, 0.8));
+    box-shadow: inset 0 2rpx 0 rgba(255, 255, 255, 0.9);
+  }
+
+  &__kicker {
+    display: flex;
+    gap: 10rpx;
+    align-items: center;
+    margin-bottom: 17rpx;
+    font-size: 24rpx;
+    font-weight: 600;
+    color: #5d86bd;
   }
 
   &__quote {
-    margin-top: 14rpx;
-    font-family: 'Songti SC', 'STSong', 'Source Han Serif SC', serif;
-    font-size: 27rpx;
-    line-height: 1.8;
-    color: @ink;
+    font-family: @serif;
+    font-size: 24rpx;
+    line-height: 1.75;
   }
 
-  &__meta {
-    margin-top: 14rpx;
-    font-size: 21rpx;
-    color: var(--text-tertiary);
+  &__reply {
+    font-size: 24rpx;
+    line-height: 1.75;
+    color: #3f6597;
+  }
+
+  &__source {
+    margin-top: 21rpx;
+    font-size: 22rpx;
+    line-height: 1.5;
+    color: #8197b7;
+
+    &::before {
+      content: '— ';
+    }
   }
 }
 
-.reply {
-  flex: 1;
-  min-width: 0;
-  margin-top: 44rpx; // 右卡下错位
-  margin-left: 20rpx;
-  padding: 24rpx 26rpx;
-  border-radius: 24rpx;
-  background: @mist-soft;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+// 无原文（独立评论）：回应独占一行
+.dialogue--solo .qcard--reader {
+  width: 100%;
+  margin-top: 0;
+}
 
-  &__head {
+// ---------- 洞察条 ----------
+.insight {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+  margin-top: 21rpx;
+  padding: 17rpx 21rpx;
+  border: 1px solid rgba(118, 165, 224, 0.17);
+  border-radius: 31rpx;
+  background: linear-gradient(110deg, rgba(244, 249, 255, 0.9), rgba(247, 251, 255, 0.55));
+
+  &__icon {
+    flex: none;
     display: flex;
     align-items: center;
-    gap: 8rpx;
+    justify-content: center;
+    width: 59rpx;
+    height: 59rpx;
+    border-radius: 50%;
+    background: #e4effd;
   }
 
-  &__who {
-    font-size: 21rpx;
-    color: #7ba7d4;
-    letter-spacing: 2rpx;
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__strong {
+    font-size: 25rpx;
+    line-height: 1.45;
+    color: @navy;
+  }
+
+  &__sub {
+    margin-top: 5rpx;
+    font-size: 22rpx;
+    line-height: 1.4;
+    color: #8299b9;
+  }
+}
+
+.text-action {
+  flex: none;
+  padding: 10rpx 0 10rpx 8rpx;
+  font-size: 22rpx;
+  color: #417fde;
+  white-space: nowrap;
+}
+
+// ---------- 展开的更多证据 ----------
+.evidence-more {
+  margin-top: 17rpx;
+  padding: 21rpx 24rpx;
+  border-radius: 31rpx;
+  background: rgba(244, 249, 255, 0.65);
+
+  &__row + &__row {
+    margin-top: 14rpx;
+  }
+
+  &__book {
+    display: block;
+    font-size: 24rpx;
+    font-weight: 600;
+    color: @navy;
   }
 
   &__text {
-    margin-top: 14rpx;
-    font-size: 26rpx;
-    line-height: 1.75;
-    color: var(--text-primary);
-  }
-
-  &__meta {
-    margin-top: 12rpx;
-    font-size: 21rpx;
-    color: var(--text-tertiary);
+    display: block;
+    margin-top: 4rpx;
+    font-size: 24rpx;
+    line-height: 1.6;
+    color: @muted;
   }
 }
 
-// 无原文（独立评论）：回应独占一行，取消错位
-.dialog--solo {
-  .reply {
-    margin-top: 0;
-    flex: 1;
-  }
+// ---------- 底部入口 ----------
+.thinking-footer {
+  display: flex;
+  gap: 9rpx;
+  align-items: center;
+  justify-content: center;
+  min-height: 77rpx;
+  font-size: 26rpx;
+  color: #6d8db8;
 }
