@@ -3,6 +3,14 @@ import useToastBehavior from '~/behaviors/useToast';
 
 const FEEDBACK_TYPES = ['interested', 'not_interested', 'already_read'];
 
+/** 亲缘徽章：连接很强/值得试试=蓝系 / 意外的可能=金系（云端只回 affinityLabel） */
+function badgeOf(it) {
+  const label = it.affinityLabel || '';
+  if (label.indexOf('意外') >= 0) return { badgeSpec: 'blind', badgeIcon: 'tips', badgeColor: '#a97f2e' };
+  if (label.indexOf('值得') >= 0) return { badgeSpec: 'potential', badgeIcon: 'compass', badgeColor: '#3a6ea5' };
+  return { badgeSpec: 'potential', badgeIcon: 'link-1', badgeColor: '#3a6ea5' };
+}
+
 Page({
   behaviors: [useToastBehavior],
   data: {
@@ -29,7 +37,9 @@ Page({
         entry: it.entry || null,
         myFeedback: (it.myFeedback && it.myFeedback.type) || '',
         entryBooks: (it.entry && it.entry.payload && it.entry.payload.books) || [],
+        subtitle: (it.connections || []).map((c) => c.name).join(' × '),
         spec: (i % 3) + 1, // 三扇"远方入口"错落配色
+        ...badgeOf(it),
       }));
       this.setData({
         loading: false,

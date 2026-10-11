@@ -44,4 +44,7 @@ Page({
   onEvidenceTap() {
     this.onShowToast('#t-toast', '阅读瞬间详情即将上线');
   },
+  onMoreTap() {
+    this.onShowToast('#t-toast', '更多证据即将上线');
+  },
 });

@@ -19,38 +19,49 @@
     </block>
 
     <block wx:else>
-      <!-- 依据 + 核心判断 -->
+      <!-- 依据 + 核心判断（衬线） -->
       <view wx:if="{{basisText}}" class="basis">{{basisText}}</view>
       <view wx:if="{{summary}}" class="headline">{{summary}}</view>
 
       <view class="section-title">你与书的对话</view>
 
       <view class="think-card" wx:for="{{items}}" wx:for-item="dim" wx:key="id">
-        <view class="think-card__chip">{{dim.name}}</view>
+        <view class="think-card__name">{{dim.name}}</view>
         <view class="think-card__desc">{{dim.description}}</view>
 
-        <!-- 对话式证据组：原文（左）— 回应（右错位） -->
-        <view class="dialog">
-          <view
-            wx:for="{{dim.evidenceGroups}}"
-            wx:for-item="g"
-            wx:key="sourceMomentId"
-            class="dialog__group"
-          >
-            <view wx:if="{{g.sourceText}}" class="bubble bubble--source" bindtap="onEvidenceTap">
-              <view class="bubble__label">原文</view>
-              <view class="bubble__text">{{g.sourceText}}</view>
-              <view wx:if="{{g.bookTitle}}" class="bubble__meta">《{{g.bookTitle}}》{{g.chapterTitle ? ' · ' + g.chapterTitle : ''}}</view>
+        <!-- 对话式证据：左「书里说」白卡 / 右「你回应」蓝卡下错位 -->
+        <view
+          wx:for="{{dim.evidenceGroups}}"
+          wx:for-item="g"
+          wx:key="sourceMomentId"
+          class="dialog {{g.sourceText ? '' : 'dialog--solo'}}"
+        >
+          <view wx:if="{{g.sourceText}}" class="say" bindtap="onEvidenceTap">
+            <view class="say__head">
+              <t-icon name="book-open" size="30rpx" color="#8fb3d9" />
+              <text class="say__who">书里说</text>
             </view>
-            <view class="bubble bubble--response" bindtap="onEvidenceTap">
-              <view class="bubble__label">我的回应</view>
-              <view class="bubble__text">{{g.userResponse}}</view>
-              <view wx:if="{{!g.sourceText && g.bookTitle}}" class="bubble__meta">《{{g.bookTitle}}》{{g.chapterTitle ? ' · ' + g.chapterTitle : ''}}</view>
+            <view class="say__quote">“ {{g.sourceText}} ”</view>
+            <view wx:if="{{g.bookTitle}}" class="say__meta">——《{{g.bookTitle}}》</view>
+          </view>
+          <view class="reply" bindtap="onEvidenceTap">
+            <view class="reply__head">
+              <t-icon name="user" size="28rpx" color="#7ba7d4" />
+              <text class="reply__who">你回应</text>
             </view>
+            <view class="reply__text">{{g.userResponse}}</view>
+            <view wx:if="{{g.bookTitle}}" class="reply__meta">《{{g.bookTitle}}》</view>
           </view>
         </view>
 
-        <view wx:if="{{dim.momentCount}}" class="think-card__more">这种方式还出现于 {{dim.momentCount}} 条阅读记录</view>
+        <view class="think-card__foot">
+          <view class="think-card__count">
+            <t-icon name="tips" size="30rpx" color="#9db8d4" />
+            <text wx:if="{{dim.momentCount}}">这种方式还出现于 {{dim.momentCount}} 条阅读记录</text>
+            <text wx:else>来自你的真实阅读记录</text>
+          </view>
+          <view class="think-card__more" catchtap="onMoreTap">查看更多证据 ›</view>
+        </view>
       </view>
     </block>
   </block>

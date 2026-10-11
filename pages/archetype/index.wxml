@@ -10,9 +10,13 @@
   </view>
 
   <block wx:else>
-    <view wx:if="{{basisText}}" class="basis">{{basisText}}</view>
+    <!-- 依据胶囊（居中） -->
+    <view wx:if="{{basisText}}" class="basis">
+      <t-icon name="calendar" size="26rpx" color="#8a7bb8" />
+      <text>{{basisText}}</text>
+    </view>
 
-    <!-- 人物原型：framing + 名字 + 气质句 -->
+    <!-- 人物原型：framing + 名字（衬线） + 气质句 -->
     <block wx:if="{{archetype}}">
       <view class="arch-hero">
         <view class="arch-hero__aura"></view>
@@ -21,22 +25,27 @@
         <view wx:if="{{summary}}" class="arch-hero__summary">{{summary}}</view>
       </view>
 
-      <!-- 你与 TA 相似的地方 -->
-      <view class="section-title">你与 TA 相似的地方</view>
-      <view class="trait-list">
-        <view class="trait" wx:for="{{traits}}" wx:key="name">
+      <!-- 你与他相似的地方：一张大卡内的图标行 -->
+      <view class="panel">
+        <view class="panel__title">你与他相似的地方</view>
+        <view
+          class="trait"
+          wx:for="{{traits}}"
+          wx:key="name"
+        >
+          <view class="trait__icon trait__icon--spec{{index % 3}}">
+            <t-icon name="{{item.icon}}" size="34rpx" color="{{item.iconColor}}" />
+          </view>
           <view class="trait__body">
             <view class="trait__name">{{item.name}}</view>
             <view class="trait__desc">{{item.description}}</view>
-            <view wx:if="{{item.behaviorEvidence.length}}" class="trait__evidence">
-              <text wx:for="{{item.behaviorEvidence}}" wx:for-item="ev" wx:key="*this" class="trait__chip">{{ev}}</text>
-            </view>
           </view>
+          <t-icon name="chevron-right" size="36rpx" color="#b8c6d8" />
         </view>
       </view>
     </block>
 
-    <!-- 人物证据不足：只呈现行为节律 -->
+    <!-- 人物证据不足 -->
     <block wx:if="{{!archetype}}">
       <view class="forming-card">
         <view class="forming-card__title">你的人物原型正在浮现</view>
@@ -45,18 +54,27 @@
       </view>
     </block>
 
-    <!-- 你的阅读一天：行为节律 -->
-    <view wx:if="{{rhythm.length}}" class="section-title">{{archetype ? '你的阅读一天' : '你的阅读节律'}}</view>
-    <view wx:if="{{rhythm.length}}" class="rhythm">
-      <view class="rhythm__item" wx:for="{{rhythm}}" wx:key="label">
-        <view class="rhythm__value">{{item.value}}</view>
-        <view class="rhythm__label">{{item.label}}</view>
+    <!-- 你的阅读一天：四列图标格 -->
+    <view wx:if="{{rhythm.length}}" class="panel">
+      <view class="panel__title">{{archetype ? '你的阅读一天' : '你的阅读节律'}}</view>
+      <view class="rhythm">
+        <view class="rhythm__item" wx:for="{{rhythm}}" wx:key="label">
+          <view class="rhythm__icon rhythm__icon--spec{{index % 4}}">
+            <t-icon name="{{item.icon}}" size="34rpx" color="{{item.iconColor}}" />
+          </view>
+          <view class="rhythm__value">{{item.value}}</view>
+          <view class="rhythm__label">{{item.label}}</view>
+          <view class="rhythm__note">{{item.note}}</view>
+        </view>
       </view>
     </view>
 
     <!-- 这像你吗？ -->
-    <view class="feedback">
-      <view class="feedback__title">这像你吗？</view>
+    <view class="panel">
+      <view class="panel__title panel__title--with-icon">
+        <t-icon name="chat" size="34rpx" color="#123a6b" />
+        <text>这像你吗？</text>
+      </view>
       <view class="feedback__pills">
         <view
           class="pill {{myFeedback === 'like' ? 'pill--active' : ''}}"
@@ -72,7 +90,7 @@
           class="pill {{myFeedback === 'dislike' ? 'pill--active' : ''}}"
           data-type="dislike"
           bindtap="onFeedbackTap"
-        >不太像你</view>
+        >不太像我</view>
       </view>
     </view>
   </block>

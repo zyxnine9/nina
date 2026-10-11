@@ -1,7 +1,7 @@
 // 思维方式详情页（编辑杂志感：左右错位的对话线）
 @ink: #123a6b;
 @mist: #cfe2f5;
-@mist-soft: #eef5fc;
+@mist-soft: #eaf3fc;
 
 .page {
   min-height: 100vh;
@@ -67,9 +67,10 @@
 
 .headline {
   margin-top: 16rpx;
-  font-size: 44rpx;
+  font-family: 'Songti SC', 'STSong', 'Source Han Serif SC', serif;
+  font-size: 46rpx;
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 1.55;
   color: @ink;
 }
 
@@ -84,81 +85,131 @@
 // ---------- 思维动作卡 ----------
 .think-card {
   margin-bottom: 32rpx;
-  padding: 36rpx 32rpx;
+  padding: 36rpx 32rpx 28rpx;
   border-radius: 28rpx;
   background: var(--bg-card);
   border: 1px solid var(--separator);
   box-shadow: var(--shadow-card);
 
-  &__chip {
-    display: inline-block;
-    padding: 8rpx 24rpx;
-    border-radius: 999rpx;
-    background: @mist-soft;
-    border: 1px solid @mist;
+  // 竖条标题（设计稿：▎例证式思维）
+  &__name {
+    position: relative;
+    padding-left: 22rpx;
+    font-size: 31rpx;
+    font-weight: 700;
     color: @ink;
-    font-size: 26rpx;
-    font-weight: 600;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8rpx;
+      bottom: 8rpx;
+      width: 8rpx;
+      border-radius: 4rpx;
+      background: @mist;
+    }
   }
 
   &__desc {
-    margin-top: 18rpx;
-    font-size: 27rpx;
+    margin-top: 14rpx;
+    font-size: 26rpx;
     line-height: 1.7;
     color: var(--text-secondary);
   }
 
+  &__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 28rpx;
+    padding-top: 24rpx;
+    border-top: 1px solid var(--separator);
+  }
+
+  &__count {
+    display: flex;
+    align-items: center;
+    gap: 10rpx;
+    font-size: 23rpx;
+    color: var(--text-tertiary);
+  }
+
   &__more {
-    margin-top: 24rpx;
     font-size: 24rpx;
+    color: #4a7fb5;
+  }
+}
+
+// ---------- 对话式证据（左右两栏，回应下错位） ----------
+.dialog {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 30rpx;
+}
+
+.say {
+  flex: 1;
+  min-width: 0;
+  padding: 24rpx 26rpx;
+  border-radius: 20rpx;
+  background: #fff;
+  border: 1px solid var(--separator);
+  box-shadow: 0 6rpx 20rpx rgba(18, 58, 107, 0.06);
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+  }
+
+  &__who {
+    font-size: 21rpx;
+    color: #8fb3d9;
+    letter-spacing: 2rpx;
+  }
+
+  &__quote {
+    margin-top: 14rpx;
+    font-family: 'Songti SC', 'STSong', 'Source Han Serif SC', serif;
+    font-size: 27rpx;
+    line-height: 1.8;
+    color: @ink;
+  }
+
+  &__meta {
+    margin-top: 14rpx;
+    font-size: 21rpx;
     color: var(--text-tertiary);
   }
 }
 
-// ---------- 对话式证据（左右错位） ----------
-.dialog {
-  margin-top: 28rpx;
-}
-
-.dialog__group {
-  margin-bottom: 24rpx;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.bubble {
-  max-width: 86%;
-  padding: 22rpx 26rpx;
+.reply {
+  flex: 1;
+  min-width: 0;
+  margin-top: 44rpx; // 右卡下错位
+  margin-left: 20rpx;
+  padding: 24rpx 26rpx;
   border-radius: 20rpx;
+  background: @mist-soft;
+  border: 1px solid @mist;
 
-  &--source {
-    background: @mist-soft;
-    border: 1px solid @mist;
-    border-top-left-radius: 6rpx;
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
   }
 
-  // 回应：右错位，表现观点与回应的对话线
-  &--response {
-    margin-left: auto;
-    margin-top: 14rpx;
-    background: #fff;
-    border: 1px solid var(--separator);
-    border-top-right-radius: 6rpx;
-  }
-
-  &__label {
-    font-size: 20rpx;
-    color: @ink;
-    opacity: 0.7;
+  &__who {
+    font-size: 21rpx;
+    color: #7ba7d4;
     letter-spacing: 2rpx;
   }
 
   &__text {
-    margin-top: 10rpx;
+    margin-top: 14rpx;
     font-size: 26rpx;
-    line-height: 1.7;
+    line-height: 1.75;
     color: var(--text-primary);
   }
 
@@ -166,5 +217,13 @@
     margin-top: 12rpx;
     font-size: 21rpx;
     color: var(--text-tertiary);
+  }
+}
+
+// 无原文（独立评论）：回应独占一行，取消错位
+.dialog--solo {
+  .reply {
+    margin-top: 0;
+    flex: 1;
   }
 }

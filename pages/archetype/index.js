@@ -1,7 +1,7 @@
 import request, { callAction } from '~/api/request';
 import useToastBehavior from '~/behaviors/useToast';
 
-/** 秒 → 「X 小时 Y 分钟」/「N 分钟」 */
+/** 秒 → 「X 小时 Y 分钟」/「N 分钟」（备用） */
 function formatHours(seconds) {
   if (!seconds || seconds <= 0) return '';
   if (seconds >= 3600) {
@@ -19,6 +19,19 @@ function formatSession(seconds) {
   if (min >= 60) return `${(min / 60).toFixed(1)} 小时`;
   return `${min} 分钟`;
 }
+
+const TRAIT_ICONS = [
+  { icon: 'compass', iconColor: '#7c6cf0' },
+  { icon: 'moon', iconColor: '#c08a2d' },
+  { icon: 'bookmark', iconColor: '#4a7fb5' },
+];
+
+const RHYTHM_SPECS = [
+  { icon: 'sunny', iconColor: '#7c6cf0', note: '这段时间你最容易进入阅读状态' },
+  { icon: 'moon', iconColor: '#4a7fb5', note: '在夜深人静时，你会与书相伴' },
+  { icon: 'time', iconColor: '#c08a2d', note: '每次阅读都能保持较长的专注时长' },
+  { icon: 'calendar', iconColor: '#3d9a76', note: '在过去的日子里，阅读已成为你生活的一部分' },
+];
 
 Page({
   behaviors: [useToastBehavior],
@@ -49,15 +62,14 @@ Page({
 
       const a = d.archetype || null;
       const rhythm = d.rhythm || {};
-      const stats = [];
       const peak = rhythm.peakHour || 0;
-      stats.push({ label: '阅读高峰', value: `${String(peak).padStart(2, '0')}:00` });
-      stats.push({ label: '夜间阅读', value: `${Math.round((rhythm.nightRatio || 0) * 100)}%` });
       const session = formatSession(rhythm.avgSessionSeconds);
-      if (session) stats.push({ label: '平均单次沉浸', value: session });
-      const total = formatHours(rhythm.totalReadTime);
-      if (total) stats.push({ label: '累计阅读', value: total });
-      if (rhythm.readDays) stats.push({ label: '活跃阅读天数', value: `${rhythm.readDays} 天` });
+      const rhythmItems = [
+        { label: '阅读高峰', value: `${String(peak).padStart(2, '0')}:00` },
+        { label: '夜间阅读', value: `${Math.round((rhythm.nightRatio || 0) * 100)}%` },
+        { label: '平均单次沉浸', value: session || '—' },
+        { label: '活跃阅读天数', value: rhythm.readDays ? `${rhythm.readDays} 天` : '—' },
+      ].map((it, i) => ({ ...it, ...RHYTHM_SPECS[i] }));
 
       this.setData({
         loading: false,
@@ -65,8 +77,8 @@ Page({
         summary: d.summary || '',
         archetype: a,
         titleText: a ? (a.sourceTitle ? `《${a.sourceTitle}》中的${a.name}` : a.name) : '',
-        traits: a ? a.traits || [] : [],
-        rhythm: stats,
+        traits: a ? (a.traits || []).map((t, i) => ({ ...t, ...TRAIT_ICONS[i % TRAIT_ICONS.length] })) : [],
+        rhythm: rhythmItems,
         myFeedback: (d.myFeedback && d.myFeedback.type) || '',
       });
     } catch (err) {
