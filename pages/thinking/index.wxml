@@ -37,14 +37,15 @@
             wx:key="sourceMomentId"
             class="dialog__group"
           >
-            <view class="bubble bubble--source" bindtap="onEvidenceTap">
+            <view wx:if="{{g.sourceText}}" class="bubble bubble--source" bindtap="onEvidenceTap">
               <view class="bubble__label">原文</view>
-              <view wx:if="{{g.sourceText}}" class="bubble__text">{{g.sourceText}}</view>
+              <view class="bubble__text">{{g.sourceText}}</view>
               <view wx:if="{{g.bookTitle}}" class="bubble__meta">《{{g.bookTitle}}》{{g.chapterTitle ? ' · ' + g.chapterTitle : ''}}</view>
             </view>
             <view class="bubble bubble--response" bindtap="onEvidenceTap">
               <view class="bubble__label">我的回应</view>
               <view class="bubble__text">{{g.userResponse}}</view>
+              <view wx:if="{{!g.sourceText && g.bookTitle}}" class="bubble__meta">《{{g.bookTitle}}》{{g.chapterTitle ? ' · ' + g.chapterTitle : ''}}</view>
             </view>
           </view>
         </view>

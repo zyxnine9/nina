@@ -70,13 +70,14 @@ async function thinking({ userId }) {
   const items = [];
   for (const it of result.items || []) {
     const moments = await loadMoments(userId, (it.momentIds || []).slice(0, 8));
+    // ⚠️ 独立评论（matcher）落库为 type=review 且正文在 text、comment 为空，需一并纳入
     const evidenceGroups = moments
-      .filter((m) => m.comment)
+      .filter((m) => m.comment || m.type === 'review')
       .slice(0, 4)
       .map((m) => ({
         sourceMomentId: m._id,
-        sourceText: String(m.text || m.abstract || ''),
-        userResponse: String(m.comment || ''),
+        sourceText: m.type === 'review' && !m.comment ? '' : String(m.text || m.abstract || ''),
+        userResponse: String(m.comment || (m.type === 'review' ? m.text : '')),
         bookTitle: String((m.book && m.book.title) || ''),
         chapterTitle: String(m.chapterTitle || ''),
       }));
@@ -295,10 +296,11 @@ async function unknown({ userId }) {
   const result = requireStepResult(analysis, 'unknown', '未知领域');
   const details = (analysis.steps.unknown && analysis.steps.unknown.details) || {};
   const feedbackMap = details.feedback || {};
-  const enrichment = await loadUnknownEnrichment(userId, analysis, result.items || [], result.summary);
+  const enrichment = await loadUnknownEnrichment(userId, analysis, (result.items || []).slice(0, 3), result.summary);
 
+  // PRD 7.3：固定三张“远方入口”卡片（快照可能含 3-5 个，只取前 3）
   const items = [];
-  for (const it of result.items || []) {
+  for (const it of (result.items || []).slice(0, 3)) {
     const en = enrichment[it.id] || {};
     const books = (it.entryBooks || []).map((b) => ({ bookId: b.bookId, title: b.title || '', author: b.author || '', cover: b.cover || '' }));
     let entry;
