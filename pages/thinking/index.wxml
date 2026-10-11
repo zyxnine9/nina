@@ -1,0 +1,58 @@
+<t-navbar title="思维方式" left-arrow />
+<view class="page">
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <t-loading theme="dots" size="40rpx" text="正在回看你的思考轨迹" />
+  </view>
+
+  <view wx:elif="{{failed}}" class="state-wrap">
+    <view class="state-text">这个维度暂时没加载出来。</view>
+    <view class="btn-retry" bindtap="onRetry">重试</view>
+  </view>
+
+  <block wx:else>
+    <!-- 正在形成（主动评论不足） -->
+    <block wx:if="{{forming}}">
+      <view class="forming-card">
+        <view class="forming-card__title">你的思维轨迹正在形成</view>
+        <view class="forming-card__desc">在书页旁写下更多想法与回应，NINA 才能看清你反复出现的思考方式。</view>
+      </view>
+    </block>
+
+    <block wx:else>
+      <!-- 依据 + 核心判断 -->
+      <view wx:if="{{basisText}}" class="basis">{{basisText}}</view>
+      <view wx:if="{{summary}}" class="headline">{{summary}}</view>
+
+      <view class="section-title">你与书的对话</view>
+
+      <view class="think-card" wx:for="{{items}}" wx:for-item="dim" wx:key="id">
+        <view class="think-card__chip">{{dim.name}}</view>
+        <view class="think-card__desc">{{dim.description}}</view>
+
+        <!-- 对话式证据组：原文（左）— 回应（右错位） -->
+        <view class="dialog">
+          <view
+            wx:for="{{dim.evidenceGroups}}"
+            wx:for-item="g"
+            wx:key="sourceMomentId"
+            class="dialog__group"
+          >
+            <view class="bubble bubble--source" bindtap="onEvidenceTap">
+              <view class="bubble__label">原文</view>
+              <view wx:if="{{g.sourceText}}" class="bubble__text">{{g.sourceText}}</view>
+              <view wx:if="{{g.bookTitle}}" class="bubble__meta">《{{g.bookTitle}}》{{g.chapterTitle ? ' · ' + g.chapterTitle : ''}}</view>
+            </view>
+            <view class="bubble bubble--response" bindtap="onEvidenceTap">
+              <view class="bubble__label">我的回应</view>
+              <view class="bubble__text">{{g.userResponse}}</view>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{dim.momentCount}}" class="think-card__more">这种方式还出现于 {{dim.momentCount}} 条阅读记录</view>
+      </view>
+    </block>
+  </block>
+
+  <t-toast id="t-toast" />
+</view>

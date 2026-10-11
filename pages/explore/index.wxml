@@ -14,14 +14,15 @@
         wx:for="{{dimensions}}"
         wx:key="key"
         class="dim-item nina-card"
+        data-key="{{item.key}}"
         data-title="{{item.title}}"
         bindtap="onDimensionTap"
       >
         <view class="dim-head">
           <text class="dim-title">{{item.title}}</text>
-          <text class="dim-count">{{item.itemCount}}</text>
+          <text class="dim-arrow">›</text>
         </view>
-        <view class="dim-oneline">{{item.oneLine}}</view>
+        <view class="dim-oneline">{{item.preview || item.oneLine}}</view>
       </view>
     </view>
     <view wx:else class="empty-wrap">

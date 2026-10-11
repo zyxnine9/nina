@@ -67,6 +67,21 @@
       "pages": ["index"]
     },
     {
+      "root": "pages/thinking",
+      "name": "thinking",
+      "pages": ["index"]
+    },
+    {
+      "root": "pages/archetype",
+      "name": "archetype",
+      "pages": ["index"]
+    },
+    {
+      "root": "pages/unread",
+      "name": "unread",
+      "pages": ["index"]
+    },
+    {
       "root": "pages/onboarding",
       "name": "onboarding",
       "pages": [

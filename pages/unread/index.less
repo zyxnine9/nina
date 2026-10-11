@@ -1,0 +1,250 @@
+// 未读之境（三扇错落的“远方入口”，柔和自然意象）
+@ink: #123a6b;
+@mint: #bfe4d7;
+@mint-soft: #eef9f4;
+@gold: #f1d49c;
+@gold-soft: #fdf6e9;
+@blue-soft: #eef5fc;
+
+.page {
+  min-height: 100vh;
+  padding: 0 40rpx 100rpx;
+  background: #f7fafe;
+}
+
+.loading-wrap {
+  padding-top: 240rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.state-wrap {
+  padding-top: 200rpx;
+  text-align: center;
+}
+
+.state-text {
+  font-size: 27rpx;
+  color: var(--text-tertiary);
+}
+
+.btn-retry {
+  display: inline-block;
+  margin-top: 32rpx;
+  padding: 16rpx 56rpx;
+  border-radius: 999rpx;
+  background: @ink;
+  color: #fff;
+  font-size: 27rpx;
+}
+
+.headline {
+  margin-top: 36rpx;
+  font-size: 44rpx;
+  font-weight: 700;
+  line-height: 1.5;
+  color: @ink;
+}
+
+// ---------- 正在形成 ----------
+.forming-card {
+  margin-top: 40rpx;
+  padding: 64rpx 40rpx;
+  border-radius: 32rpx;
+  background: linear-gradient(160deg, #ffffff, @mint-soft);
+  border: 1px solid @mint;
+  text-align: center;
+
+  &__title {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: @ink;
+  }
+
+  &__desc {
+    margin-top: 20rpx;
+    font-size: 26rpx;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+}
+
+// ---------- 远方入口卡片（纵向错落） ----------
+.realm {
+  margin-top: 28rpx;
+  padding: 34rpx 32rpx;
+  border-radius: 28rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  box-shadow: var(--shadow-card);
+  border-left-width: 8rpx;
+  border-left-style: solid;
+
+  // 三扇门错落色：雾蓝 / 薄荷 / 晨金
+  &--spec1 {
+    border-left-color: @blue-soft;
+  }
+
+  &--spec2 {
+    border-left-color: @mint;
+  }
+
+  &--spec3 {
+    border-left-color: @gold;
+  }
+
+  // 展开态：左侧色条加深 + 轻微内缩错位
+  &--open.realm--spec1 {
+    border-left-color: @ink;
+    background: linear-gradient(180deg, @blue-soft 0%, var(--bg-card) 40%);
+  }
+
+  &--open.realm--spec2 {
+    border-left-color: @mint;
+    background: linear-gradient(180deg, @mint-soft 0%, var(--bg-card) 40%);
+  }
+
+  &--open.realm--spec3 {
+    border-left-color: @gold;
+    background: linear-gradient(180deg, @gold-soft 0%, var(--bg-card) 40%);
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__name {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  &__affinity {
+    padding: 6rpx 18rpx;
+    border-radius: 999rpx;
+    background: @mint-soft;
+    border: 1px solid @mint;
+    font-size: 22rpx;
+    color: #2e7d64;
+  }
+
+  &__intro {
+    margin-top: 18rpx;
+    font-size: 27rpx;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  &__reason {
+    margin-top: 14rpx;
+    font-size: 25rpx;
+    line-height: 1.7;
+    color: var(--text-tertiary);
+  }
+
+  &__section {
+    margin-top: 30rpx;
+  }
+
+  &__section-title {
+    font-size: 24rpx;
+    color: @ink;
+    font-weight: 600;
+    letter-spacing: 2rpx;
+    opacity: 0.75;
+  }
+}
+
+// ---------- 连接依据 ----------
+.conn-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 16rpx;
+}
+
+.conn {
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+  background: @blue-soft;
+  border: 1px solid var(--separator);
+  font-size: 24rpx;
+  color: @ink;
+}
+
+// ---------- 进入方式 ----------
+.entry {
+  margin-top: 16rpx;
+  padding: 26rpx;
+  border-radius: 20rpx;
+  background: var(--bg-secondary);
+  border: 1px solid var(--separator);
+
+  &__title {
+    font-size: 27rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  &__books {
+    display: flex;
+    gap: 14rpx;
+    margin-top: 18rpx;
+  }
+
+  &__cover {
+    width: 84rpx;
+    height: 116rpx;
+    border-radius: 10rpx;
+    background: var(--bg-secondary);
+
+    &--empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: @mint-soft;
+      color: #2e7d64;
+      font-size: 32rpx;
+      font-weight: 600;
+    }
+  }
+
+  &__start {
+    margin-top: 24rpx;
+    padding: 20rpx 0;
+    border-radius: 999rpx;
+    background: @ink;
+    color: #fff;
+    font-size: 28rpx;
+    font-weight: 600;
+    text-align: center;
+  }
+}
+
+// ---------- 轻量反馈 ----------
+.fb {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 30rpx;
+}
+
+.fb__pill {
+  flex: 1;
+  padding: 14rpx 0;
+  border-radius: 999rpx;
+  border: 1px solid var(--separator);
+  background: var(--bg-card);
+  text-align: center;
+  font-size: 23rpx;
+  color: var(--text-secondary);
+
+  &--active {
+    background: @mint;
+    border-color: @mint;
+    color: #1c5c48;
+    font-weight: 600;
+  }
+}

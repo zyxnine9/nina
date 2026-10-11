@@ -1,0 +1,236 @@
+// 阅读人格详情页（人物肖像 × 行为数据层叠）
+@ink: #123a6b;
+@lavender: #d8d2f5;
+@lavender-soft: #f1effc;
+@gold: #f1d49c;
+@gold-soft: #fdf6e9;
+
+.page {
+  min-height: 100vh;
+  padding: 0 40rpx 100rpx;
+  background: #f7fafe;
+}
+
+.loading-wrap {
+  padding-top: 240rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.state-wrap {
+  padding-top: 200rpx;
+  text-align: center;
+}
+
+.state-text {
+  font-size: 27rpx;
+  color: var(--text-tertiary);
+}
+
+.btn-retry {
+  display: inline-block;
+  margin-top: 32rpx;
+  padding: 16rpx 56rpx;
+  border-radius: 999rpx;
+  background: @ink;
+  color: #fff;
+  font-size: 27rpx;
+}
+
+.basis {
+  margin-top: 32rpx;
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+// ---------- 人物原型 hero（暖紫 + 晨金层叠） ----------
+.arch-hero {
+  position: relative;
+  margin-top: 24rpx;
+  padding: 52rpx 40rpx;
+  border-radius: 32rpx;
+  background: linear-gradient(150deg, @lavender-soft 10%, @lavender 55%, @gold 130%);
+  overflow: hidden;
+
+  &__aura {
+    position: absolute;
+    top: -80rpx;
+    right: -60rpx;
+    width: 320rpx;
+    height: 320rpx;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.45);
+    filter: blur(16rpx);
+  }
+
+  &__framing {
+    position: relative;
+    z-index: 1;
+    font-size: 26rpx;
+    color: @ink;
+    opacity: 0.75;
+  }
+
+  &__name {
+    position: relative;
+    z-index: 1;
+    margin-top: 16rpx;
+    font-size: 52rpx;
+    font-weight: 700;
+    line-height: 1.4;
+    color: @ink;
+  }
+
+  &__summary {
+    position: relative;
+    z-index: 1;
+    margin-top: 20rpx;
+    font-size: 27rpx;
+    line-height: 1.7;
+    color: @ink;
+    opacity: 0.85;
+  }
+}
+
+.section-title {
+  margin-top: 56rpx;
+  margin-bottom: 24rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+// ---------- 相似之处 ----------
+.trait {
+  margin-bottom: 20rpx;
+  padding: 30rpx 32rpx;
+  border-radius: 24rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  box-shadow: var(--shadow-card);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &__name {
+    font-size: 29rpx;
+    font-weight: 600;
+    color: @ink;
+  }
+
+  &__desc {
+    margin-top: 12rpx;
+    font-size: 26rpx;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  &__evidence {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    margin-top: 18rpx;
+  }
+
+  &__chip {
+    padding: 6rpx 18rpx;
+    border-radius: 999rpx;
+    background: @gold-soft;
+    border: 1px solid @gold;
+    font-size: 22rpx;
+    color: #8a6a30;
+  }
+}
+
+// ---------- 人物不足 ----------
+.forming-card {
+  margin-top: 32rpx;
+  padding: 56rpx 40rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(160deg, #ffffff, @lavender-soft);
+  border: 1px solid @lavender;
+  text-align: center;
+
+  &__title {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: @ink;
+  }
+
+  &__desc {
+    margin-top: 20rpx;
+    font-size: 26rpx;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+}
+
+// ---------- 阅读节律 ----------
+.rhythm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.rhythm__item {
+  flex: 1 1 40%;
+  box-sizing: border-box;
+  padding: 28rpx;
+  border-radius: 24rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  box-shadow: var(--shadow-card);
+}
+
+.rhythm__value {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: @ink;
+}
+
+.rhythm__label {
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  color: var(--text-tertiary);
+}
+
+// ---------- 这像你吗 ----------
+.feedback {
+  margin-top: 56rpx;
+  padding: 36rpx 32rpx;
+  border-radius: 28rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  box-shadow: var(--shadow-card);
+
+  &__title {
+    font-size: 30rpx;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  &__pills {
+    display: flex;
+    gap: 20rpx;
+    margin-top: 24rpx;
+  }
+}
+
+.pill {
+  flex: 1;
+  padding: 18rpx 0;
+  border-radius: 999rpx;
+  border: 1px solid var(--separator);
+  background: var(--bg-secondary);
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+
+  &--active {
+    background: @ink;
+    border-color: @ink;
+    color: #fff;
+    font-weight: 600;
+  }
+}

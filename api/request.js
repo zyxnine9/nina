@@ -54,6 +54,8 @@ const ACTION_FUNCTION = {
   explore_unknown: 'insight',
   explore_map: 'insight',
   knowledge_detail: 'insight',
+  persona_feedback: 'insight',
+  unknown_feedback: 'insight',
   // nina-search
   search: 'search',
 };
@@ -113,6 +115,8 @@ const ROUTES = [
   { pattern: /^\/explore\/map$/, action: 'explore_map' },
   { pattern: /^\/explore\/(knowledge|interest|thinking|long_term|persona|unknown)$/, action: 'explore_dim', ids: ['dimension'] },
   { pattern: /^\/knowledge\/([^/]+)$/, action: 'knowledge_detail', ids: ['id'] },
+  { pattern: /^\/persona\/feedback$/, action: 'persona_feedback' },
+  { pattern: /^\/unknown\/([^/]+)\/feedback$/, action: 'unknown_feedback', ids: ['id'] },
   { pattern: /^\/topics$/, action: 'topics_list' },
   { pattern: /^\/topics\/([^/]+)$/, action: 'topics_detail', ids: ['topicId'] },
   { pattern: /^\/moments$/, action: 'moments_list' },

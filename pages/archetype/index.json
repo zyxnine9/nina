@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "t-navbar": "tdesign-miniprogram/navbar/navbar",
+    "t-toast": "tdesign-miniprogram/toast/toast",
+    "t-loading": "tdesign-miniprogram/loading/loading"
+  }
+}

@@ -1,0 +1,170 @@
+// 思维方式详情页（编辑杂志感：左右错位的对话线）
+@ink: #123a6b;
+@mist: #cfe2f5;
+@mist-soft: #eef5fc;
+
+.page {
+  min-height: 100vh;
+  padding: 0 40rpx 100rpx;
+  background: #f7fafe;
+}
+
+.loading-wrap {
+  padding-top: 240rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.state-wrap {
+  padding-top: 200rpx;
+  text-align: center;
+}
+
+.state-text {
+  font-size: 27rpx;
+  color: var(--text-tertiary);
+}
+
+.btn-retry {
+  display: inline-block;
+  margin-top: 32rpx;
+  padding: 16rpx 56rpx;
+  border-radius: 999rpx;
+  background: @ink;
+  color: #fff;
+  font-size: 27rpx;
+}
+
+// ---------- 正在形成 ----------
+.forming-card {
+  margin-top: 40rpx;
+  padding: 64rpx 40rpx;
+  border-radius: 32rpx;
+  background: linear-gradient(160deg, #ffffff, @mist-soft);
+  border: 1px solid @mist;
+  text-align: center;
+
+  &__title {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: @ink;
+  }
+
+  &__desc {
+    margin-top: 20rpx;
+    font-size: 26rpx;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+}
+
+// ---------- 依据 + 核心判断 ----------
+.basis {
+  margin-top: 32rpx;
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+.headline {
+  margin-top: 16rpx;
+  font-size: 44rpx;
+  font-weight: 700;
+  line-height: 1.5;
+  color: @ink;
+}
+
+.section-title {
+  margin-top: 64rpx;
+  margin-bottom: 24rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+// ---------- 思维动作卡 ----------
+.think-card {
+  margin-bottom: 32rpx;
+  padding: 36rpx 32rpx;
+  border-radius: 28rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  box-shadow: var(--shadow-card);
+
+  &__chip {
+    display: inline-block;
+    padding: 8rpx 24rpx;
+    border-radius: 999rpx;
+    background: @mist-soft;
+    border: 1px solid @mist;
+    color: @ink;
+    font-size: 26rpx;
+    font-weight: 600;
+  }
+
+  &__desc {
+    margin-top: 18rpx;
+    font-size: 27rpx;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  &__more {
+    margin-top: 24rpx;
+    font-size: 24rpx;
+    color: var(--text-tertiary);
+  }
+}
+
+// ---------- 对话式证据（左右错位） ----------
+.dialog {
+  margin-top: 28rpx;
+}
+
+.dialog__group {
+  margin-bottom: 24rpx;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.bubble {
+  max-width: 86%;
+  padding: 22rpx 26rpx;
+  border-radius: 20rpx;
+
+  &--source {
+    background: @mist-soft;
+    border: 1px solid @mist;
+    border-top-left-radius: 6rpx;
+  }
+
+  // 回应：右错位，表现观点与回应的对话线
+  &--response {
+    margin-left: auto;
+    margin-top: 14rpx;
+    background: #fff;
+    border: 1px solid var(--separator);
+    border-top-right-radius: 6rpx;
+  }
+
+  &__label {
+    font-size: 20rpx;
+    color: @ink;
+    opacity: 0.7;
+    letter-spacing: 2rpx;
+  }
+
+  &__text {
+    margin-top: 10rpx;
+    font-size: 26rpx;
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+
+  &__meta {
+    margin-top: 12rpx;
+    font-size: 21rpx;
+    color: var(--text-tertiary);
+  }
+}

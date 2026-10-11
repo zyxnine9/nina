@@ -41,6 +41,8 @@ const actionMap = {
   explore_unknown: require('./actions/explore').unknown,
   explore_map: require('./actions/explore').map,
   knowledge_detail: require('./actions/explore').knowledgeDetail,
+  persona_feedback: require('./actions/explore').personaFeedback,
+  unknown_feedback: require('./actions/explore').unknownFeedback,
   // 搜索 / 分享
   search: require('./actions/search').search,
   share_cards: require('./actions/share').createCard,

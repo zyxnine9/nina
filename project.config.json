@@ -150,6 +150,27 @@
           "scene": null
         },
         {
+          "name": "thinking",
+          "pathName": "pages/thinking/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "archetype",
+          "pathName": "pages/archetype/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "unread",
+          "pathName": "pages/unread/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "onboardWelcome",
           "pathName": "pages/onboarding/welcome/index",
           "query": "",

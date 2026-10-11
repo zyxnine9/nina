@@ -57,18 +57,317 @@ async function knowledge(ctx) {
 async function interest(ctx) {
   return dimensionResult(ctx.userId, 'interest', '兴趣结构');
 }
-async function thinking(ctx) {
-  return dimensionResult(ctx.userId, 'thinking', '思维方式');
+
+/** 思维方式详情：核心判断 + basis + 逐动作的对话式证据组（原文—回应），主动评论不足时 forming=true */
+async function thinking({ userId }) {
+  const analysis = await getAnalysisDoc(userId);
+  if (!analysis) {
+    throw new BizError(ERR.ANALYSIS_NOT_READY, '尚未开始 AI 分析');
+  }
+  const result = requireStepResult(analysis, 'thinking', '思维方式');
+  const agg = (analysis.steps.aggregate && analysis.steps.aggregate.result) || {};
+  const stats = agg.stats || {};
+  const items = [];
+  for (const it of result.items || []) {
+    const moments = await loadMoments(userId, (it.momentIds || []).slice(0, 8));
+    const evidenceGroups = moments
+      .filter((m) => m.comment)
+      .slice(0, 4)
+      .map((m) => ({
+        sourceMomentId: m._id,
+        sourceText: String(m.text || m.abstract || ''),
+        userResponse: String(m.comment || ''),
+        bookTitle: String((m.book && m.book.title) || ''),
+        chapterTitle: String(m.chapterTitle || ''),
+      }));
+    items.push({
+      id: it.id,
+      name: it.name,
+      description: it.description || '',
+      momentCount: it.momentCount || (it.momentIds || []).length,
+      evidenceGroups,
+    });
+  }
+  const commentCount = stats.reviewCount || 0;
+  return {
+    dimension: 'thinking',
+    title: '思维方式',
+    summary: result.summary || '',
+    basis: { commentCount, bookCount: stats.bookCount || 0 },
+    forming: !items.length || commentCount < 3,
+    items,
+  };
 }
 async function longTerm(ctx) {
   return dimensionResult(ctx.userId, 'long_term', '长期关注');
 }
-async function persona(ctx) {
-  return dimensionResult(ctx.userId, 'persona', '阅读人格');
+
+const PERSONA_CACHE_VERSION = 1;
+
+/** 行为证据池：behaviorEvidence 只能从这里逐字选取（防 LLM 编数据） */
+function personaEvidencePool(stats, rhythm) {
+  const pool = [];
+  if (rhythm.nightRatio > 0) pool.push(`夜间阅读占 ${Math.round(rhythm.nightRatio * 100)}%`);
+  if (rhythm.peakHour) pool.push(`阅读高峰在 ${rhythm.peakHour} 点`);
+  if (stats.readDays) pool.push(`累计阅读 ${stats.readDays} 天`);
+  if (stats.totalReadTime) pool.push(`累计阅读 ${Math.round(stats.totalReadTime / 3600)} 小时`);
+  if (stats.bookCount) pool.push(`读过 ${stats.bookCount} 本书`);
+  if (stats.reviewCount) pool.push(`写下 ${stats.reviewCount} 条评论`);
+  if (stats.highlightCount) pool.push(`留下 ${stats.highlightCount} 条划线`);
+  return pool;
 }
-async function unknown(ctx) {
-  return dimensionResult(ctx.userId, 'unknown', '未知领域');
+
+/**
+ * 人物原型（懒 LLM + 缓存）：analyses.steps.persona.details.archetype。
+ * 人物优先取自用户读过的书；虚构人物 sourceTitle 必须命中书单，否则降级抽象原型。
+ * 失败/超时返回 null（前端退化为行为节律展示），不缓存不抛。
+ */
+async function loadArchetype(userId, analysis, rhythm, stats) {
+  const step = analysis.steps.persona || {};
+  const cache = (step.details || {}).archetype;
+  if (cache && cache.v === PERSONA_CACHE_VERSION && cache.archetype) return cache.archetype;
+
+  const books = await db.fetchAll({ name: 'books', where: { userId }, fields: { title: true }, max: 200 });
+  const titles = books.map((b) => String(b.title || '')).filter(Boolean).slice(0, 30);
+  if (!titles.length) return null;
+  const pool = personaEvidencePool(stats, rhythm);
+  const prompt = [
+    {
+      role: 'system',
+      content:
+        '你是阅读人格画像助手。根据用户的阅读行为与书单，为用户挑一个"人物原型"：优先从书单里的书中选一个虚构人物或历史文化人物（kind="fictional_character"，sourceTitle 必须是书单中出现过的书名），没有合适人物时用抽象原型（kind="abstract"，如「夜航者」「漫游学者」，sourceTitle 留空）。约束：framing 为以"你的阅读让人联想到"起头的完整句（20-40 字）；不透露人物关键情节、关系转折或结局；不用感叹号；不用在世明星。traits 为 3-4 个用户与该人物的相似处，每项 name（4-8 字）、description（30-60 字，第二人称，推测语气）、behaviorEvidence（从证据池逐字挑 1-2 条，禁止改写或自造数字）。输出 JSON：{"archetype":{"kind":"fictional_character|abstract","name":"...","sourceTitle":"...","framing":"...","traits":[{"name":"...","description":"...","behaviorEvidence":["..."]}]}}',
+    },
+    {
+      role: 'user',
+      content: `书单（部分书名）：${titles.join('、')}\n行为画像：阅读高峰 ${rhythm.peakHour} 点，夜间占比 ${Math.round(rhythm.nightRatio * 100)}%，累计阅读 ${stats.readDays} 天共 ${Math.round((stats.totalReadTime || 0) / 3600)} 小时，读过 ${stats.bookCount} 本书，写下 ${stats.reviewCount || 0} 条评论。\n可选证据池（behaviorEvidence 只能从中逐字选取）：\n${pool.map((p) => `- ${p}`).join('\n')}`,
+    },
+  ];
+  let archetype = null;
+  try {
+    const { json } = await withDeadline(llmChatJson(prompt), 13000);
+    const a = (json && json.archetype) || {};
+    if (a.name) {
+      const kind = a.kind === 'fictional_character' ? 'fictional_character' : 'abstract';
+      let sourceTitle = String(a.sourceTitle || '').slice(0, 40);
+      if (kind === 'fictional_character' && !titles.includes(sourceTitle)) {
+        sourceTitle = ''; // sourceTitle 不在书单 → 降级为抽象原型
+      }
+      archetype = {
+        kind: sourceTitle ? 'fictional_character' : 'abstract',
+        name: String(a.name).slice(0, 20),
+        sourceTitle,
+        portraitAsset: '',
+        framing: String(a.framing || '').slice(0, 60),
+        traits: (a.traits || [])
+          .slice(0, 5)
+          .map((t) => ({
+            name: String(t.name || '').slice(0, 12),
+            description: String(t.description || '').slice(0, 120),
+            behaviorEvidence: (t.behaviorEvidence || []).filter((s) => pool.includes(String(s))).slice(0, 2),
+          }))
+          .filter((t) => t.name),
+      };
+      if (!archetype.traits.length) archetype = null;
+    }
+  } catch (e) {
+    console.warn('[explore/persona] archetype LLM 失败，返回 null:', e && e.message);
+    return null;
+  }
+  if (!archetype) return null;
+
+  // 回写缓存：重读 analyses 且 status==='done' 才写
+  try {
+    const fresh = await getAnalysisDoc(userId);
+    if (fresh && fresh.status === 'done' && fresh.steps && fresh.steps.persona) {
+      const details = fresh.steps.persona.details || {};
+      details.archetype = { v: PERSONA_CACHE_VERSION, generatedAt: db.now(), archetype };
+      fresh.steps.persona.details = details;
+      await saveAnalysis(fresh);
+    }
+  } catch (e) {
+    console.warn('[explore/persona] archetype 缓存回写失败（不影响返回）:', e && e.message);
+  }
+  return archetype;
 }
+
+/** 阅读人格详情：basis + 人物原型 + 行为节律（数据对齐 PRD 9.2） */
+async function persona({ userId }) {
+  const analysis = await getAnalysisDoc(userId);
+  if (!analysis) {
+    throw new BizError(ERR.ANALYSIS_NOT_READY, '尚未开始 AI 分析');
+  }
+  const result = requireStepResult(analysis, 'persona', '阅读人格');
+  const agg = (analysis.steps.aggregate && analysis.steps.aggregate.result) || {};
+  const stats = agg.stats || {};
+  const pItem = (result.items || []).find((it) => it.id === 'p_time') || {};
+  const itemStats = pItem.stats || {};
+  const rhythm = {
+    peakHour: itemStats.peakHour || 0,
+    nightRatio: itemStats.nightRatio || 0,
+    // 上游无单次会话数据，近似 = 累计阅读时长 / 活跃天数
+    avgSessionSeconds: stats.readDays ? Math.round((stats.totalReadTime || 0) / stats.readDays) : 0,
+    readDays: stats.readDays || 0,
+    totalReadTime: stats.totalReadTime || 0,
+  };
+  const archetype = await loadArchetype(userId, analysis, rhythm, stats);
+  const details = (analysis.steps.persona && analysis.steps.persona.details) || {};
+  return {
+    dimension: 'persona',
+    title: '阅读人格',
+    summary: result.summary || '',
+    basis: { readDays: rhythm.readDays, bookCount: stats.bookCount || 0 },
+    rhythm,
+    archetype,
+    myFeedback: details.feedback && details.feedback.type ? details.feedback : null,
+  };
+}
+const UNKNOWN_CACHE_VERSION = 1;
+
+/**
+ * 未读之境文案富化（懒 LLM + 缓存）：analyses.steps.unknown.details.enriched。
+ * 为每个方向生成 intro（一句话介绍）+ connections（与已有兴趣的连接点）。
+ * 失败/超时留空返回（前端隐藏 intro/连接行），不缓存不抛。
+ */
+async function loadUnknownEnrichment(userId, analysis, items, summary) {
+  if (!items.length) return {};
+  const ids = items.map((it) => it.id);
+  const step = analysis.steps.unknown || {};
+  const cache = (step.details || {}).enriched;
+  if (cache && cache.v === UNKNOWN_CACHE_VERSION && cache.items && ids.every((id) => cache.items[id])) {
+    return cache.items;
+  }
+
+  const prompt = [
+    {
+      role: 'system',
+      content:
+        '你是阅读探索推荐助手。针对用户可能喜欢的新阅读方向，为每个方向生成：intro（领域一句话介绍，25-40 字，描述用户可能抵达哪里，禁止"你缺少""必须补齐"等焦虑表达）、connections（1-2 个与用户已有兴趣/关注点的连接，每项 name ≤10 字）。输出 JSON：{"items":{"<方向id>":{"intro":"...","connections":[{"name":"..."}]}}}',
+    },
+    {
+      role: 'user',
+      content: `用户分析摘要：${summary || ''}\n候选新方向：\n${items
+        .map((it) => `- id=${it.id} ${it.name}：${it.reason || ''}`)
+        .join('\n')}\n为每个方向输出 intro 与 connections，id 逐字使用。`,
+    },
+  ];
+  let out = {};
+  try {
+    const { json } = await withDeadline(llmChatJson(prompt), 13000);
+    const raw = (json && json.items) || {};
+    for (const id of ids) {
+      const e = raw[id];
+      if (!e) continue;
+      out[id] = {
+        intro: String(e.intro || '').slice(0, 80),
+        connections: (e.connections || [])
+          .slice(0, 2)
+          .map((c) => ({ type: 'topic', name: String(c.name || '').slice(0, 12) }))
+          .filter((c) => c.name),
+      };
+    }
+  } catch (e) {
+    console.warn('[explore/unknown] enrichment LLM 失败，留空返回:', e && e.message);
+    return {};
+  }
+  if (!Object.keys(out).length) return {};
+
+  // 回写缓存：重读 analyses 且 status==='done' 才写
+  try {
+    const fresh = await getAnalysisDoc(userId);
+    if (fresh && fresh.status === 'done' && fresh.steps && fresh.steps.unknown) {
+      const details = fresh.steps.unknown.details || {};
+      details.enriched = { v: UNKNOWN_CACHE_VERSION, generatedAt: db.now(), items: out };
+      fresh.steps.unknown.details = details;
+      await saveAnalysis(fresh);
+    }
+  } catch (e) {
+    console.warn('[explore/unknown] enrichment 缓存回写失败（不影响返回）:', e && e.message);
+  }
+  return out;
+}
+
+/** 未读之境详情：affinityLabel（定性语言，无分数）+ intro/连接（懒 LLM）+ 多形态入口（数据对齐 PRD 9.3） */
+async function unknown({ userId }) {
+  const analysis = await getAnalysisDoc(userId);
+  if (!analysis) {
+    throw new BizError(ERR.ANALYSIS_NOT_READY, '尚未开始 AI 分析');
+  }
+  const result = requireStepResult(analysis, 'unknown', '未知领域');
+  const details = (analysis.steps.unknown && analysis.steps.unknown.details) || {};
+  const feedbackMap = details.feedback || {};
+  const enrichment = await loadUnknownEnrichment(userId, analysis, result.items || [], result.summary);
+
+  const items = [];
+  for (const it of result.items || []) {
+    const en = enrichment[it.id] || {};
+    const books = (it.entryBooks || []).map((b) => ({ bookId: b.bookId, title: b.title || '', author: b.author || '', cover: b.cover || '' }));
+    let entry;
+    if (books.length > 1) {
+      entry = { type: 'book_list', title: `从《${books[0].title}》等几本入门书开始`, payload: { books } };
+    } else if (books.length === 1) {
+      entry = { type: 'book', title: `从《${books[0].title}》开始`, payload: { books } };
+    } else {
+      entry = { type: 'question', title: `带着「${it.name}如何回应我已有的好奇」的问题去读一读`, payload: {} };
+    }
+    items.push({
+      id: it.id,
+      name: it.name,
+      intro: en.intro || '',
+      // 定性亲和语言：potential=连接很强，blind=意外的可能（不展示分数）
+      affinityLabel: it.level === 'blind' ? '意外的可能' : '连接很强',
+      reason: it.reason || '',
+      connections: (en.connections || []).map((c) => ({ ...c, evidenceMomentIds: it.momentIds || [] })),
+      entry,
+      myFeedback: feedbackMap[it.id] || null,
+    });
+  }
+  return {
+    dimension: 'unknown',
+    title: '未读之境',
+    summary: result.summary || '',
+    basis: { bookCount: ((analysis.steps.aggregate.result || {}).stats || {}).bookCount || 0 },
+    forming: !items.length,
+    items,
+  };
+}
+
+/** 反馈写接口公共部分：重读最新 analyses，写 details 后整文档保存 */
+async function writeFeedbackDetails(userId, stepKey, mutate) {
+  const fresh = await getAnalysisDoc(userId);
+  if (!fresh) throw new BizError(ERR.ANALYSIS_NOT_READY, '尚未开始 AI 分析');
+  requireStepResult(fresh, stepKey, '该维度'); // 未完成不允许反馈
+  const details = fresh.steps[stepKey].details || {};
+  mutate(details);
+  fresh.steps[stepKey].details = details;
+  await saveAnalysis(fresh);
+}
+
+const PERSONA_FEEDBACK_TYPES = ['like', 'somewhat', 'dislike'];
+
+/** 阅读人格反馈：like | somewhat | dislike（进入下一次画像更新，不立即替换人物） */
+async function personaFeedback({ userId, params }) {
+  const type = params.type;
+  if (!PERSONA_FEEDBACK_TYPES.includes(type)) throw new BizError(ERR.BAD_PARAMS, '无效的反馈类型');
+  await writeFeedbackDetails(userId, 'persona', (details) => {
+    details.feedback = { type, at: db.now() };
+  });
+  return { saved: true, type };
+}
+
+const UNKNOWN_FEEDBACK_TYPES = ['interested', 'not_interested', 'already_read'];
+
+/** 未读之境方向反馈：interested | not_interested | already_read（下一版推荐再调整） */
+async function unknownFeedback({ userId, params }) {
+  const { id, type } = params;
+  if (!UNKNOWN_FEEDBACK_TYPES.includes(type)) throw new BizError(ERR.BAD_PARAMS, '无效的反馈类型');
+  if (!id) throw new BizError(ERR.BAD_PARAMS, '缺少方向 id');
+  await writeFeedbackDetails(userId, 'unknown', (details) => {
+    details.feedback = details.feedback || {};
+    details.feedback[id] = { type, at: db.now() };
+  });
+  return { saved: true, id, type };
+}
+
 
 /** 知识地图：聚合层。nodes = 知识领域(domain) + 兴趣/长期主题(theme)，edges = 证据书交集强度 */
 async function map({ userId }) {
@@ -314,4 +613,17 @@ async function knowledgeDetail({ userId, params }) {
   };
 }
 
-module.exports = { overview, knowledge, interest, thinking, longTerm, persona, unknown, map, knowledgeDetail, DIMENSIONS };
+module.exports = {
+  overview,
+  knowledge,
+  interest,
+  thinking,
+  longTerm,
+  persona,
+  unknown,
+  map,
+  knowledgeDetail,
+  personaFeedback,
+  unknownFeedback,
+  DIMENSIONS,
+};
