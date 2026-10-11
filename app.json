@@ -62,6 +62,11 @@
       "pages": ["index"]
     },
     {
+      "root": "pages/knowledge",
+      "name": "knowledge",
+      "pages": ["index"]
+    },
+    {
       "root": "pages/onboarding",
       "name": "onboarding",
       "pages": [

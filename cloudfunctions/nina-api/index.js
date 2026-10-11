@@ -40,6 +40,7 @@ const actionMap = {
   explore_persona: require('./actions/explore').persona,
   explore_unknown: require('./actions/explore').unknown,
   explore_map: require('./actions/explore').map,
+  knowledge_detail: require('./actions/explore').knowledgeDetail,
   // 搜索 / 分享
   search: require('./actions/search').search,
   share_cards: require('./actions/share').createCard,

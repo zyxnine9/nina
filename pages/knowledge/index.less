@@ -1,0 +1,387 @@
+// 知识气泡详情页
+// variant 七色变量注入（色值迁自 pages/discover/index.less bubble--humanities/tech/...）
+@spec-1: #7c6cf0;
+@spec-2: #f0789e;
+@spec-3: #f2a35e;
+
+.page {
+  min-height: 100vh;
+  padding-bottom: 80rpx;
+  background: var(--bg);
+
+  &.page--humanities {
+    --k-ink: #3c3c9c;
+    --k-grad-start: #ede7ff;
+    --k-grad-end: #beb9ff;
+    --k-soft: #f1efff;
+    --k-border: #d9d4ff;
+  }
+
+  &.page--tech {
+    --k-ink: #2b7cb3;
+    --k-grad-start: #e4f5ff;
+    --k-grad-end: #9bcaff;
+    --k-soft: #eef8ff;
+    --k-border: #bfe3f7;
+  }
+
+  &.page--psych {
+    --k-ink: #704363;
+    --k-grad-start: #fff0f5;
+    --k-grad-end: #ffc4d4;
+    --k-soft: #fff3f7;
+    --k-border: #ffd4e0;
+  }
+
+  &.page--economy {
+    --k-ink: #79543e;
+    --k-grad-start: #fff3d2;
+    --k-grad-end: #ffc978;
+    --k-soft: #fff6e0;
+    --k-border: #ffdca6;
+  }
+
+  &.page--history {
+    --k-ink: #17796c;
+    --k-grad-start: #d8fff9;
+    --k-grad-end: #7ee8da;
+    --k-soft: #e6fbf7;
+    --k-border: #b5ecdf;
+  }
+
+  &.page--arts {
+    --k-ink: #49469d;
+    --k-grad-start: #f3ecff;
+    --k-grad-end: #cfc6ff;
+    --k-soft: #f2efff;
+    --k-border: #d8d1f5;
+  }
+
+  &.page--other {
+    --k-ink: #2f5f8f;
+    --k-grad-start: #f0f8ff;
+    --k-grad-end: #dceeff;
+    --k-soft: #eff6fc;
+    --k-border: #c9dff0;
+  }
+}
+
+.loading-wrap {
+  padding-top: 240rpx;
+  display: flex;
+  justify-content: center;
+}
+
+// ---------- 1. hero 渐变卡 ----------
+.hero {
+  position: relative;
+  margin: 24rpx 32rpx 0;
+  padding: 44rpx 40rpx 48rpx;
+  border-radius: var(--radius-card);
+  background: linear-gradient(145deg, var(--k-grad-start), var(--k-grad-end));
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+
+  &__glow {
+    position: absolute;
+    top: -60rpx;
+    right: -60rpx;
+    width: 260rpx;
+    height: 260rpx;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    filter: blur(10rpx);
+  }
+
+  &__content {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--k-border);
+  color: var(--k-ink);
+
+  &__icon {
+    font-size: 28rpx;
+    line-height: 1;
+  }
+
+  &__name {
+    font-size: 26rpx;
+    font-weight: 600;
+  }
+}
+
+.hero-kicker {
+  margin-top: 36rpx;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.hero-stats {
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+}
+
+// ---------- 分区标题 ----------
+.section {
+  margin: 48rpx 32rpx 0;
+}
+
+.section-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+// ---------- 2. 主题光谱 ----------
+.spectrum {
+  margin-top: 24rpx;
+  padding: 32rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+
+  &__bar {
+    display: flex;
+    height: 20rpx;
+    border-radius: 999rpx;
+    overflow: hidden;
+    background: var(--bg-secondary);
+  }
+
+  &__seg {
+    height: 100%;
+
+    &--spec1 {
+      background: @spec-1;
+    }
+
+    &--spec2 {
+      background: @spec-2;
+    }
+
+    &--spec3 {
+      background: @spec-3;
+    }
+  }
+
+  &__legend {
+    margin-top: 24rpx;
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 14rpx;
+  }
+
+  &__dot {
+    width: 18rpx;
+    height: 18rpx;
+    border-radius: 50%;
+
+    &--spec1 {
+      background: @spec-1;
+    }
+
+    &--spec2 {
+      background: @spec-2;
+    }
+
+    &--spec3 {
+      background: @spec-3;
+    }
+  }
+
+  &__name {
+    flex: 1;
+    min-width: 0;
+    font-size: 27rpx;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__pct {
+    font-size: 25rpx;
+    color: var(--text-tertiary);
+  }
+}
+
+// ---------- 3. 子主题卡 ----------
+.child-card {
+  position: relative;
+  margin-top: 24rpx;
+  padding: 32rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+
+  &__bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8rpx;
+
+    &--spec1 {
+      background: @spec-1;
+    }
+
+    &--spec2 {
+      background: @spec-2;
+    }
+
+    &--spec3 {
+      background: @spec-3;
+    }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8rpx;
+  }
+
+  &__name {
+    font-size: 30rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+  }
+
+  &__percent {
+    font-size: 27rpx;
+    color: var(--text-tertiary);
+  }
+
+  &__chevron {
+    font-size: 28rpx;
+    color: var(--text-tertiary);
+  }
+
+  &__desc {
+    margin-top: 14rpx;
+    font-size: 27rpx;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  &__stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24rpx;
+  }
+
+  &__count {
+    font-size: 24rpx;
+    color: var(--text-tertiary);
+  }
+
+  &__more {
+    font-size: 24rpx;
+    color: var(--k-ink);
+  }
+
+  &__covers {
+    display: flex;
+    gap: 16rpx;
+    margin-top: 20rpx;
+  }
+
+  &__cover {
+    width: 96rpx;
+    height: 132rpx;
+    border-radius: 10rpx;
+    background: var(--bg-secondary);
+
+    &--empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--k-soft);
+      color: var(--k-ink);
+      font-size: 36rpx;
+      font-weight: 600;
+    }
+  }
+
+  &__titles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8rpx 20rpx;
+    margin-top: 16rpx;
+  }
+
+  &__title {
+    font-size: 24rpx;
+    color: var(--text-secondary);
+  }
+
+  &__common {
+    display: flex;
+    align-items: flex-start;
+    gap: 12rpx;
+    margin-top: 22rpx;
+    padding: 20rpx;
+    border-radius: 16rpx;
+    background: var(--k-soft);
+  }
+
+  &__common-chip {
+    flex-shrink: 0;
+    padding: 4rpx 14rpx;
+    border-radius: 999rpx;
+    border: 1px solid var(--k-border);
+    background: var(--bg-card);
+    color: var(--k-ink);
+    font-size: 20rpx;
+    line-height: 1.6;
+  }
+
+  &__common-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 25rpx;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+}
+
+// ---------- 空态 ----------
+.empty-card {
+  margin-top: 24rpx;
+  padding: 48rpx 32rpx;
+  background: var(--bg-card);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  font-size: 27rpx;
+  line-height: 1.7;
+  color: var(--text-tertiary);
+  text-align: center;
+}

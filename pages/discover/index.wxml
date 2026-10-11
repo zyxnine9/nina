@@ -32,9 +32,8 @@
       <view class="portrait-card">
         <view class="card-glow"></view>
 
-        <view class="portrait-header" bindtap="onFullAnalysisTap">
+        <view class="portrait-header">
           <text class="portrait-title">我的阅读画像</text>
-          <text class="portrait-link">查看完整分析 <text class="link-arrow">›</text></text>
         </view>
 
         <view class="personas">
@@ -72,6 +71,8 @@
             wx:key="id"
             class="bubble bubble--{{item.variant}}"
             style="{{item.animStyle}}"
+            data-id="{{item.id}}"
+            data-variant="{{item.variant}}"
             data-name="{{item.name}}"
             data-percent="{{item.percent}}"
             bindtap="onBubbleTap"
@@ -84,24 +85,6 @@
             <view class="core__liquid"></view>
             <view class="core__shine"></view>
             <text class="core-text">你的知识{{'\n'}}结构</text>
-          </view>
-        </view>
-
-        <!-- 兴趣领域 -->
-        <view class="interests">
-          <view class="interests__title">
-            <text class="interests-heading"><text class="interests-star">♙ </text>你可能感兴趣的领域</text>
-            <text class="portrait-link" bindtap="onMoreInterestTap">更多推荐 <text class="link-arrow">›</text></text>
-          </view>
-          <view class="tags">
-            <view
-              wx:for="{{interests}}"
-              wx:key="id"
-              class="tag {{selectedTags[item.id] ? 'is-selected' : ''}}"
-              data-id="{{item.id}}"
-              data-name="{{item.name}}"
-              bindtap="onInterestTap"
-            >{{item.name}}</view>
           </view>
         </view>
       </view>

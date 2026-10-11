@@ -133,7 +133,7 @@
   .stage {
     position: relative;
     z-index: 2;
-    padding: 0 24rpx;
+    padding: 0 0 48rpx;
   }
 
   .portrait-card {
@@ -547,62 +547,6 @@
       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
       filter: blur(8rpx);
       animation: shine-sweep 3.6s ease-in-out 0.9s infinite;
-    }
-  }
-
-  // ---------- 兴趣领域（单行横滑） ----------
-  .interests {
-    margin: 8rpx -40rpx 0;
-    padding: 36rpx 40rpx 40rpx;
-    border-top: 1rpx solid #ecf1f9;
-    background: rgba(252, 253, 255, 0.75);
-
-    .interests__title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .interests-heading {
-      font-size: 32rpx;
-      font-weight: 650;
-      color: #133662;
-
-      .interests-star {
-        color: #557cf5;
-      }
-    }
-
-    .tags {
-      display: flex;
-      gap: 20rpx;
-      margin-top: 32rpx;
-      overflow-x: auto;
-      padding-bottom: 8rpx;
-      scrollbar-width: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-
-    .tag {
-      flex: 0 0 auto;
-      padding: 18rpx 32rpx;
-      border: 1rpx solid #e5ecf8;
-      border-radius: 999px;
-      background: #f7faff;
-      color: #59708f;
-      font-size: 26rpx;
-      font-weight: 600;
-      transition: 0.22s ease;
-
-      &.is-selected {
-        color: #315fd9;
-        border-color: #bfcfff;
-        background: #eef3ff;
-        transform: translateY(-4rpx);
-      }
     }
   }
 }

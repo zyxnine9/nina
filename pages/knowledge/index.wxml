@@ -1,0 +1,83 @@
+<t-navbar title="知识结构" left-arrow />
+<view class="page page--{{variant}}">
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <t-loading theme="dots" size="40rpx" text="正在拆解这个主题" />
+  </view>
+
+  <block wx:else>
+    <!-- 1. Hero：主题名 + 占比 + 统计 -->
+    <view class="hero">
+      <view class="hero__glow"></view>
+      <view class="hero__content">
+        <view class="hero-chip">
+          <text class="hero-chip__icon">◈</text>
+          <text class="hero-chip__name">{{name}}</text>
+        </view>
+        <view class="hero-kicker">占据你的全部阅读 {{percent}}%</view>
+        <view wx:if="{{statsText}}" class="hero-stats">{{statsText}}</view>
+      </view>
+    </view>
+
+    <!-- 2. 你的主题光谱 -->
+    <view class="section" wx:if="{{children.length}}">
+      <view class="section-title">你的主题光谱</view>
+      <view class="spectrum">
+        <view class="spectrum__bar">
+          <view
+            wx:for="{{children}}"
+            wx:key="id"
+            class="spectrum__seg spectrum__seg--spec{{item.spec}}"
+            style="width: {{item.percent}}%;"
+          ></view>
+        </view>
+        <view class="spectrum__legend">
+          <view wx:for="{{children}}" wx:key="id" class="spectrum__item">
+            <view class="spectrum__dot spectrum__dot--spec{{item.spec}}"></view>
+            <text class="spectrum__name">{{item.name}}</text>
+            <text class="spectrum__pct">{{item.percent}}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 3. 它由什么组成 -->
+    <view class="section">
+      <view class="section-title">它由什么组成</view>
+
+      <block wx:if="{{children.length}}">
+        <view class="child-card" wx:for="{{children}}" wx:key="id">
+          <view class="child-card__bar child-card__bar--spec{{item.spec}}"></view>
+          <view class="child-card__head">
+            <view class="child-card__name">{{item.name}}</view>
+            <view class="child-card__meta">
+              <text class="child-card__percent">{{item.percent}}%</text>
+              <text class="child-card__chevron">›</text>
+            </view>
+          </view>
+          <view wx:if="{{item.desc}}" class="child-card__desc">{{item.desc}}</view>
+          <view class="child-card__stats">
+            <text class="child-card__count">{{item.bookCount}} 本书 · {{item.momentCount}} 条阅读瞬间</text>
+            <text class="child-card__more" catchtap="onAllBooksTap">查看全部 {{item.bookCount}} 本 ›</text>
+          </view>
+          <view class="child-card__covers">
+            <block wx:for="{{item.books}}" wx:for-item="bk" wx:key="bookId">
+              <image wx:if="{{bk.cover}}" class="child-card__cover" src="{{bk.cover}}" mode="aspectFill" />
+              <view wx:else class="child-card__cover child-card__cover--empty">{{bk.initial}}</view>
+            </block>
+          </view>
+          <view class="child-card__titles">
+            <text wx:for="{{item.books}}" wx:for-item="bk" wx:key="bookId" class="child-card__title">《{{bk.title}}》</text>
+          </view>
+          <view wx:if="{{item.common}}" class="child-card__common">
+            <text class="child-card__common-chip">跨书共性</text>
+            <text class="child-card__common-text">{{item.common}}</text>
+          </view>
+        </view>
+      </block>
+
+      <view wx:else class="empty-card">这个主题的细分结构还没有被看清，继续阅读会让它慢慢显形。</view>
+    </view>
+  </block>
+
+  <t-toast id="t-toast" />
+</view>

@@ -20,6 +20,7 @@ const route = makeGateway(
     explore_persona: require('./actions/explore').persona,
     explore_unknown: require('./actions/explore').unknown,
     explore_map: require('./actions/explore').map,
+    knowledge_detail: require('./actions/explore').knowledgeDetail,
   },
   'nina-insight'
 );

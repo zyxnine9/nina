@@ -29,7 +29,7 @@ const ACTION_MAP = {
   'nina-insight': [
     'discover_summary', 'tags_list', 'tags_detail', 'tags_feedback',
     'explore_overview', 'explore_knowledge', 'explore_interest', 'explore_thinking',
-    'explore_long_term', 'explore_persona', 'explore_unknown', 'explore_map',
+    'explore_long_term', 'explore_persona', 'explore_unknown', 'explore_map', 'knowledge_detail',
   ],
   'nina-search': ['search'],
 };

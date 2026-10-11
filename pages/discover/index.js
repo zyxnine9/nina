@@ -18,10 +18,8 @@ Page({
     statusBarHeight: 20,
     paused: false,
     activePersona: '',
-    selectedTags: {},
     personas: [],
     bubbles: [],
-    interests: [],
   },
   onLoad() {
     this.computeNavMetrics();
@@ -43,14 +41,12 @@ Page({
   },
   async fetchData() {
     try {
-      const [summaryRes, knowledgeRes, interestRes] = await Promise.all([
+      const [summaryRes, knowledgeRes] = await Promise.all([
         request('/discover/summary'),
         request('/explore/knowledge'),
-        request('/explore/interest'),
       ]);
       const summary = summaryRes.data;
       const knowledge = knowledgeRes.data;
-      const interest = interestRes.data;
 
       const personas = (summary.tags || []).slice(0, 3).map((tag, i) => ({
         ...tag,
@@ -68,18 +64,13 @@ Page({
         variant: BUBBLE_VARIANTS[i % BUBBLE_VARIANTS.length],
       }));
 
-      const interests = (interest.items || []).map((it) => ({ id: it.id, name: it.name }));
-
-      this.setData({ loading: false, personas, bubbles, interests });
+      this.setData({ loading: false, personas, bubbles });
     } catch (err) {
       this.setData({ loading: false });
       this.onShowToast('#t-toast', 'NINA 走神了，稍后再试试');
     }
   },
   // ---------- 画像卡 ----------
-  onFullAnalysisTap() {
-    wx.switchTab({ url: '/pages/explore/index' });
-  },
   onPersonaTap(e) {
     const { tagId, name, tone, icon } = e.currentTarget.dataset;
     this.setData({ activePersona: tagId });
@@ -88,21 +79,14 @@ Page({
     });
   },
   onBubbleTap(e) {
-    const { name, percent } = e.currentTarget.dataset;
-    this.onShowToast('#t-toast', `${name} · 阅读占比 ${percent}%`);
+    const { id, name, percent, variant } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: `/pages/knowledge/index?id=${id}&variant=${variant || 'humanities'}&percent=${percent || 0}&name=${encodeURIComponent(name || '')}`,
+    });
   },
   onCoreTap() {
     const paused = !this.data.paused;
     this.setData({ paused });
     this.onShowToast('#t-toast', paused ? '已减缓光影流动' : '光影继续流动');
-  },
-  onInterestTap(e) {
-    const { id, name } = e.currentTarget.dataset;
-    const selected = !this.data.selectedTags[id];
-    this.setData({ [`selectedTags.${id}`]: selected });
-    this.onShowToast('#t-toast', selected ? `已关注「${name}」` : `已取消关注「${name}」`);
-  },
-  onMoreInterestTap() {
-    this.onShowToast('#t-toast', '更多推荐即将上线');
   },
 });

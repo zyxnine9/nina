@@ -143,6 +143,13 @@
           "scene": null
         },
         {
+          "name": "knowledge",
+          "pathName": "pages/knowledge/index",
+          "query": "id=k_1&variant=humanities&percent=28&name=%E4%BA%BA%E6%96%87%E7%A4%BE%E7%A7%91",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "onboardWelcome",
           "pathName": "pages/onboarding/welcome/index",
           "query": "",
